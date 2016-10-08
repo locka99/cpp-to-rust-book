@@ -94,8 +94,7 @@ TODO - lots of mess below
 
 C++ | Rust
 --- | ----
-T [N] (e.g. char x[32])
-std::array<>, e.g. std::array<char, 32> | [T; N] (e.g. let x = [u8; 32])
+T [N] (e.g. char x[32]) or std::array<>, e.g. std::array<char, 32> | [T; N] (e.g. let x = [u8; 32])
 
 ## Strings
 
