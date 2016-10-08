@@ -155,8 +155,9 @@ cargo test
 
 ### Crates and external dependencies
 
-Cargo doesn't just take care of building our code.
-It created a Cargo.toml manifest in out project root. We could edit that file to say we have a dependency on an external library:
+Cargo doesn't just take care of building our code, it also ensures that anything our code depends on is also downloaded and built. These external dependencies are defined in a Cargo.toml in our project root.
+
+We can edit that file to say we have a dependency on an external "crate" such as the time crate:
 
 ```
 [package]
@@ -168,7 +169,7 @@ authors = ["Joe Blogs <jbloggs@somewhere.com>"]
 time = "0.1.35"
 ```
 
-Now when we run "cargo build", it will fetch "time" from crates.io and dependencies that "time" has and build each in turn automatically. It does this efficiently so iterative builds do not incur a penalty. External crates are download and built in your .cargo home directory.
+Now when we run "cargo build", it will fetch "time" from crates.io and also any dependencies that "time" has itself. Then it will build each crate in turn automatically. It does this efficiently so iterative builds do not incur a penalty. External crates are download and built in your .cargo home directory.
 
 To use our external crate we declare it in the main.rs of our code, e.g.
 
@@ -179,6 +180,14 @@ fn main() {
   let now = time::PreciseTime::now();
 }
 ```
+
+So the change to the Cargo.toml and a reference in the source is sufficient to:
+
+1. Fetch the crate (and any dependencies)
+2. Build it
+3. Compile and link to it
+
+We didn't have to do any of the sort of mess that C/C++ would put us through - multiple makefiles, compiler / linker flags etc.
 
 #### Cargo.lock
 
