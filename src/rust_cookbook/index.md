@@ -5,9 +5,14 @@
 ### Convert a number to a string
 
 Let's say you have an integer you want to turn into a string:
+
+```rust
 let value = 17i32;
+```
+
 In C++ you might do one of the following:
 
+```c++
 const int value = 17;
 std::string value_as_string;
 
@@ -25,36 +30,54 @@ value_as_string = ss.str();
 
 // OR THIS
 value_as_string = boost::lexical_cast<std::string>(ivalue);
+```
+
 There are other ways, but none of them are especially concise and some have issues. Probably the safest to use is the boost::lexical_cast if you use that library.
 Rust makes it far easier because numeric primitives implement a trait called ToString. The ToString trait has a to_string() function.
 So to convert the number to string is as simple as this:
 
+```rust
 let value = 17u32;
 let value_as_string = value.to_string();
+```
+
 The same is true for a floating point number:
+
+```rust
 let value = 100.00345f32;
 let value_as_string = value.to_string();
+```
 
 Convert a number to a string with precision / padding
 
 In C you would add precision of padding using printf operations:
 
+```c++
 double value = 1234.66667;
 printf("Value = %04.2d", value);
+```
 
 In C++ you could use the C way (and to be honest it's easier), but you can also set padding and precision through an iostream:
 
+```c++
 // TODO validate
 double value = 1234.66667;
 cout << setprecision(2) << setfill('0') << setw(8) << value << endl;
+```
 
 In Rust you can use format!() [https://doc.rust-lang.org/std/fmt/] for this purpose and it is similar to printf / sprintf:
 
+```rust
 let value = 1234.66667;
 let value_as_string = format!("{:08.2}", value);
 println!("value = {}", value_as_string);
+```
 
+Output
+
+```
 value = 01234.67
+```
 
 ### Convert a number to a localized string
 
@@ -66,19 +89,25 @@ TODO
 
 So we have a &str containing a number:
 
+```rust
 let value_as_str = "12345";
+```
 
 Any type that implements a trait called FromStr can take its type from a string. All the standard primitive types implement FromStr so we can simply say this:
 
+```rust
 let value_as_str = "12345";
 let value = i32::from_str(value_as_str).unwrap();
+```
 
 Note the unwrap() at the end - the FromStr::from_str() returns the value inside a Result<value, error>, to allow for the possibility that the string cannot be parsed. Production code should test for errors before calling unwrap() or it will panic.
 
 Another way to get the string is to call parse() on the &str or String itself. In this case, you use a slightly odd looking syntax nicknamed 'turbofish' which looks like this:
 
+```rust
 let value_as_str = "12345";
 let value = value_as_str.parse::<i32>().unwrap();
+```
 
 The string's implementation of parse() is a generic that works with any type implementing FromStr. So calling parse::<i32> is equivalent to calling i32::from_str().
 
@@ -86,11 +115,17 @@ The string's implementation of parse() is a generic that works with any type imp
 
 Converting between numeric types is as easy as using the "as" keyword.
 
+```rust
 let f = 1234.42f32;
 let i = f as i32;
 println!("Value = {}", i);
+```
+
 The result in i is the integer part of f.
+
+```
 Value = 1234
+```
 
 ## Strings
 
@@ -106,21 +141,27 @@ Spaces, tabs and other Unicode characters defined as whitespace can be trimmed f
 
 All strings have access to the following functions
 
+```rust
 fn trim(&self) -> &str
 fn trim_left(&self) -> &str
 fn trim_right(&self) -> &str
+```
 
 Note the signatures of these functions - they are not mutable. The functions return a slice of the string that excludes the leading and / or trailing whitespace removed. In other words it is not duplicating the string, nor is it modifying the existing string. Instead it is just telling you what the trimmed range is within the &str you're already looking at.
 
 So
 
+```rust
 let untrimmed_str = " this is test with whitespace    \t";
 let trimmed_str = untrimmed_str.trim();
 println!("Trimmed str = \"{}\"", trimmed_str);
+```
 
 Yields:
 
+```
 Trimmed str = "this is test with whitespace"
+```
 
 Also be aware that trim_left() and and trim_right() above are affected by the directionality of the string.
 
@@ -130,29 +171,43 @@ Most strings read from left-to-right, but strings in Arabic or Hebrew are read r
 
 Every &str and String has a len() function.
 
+```rust
 let message = "All good things come to those who wait";
 println!("Length = {}", message.len());
+```
 
 Note that len() is the length in bytes. If you want the number of characters you need to call message.chars().count(), e.g.
 
+```rust
 let message = "文字列の長さ";
 assert_eq!(message.chars().count(), 6);
+```
 
 ### Splitting a string
+TODO
+
 ### Tokenizing a string
+TODO
 ### Joining strings together
+TODO
 ### Getting a substring
+TODO
 ### Converting a string between upper and lower case
 
 Strings have these functions for converting between upper and lower case:
 
+```rust
 fn to_lowercase(&self) -> String
 fn to_uppercase(&self) -> String
+```
 
 These functions will return a new String that contains the upper or lower case version of the input. Upper and lower case are defined by Unicode rules. Languages that have no upper or lowercase strings may return the same characters.
 
 ### Doing a case insensitive compare
+TODO
+
 ### Using regular expression matches
+TODO
 
 ## Date and Time
 ### Get the current date and time
@@ -164,14 +219,18 @@ TODO preamble about what an epoch is, the Unix epoch and other epochs
 
 ### Setting a timer
 TODO setting a timer
+
 ### System time vs UTC
 TODO the reason timers might be set in system uptime vs timers being set in UTC. Answer because users and NTP can change the UTC time wherease system time is relative to bootup. So setting a timer to run 10s from now will always work against system time where setting a timer to run 10s from now in UTC could fail if the OS sets time back by an hour.
+
 ### Formatting a date as a string
 TODO standard date formatting UTC
 TODO example
+
 ### Parsing a date from a string
 TODO parsing a date from a string's
 TODO example
+
 ### Performing date / time arithmetic
 
 ## Collections
@@ -180,18 +239,23 @@ TODO example
 
 An array primitive consists of a type and a length. e.g. a 16 kilobyte array of bytes can be created and zeroed like this:
 
+```rust
 let values: [u8; 16384] = [0; 16384];
+```
 
 The variable specifies the type and length and the assignment operator assigns 0 to every element.
 
 The type, length and values can be initialized implicitly in-place like this:
 
+```rust
 let my_array = [ "Cat", "Dog", "Fish", "Donkey", "Albatross" ];
 println!("{:?}", my_array);
+```
 
 This is an array of 5 &str values. The compiler will complain if we try to mix types in the array.
 We could also declare the array and manipulate it:
 
+```rust
 let mut my_array: [&'static str; 5] = [""; 5];
 // Set some values
 my_array[0] = "Cat";
@@ -200,6 +264,7 @@ my_array[2] = "Fish";
 my_array[3] = "Donkey";
 my_array[4] = "Albatross";
 println!("{:?}", my_array);
+```
 
 Note in this case we declared the array, each element received an empty value. Then our code programmatically set the new element value.
 The latter form would obviously be useful for arrays that change. The latter would be useful for arrays which do not.
@@ -210,15 +275,19 @@ A vector is a linear array of values. Unlike an array which has a fixed length, 
 
 A vector can be created using the vec! macro like this:
 
+```rust
 let mut my_vector = vec![1984, 1985, 1988, 1995, 2001];
+```
 
 This creates a mutable Vec and prepopulates it with 5 values. Note how the vec! macro can use square brackets for its arguments. We could have used round brackets and it would have meant the same.
 
 A new Vec can also be made using Vec::new() or Vec::with_capacity(size)
 
+```rust
 let my_array = Vec::new();
 my_array.push("
 let my_presized_array = Vec::with_capacity(100);
+```
 
 It is strongly recommended you use Vec::with_capacity() to create a vector with enough capacity for maximum number of elements you expect the vector to contain. It prevents the runtime from having to reallocate and copy data if you keep exceeding the existing capacity. It also significantly reduces heap fragmentation.
 
@@ -231,9 +300,11 @@ TODO .retain
 
 A vector can be sorted by the natural sort order of the elements it contains:
 
+```rust
 let mut values = vec![ 99, -1, 3, 555, 76];
 values.sort();
 println!("Values = {:?}", values);
+```
 
 Sorting is done using the Ord trait and calling Ord::cmp() on the elements to compare them to each other.
 
