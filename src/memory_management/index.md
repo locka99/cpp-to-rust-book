@@ -1,0 +1,171 @@
+# Memory Management
+
+Variables that you declare in C++ or Rust reside on the stack or they reside in the heap.
+
+## Stack
+
+The stack is a memory reserved by the operating system for each thread in your program. The runtime uses it for local variables within your code including those passed in function calls.
+When you declare local variables, or call a function, the compiler will generate code to reserve backing space for them in the stack. When local variables go out of scope, the stack pointer is moved back and the space is reclaimed. It's a simple and effective mechanism.
+
+```rust
+// Stack allocated
+double pi = 3.141592735;
+{
+  // Stack pointer moves as values goes in and out of scope
+  int values[20] = { 0, 1, 2, 3, ... , 19, 20 };
+}
+```
+
+In C-style languages it is normal for the stack in each thread to be a single contiguous slab of memory that represents the "worst case" scenario for your program i.e. you will never need any more stack than the thread allocated at start. If you do exceed the stack, then you cause a stack overflow.
+
+Some languages support the concept of split or segmented stack. In this case, the stack is a series of "stacklets" joined together by a linked list. When the stack is insufficient for the next call, it allocates another stacklet.
+
+The gcc can support a segmented stack, but it greatly complicates stack unwinding when an exception is thrown and also when calls are made across linker boundaries, e.g. between a segmented-stack aware process and a non segmented stack dynamic library.  
+
+## Stack Overflows
+
+The main worry from using the stack is the possibility of a stack overflow, i.e the stack pointer moves out of the memory reserved for the stack and starts trampling on other memory.
+This can occur in two common ways in isolation or combination:
+Deeply nested function calls, e.g. a recursive function that traverses a binary tree, or a recursive function that never stops
+Exhausting stack by using excessive and/or large local variables in functions, e.g. lots of 64KB byte arrays.
+
+### C++
+
+Most C++ compilers won't catch an overflow at all. They have no guard page and thus allow the stack pointer to just grow whereever memory takes it until the program is destabilized and crashes.
+
+The gcc compiler has support segmented stacks but as described earlier not without issue.
+
+### Rust
+
+Rust used to support a segmented stack as a means of detecting memory violation but since 1.4 has replaced it with a guard page at the end of the stack space. If the guard page is touched by a memory write, it will generate a segmentation fault that halts the thread. Guard pages open up a small risk that the stack could grow well in excess of the guard and it might take some time for a write to the guard to generate a fault.
+
+Rust aspires to support stack probe code generation on all platforms at which point it is likely to use that in addition to a guard page. A stack probe is additional generated code on functions that use more than a page of space for local variables to test if they exceed the stack.
+
+Rust reduces the risk stack overflows in some indirect ways. It's easy in C++ through inheritance or by calling a polymorphic method inadvertently set off a recursive loop
+
+## Heap
+
+Heap is a memory that the language runtime requests from the operating system and makes available to your code through memory allocation calls:
+
+```c++
+char * v = (char *) malloc(128);
+memset(v, 0, 128);
+strcpy(v, "Hello world");
+//...
+free(string);
+
+double *values = new double[10];
+for (int i = 0; i < 10; i++) {
+  values[i] = double(i);
+}
+delete []values;
+```
+
+Allocation simply means a portion of the heap is marked as in-use and the code is provided with a pointer to the reserved area to do what it likes with. Free causes the portion to be returned to its free state, coalescing with any free areas that it resides next to in memory.
+
+A heap can grow and code might create multiple heaps and might even be compelled to in order control problems such as heap fragmentation.
+
+## Boxing objects
+To allocate memory on the heap in Rust you must put a struct in a box. For example to create a 1k block of bytes:
+
+```rust
+let x: Box<[u8]> = Box::new([0; 1024]);
+```
+
+Many structs in std:: and elsewhere will have a stack based portion and also use use heap internally to hold their buffers.
+
+## Heap fragmentation
+
+Heap fragmentation happens when contiguous space in the heap is limited by the pattern of memory allocations that it already contains. When this happens a memory allocation can fail and the heap must be grown to make it succeed. In systems which do not have virtual memory / paging, memory exhaustion caused by fragmentation can cause the program or even the operating system to fail completely.
+
+The easiest way to see fragmentation is with a simple example. We'll pretend there is no housekeeping structures, guard blocks or other things to get in the way. Imagine a 10 byte heap, where every byte is initially free.
+
+TODO
+Now allocate 5 bytes for object of type A. The heap reserves 5 bytes and marks them used.
+A | A | A | A | A | | | | | | |
+
+Now allocate 1 byte for object of type B. This is also marked used.
+
+A | A | A | A | A | B | | | | |
+
+Now free object A. The the portion of heap is marked unused. Now we have a block of 5 bytes free and a block with 4 bytes free.
+
+ | | | | | B | | | | | |
+
+Now allocate 2 bytes for object of type C. Now we have a block of 3 bytes free and a block with 4 bytes free.
+
+C | C | | | B | | | | |
+
+Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes free but they are not contiguous. At this point the runtime would be forced to grow the heap, i.e. ask the operating system for another chunk of memory at which point it can allocate 5 bytes for A.
+
+C | C | | | B | | | | A | A | A | A | A
+
+But it's easy to see how if this pattern could continue to fragment no matter how much heap we created.
+
+Software running in embedded devices are particularly vulnerable to fragmentation.
+
+One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string / collection grows then it may have to reallocate more memory.
+
+The only way to mitigate the issue is to choose the best collection, and to reserve capacity wherever possible.
+
+```c++
+std::vector<double> values;
+values.reserve(10);
+for (int i = 0; i < 10; i++) {
+  values.push_back(double(i));
+}
+```
+
+Rust also has this issue and strings / collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
+
+## Lifetimes and membership
+
+Rust rigorously enforces lifetimes this means if you take a reference to a member of a struct you may get in trouble if you don’t release that reference before it goes out of scope.
+You might also get in trouble if you pass an object to the c
+
+## RAII
+
+RAII stands for Resource Acquisiton Is Initalization. It's a programming pattern that ties access to some resource the object's lifetime
+
+C++ classes allow a pattern called RAII (). A class constructor acquires some resource, the destructor releases that resource. As soon as the class goes out of scope, the resource is released.
+
+TODO C++ example
+
+Rust is inherently RAII and enforces it through lifetimes. When an object goes out of scope, the thing it holds is released. Rust also allows the programmer to explicitly drop a struct earlier than its natural lifetime if there is a reason to.
+
+RAII is most commonly seen for heap allocated memory but it can apply to files, system handles etc.
+
+TODO Rust example
+
+## Allocating memory
+
+### Box<T>
+
+A Box is for allocating structs on the heap. It holds a reference to some data but there can only be one valid reference to the box itself. Essentially, that means you can pass the box around from one place to another and whoever binds to it last can open it. Everyone else’s binding is invalid will generate a compile error.
+
+It can be useful for situations where one piece of code creates an object on behalf of another piece of code and hands it over. The Box makes sure that the ownership is explicit at all times and when the box goes, so too does the thing it contains.
+
+### Cell<T>
+
+A Cell is something that can copied with a get() or set() to overwrite its own copy. As the contents must be copyable they must implement the Copy trait.
+The Cell has a zero-cost at runtime because it doesn’t have to track borrows but the restriction is it only works on Copy types. Therefore it would not be suitable for large objects or deep-copy objects.
+
+### RefCell<T>
+
+Somewhat more useful is the RefCell<T> but it incurs a runtime penalty to maintain read-write locks.
+
+The RefCell holds a reference to an object that can be borrowed either mutably or immutably. These references are read-write locked so there is a runtime cost to this since the borrow must check if something else has already borrowed the reference.
+
+Typically a piece of code might borrow the reference for a scope and then the borrow disappears when it goes out of scope. If a borrow happens before the last borrow releases, it will cause a panic.
+
+## Reference Counting objects
+
+### Rc<T>
+
+From std::rc::Rc. A reference counted object can be held by multiple owners at a time. Each own holds a cloned Rc<T> but the T contents are shared. The last reference to the object causes the contents to be destroyed.
+
+Most often T will actually be something such as a Cell, RefCell or a Box
+
+### Arc<T>
+
+From std::sync::Arc. An atomic reference counted object that works like Rc<T> except it uses an atomically incremented counter which makes it thread safe. If multiple threads access the same object they would use Arc<T>
