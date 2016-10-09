@@ -24,13 +24,18 @@ Headers will also be expanded as many times as they are #included. To prevent th
 #endif
 ```
 
-If the same header is included more than once, the second time through it is preprocessed into nothing. Some compilers support #pragma once which is neater and avoids having to open or evaluate the file a second time at all.
+If the same header is included more than once, the second time through it is preprocessed into nothing.
 
-## #pragma once
+### #pragma once
 
-Compilers have also tried tricks such as precompiled headers to speed up this problem but it doesn't work well in every scenario and comes with its own issues.  That one file that creates the precompile header has to have special case compile flags and every other file has to have special case compile flags to refer to the precompiled header and also dependencies on that one file.
+Most modern compilers support a "#pragma once" directive. This allows the compiler to completely ignore an #include which it's already done ones. It's also neater since it doesn't have to be done with guard blocks.
+
+### Precompiled Headers
+
+Some compilers also support precompiled headers to speed up compilation. The compiler builds a database lookup when compiling a single source file and subsequent source compiles with reference to that database. This solution can speed up compilation but it complicates the build process since one file has flags to generate the precompiled header file and other sources have flags to reference it.
 
 ## Pimpl pattern
+
 A popular workaround for header issues is the Pimpl pattern. It is a way to separate a class into a public part and a private implementation part.
 
 The public class is almost an interface definition in its purity that can be defined in the header with minimal dependencies. It forward references the implementation class and stores it as a member:
