@@ -1119,7 +1119,8 @@ enum HttpResponse {
 ```
 
 C++11 extends this concept a little, allowing you to declare an enum that uses another integer type, e.g. a char to hold the values.
-In Rust enums can takevalues so you can convey far more information than a static value could by itself.
+
+In Rust an [enum](https://doc.rust-lang.org/book/enums.html) can hold actual data so you can convey far more information than a static value could by itself.
 
 ```rust
 enum HttpResponse {
@@ -1150,20 +1151,20 @@ Now our code is able to return a more meaningful response in an enum and the cod
 
 TODO
 
-Match is like a switch statement on steroids.
+[Match](https://doc.rust-lang.org/book/match.html) is like a switch statement on steroids.
 
 In C++ a switch is a straight comparison of an integer value of some kind (including chars and enums), against a list of values. If the comparison matches, the code next to it executes until the bottom of the switch statement or a break is reached.
 
 ## Casting
 Casting is the act of coercing one type to be another, or dynamically producing the equivalent value in the other type.
 
-TODO
+C++ has a range of cast operators that turn a pointer or value of one kind into a pointer or value of another kind. It also has const_cast<> which allows code to violate const enforcement even in the times it might be enforced.
 
-For example, converting a double to int or vice versa involves changing the
+The equivalent of casting in Rust is the "[as](https://doc.rust-lang.org/book/casting-between-types.html#as)" command. You may cast values from one numeric type subject to the normal rules of data loss and truncation.
 
-C++ has a range of cast operators that turn a pointer or type of one kind into a pointer of type of another kind. It also has const_cast<> which allows code to violate const enforcement even in the times it might be enforced.
+### Transmutation
 
-The equivalent of casting in Rust is the "as" command. You may cast primitives from kind to another, and you can cast
+Rust also allows some types to be [transmuted](https://doc.rust-lang.org/book/casting-between-types.html#transmute) to others. Transmute is an unsafe action but it allows a memory location to be treated as another type, e.g. an array of bytes as an integer.
 
 ## Loops
 
