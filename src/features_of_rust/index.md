@@ -53,9 +53,21 @@ let mut values = [f64; 100];
 
 ### Slices
 
-A slice is a partial or full view of an array or a string. A slices is not a copy of the array, rather that it holds a pointer to a portion of the array and a length.
+A slice is a partial or full view of an array or a string. A slices is not a copy of the array, rather that it is a pointer to a portion of the array and a length.
 
-TODO example where we have a subsection on array
+```rust
+let array = ["Mary", "Sue", "Bob", "Michael"];
+println!("{:?}", array);
+let slice = &array[2..];
+println!("{:?}", slice);
+```
+
+This slice represents the portion of array starting from index 2.
+
+```
+["Mary", "Sue", "Bob", "Michael"]
+["Bob", "Michael"]
+```
 
 ### Functions of an array
 
@@ -266,15 +278,20 @@ Strings also have all the methods of str thans to implementing Deref trait.
 
 ### Formatting strings
 
-Rust allows objects to be formatted as strings based upon the formatting traits they implement
+Rust allows objects to be formatted as strings based upon the formatting traits they implement.
+
+Types may implement a Display trait to output a displayable version of themselves.
+
+
 TODO description of {} meaning and C / C++ equivalent
 
-C++ | Rust (pattern / Formatting trait)
+C++ | Rust (pattern / Formatting trait) | Purpose
 --- | ---------
-| {} / Display
-| {:X}
-| {:o}
-| TODO
+%s, %u, %d, %i, %f, %c | {} | In Rust {} will return whatever is implemented by a type's Display trait. So a String outputs its text, numeric types return their value, boolean as true/false
+- | {:?} | Debug
+%x | {:X} | Hexadecimal
+%o | {:o} | Octal
+
 
 ### OsString / OsStr
 

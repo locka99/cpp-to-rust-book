@@ -1,4 +1,4 @@
-All of the information found in this document can be gleaned from elsewhere but it tends to be scattered across documents and sites that are focussed on topics not
+All of the information found in this document can be gleaned from elsewhere but it tends to be scattered across documents and sites that are focused on topics not
 and in many cases I've sought inspiration and knowledge from
 TODO
 
