@@ -278,20 +278,78 @@ Strings also have all the methods of str thans to implementing Deref trait.
 
 ### Formatting strings
 
-Rust allows objects to be formatted as strings based upon the formatting traits they implement.
+Rust allows types to be formatted as strings based upon the formatting traits they implement.
 
-Types may implement a Display trait to output a displayable version of themselves.
+The two main implementation traits are:
 
+- Display - this is for standard textual representation of a type.
+- Debug - this is for the debugging textual representation of a type. It might present additional information or be formatted separately to the Display trait. It is possible to #[derive(Debug)] this trait which is usually enough for the purpose of debugging.
 
-TODO description of {} meaning and C / C++ equivalent
+Implementing Display must be done explicitly:
 
-C++ | Rust (pattern / Formatting trait) | Purpose
+```rust
+use std::fmt::{self, Formatter, Display};
+
+struct Person {
+  first_name: String,
+  last_name: String,
+}
+
+impl Display for Person {
+  fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    write!(f, "{} {}", self.first_name, self.last_name)
+  }
+}
+//...
+let person = Person { first_name: "Susan".to_string(), last_name: "Smith".to_string() };
+println!("Person - {}", person);
+```
+
+```
+Person - Susan Smith
+```
+
+Implementing Debug is usually done by #[derive(Debug)] but it could also be implemented.
+
+```rust
+#[derive(Debug)]
+struct Person {
+  //...
+}
+//...
+println!("Person - {:?}", person);
+```
+
+```
+Person - Person { first_name: "Susan", last_name: "Smith" }
+```
+
+Many types process formatting traits which are values held between the {} braces in the string. These are fairly similar to the patterns used in C functions for printf, sprintf etc.
+
+C++ | Rust formatting trait | Purpose
 --- | ---------
-%s, %u, %d, %i, %f, %c | {} | In Rust {} will return whatever is implemented by a type's Display trait. So a String outputs its text, numeric types return their value, boolean as true/false
-- | {:?} | Debug
-%x | {:X} | Hexadecimal
-%o | {:o} | Octal
+%s, %u, %d, %i, %f, %c | {} | In Rust {} will return whatever is implemented by a type's Display trait. So a String outputs its text, numeric types return their value, boolean as returns true or false
+ | {:?} | In Rust {:?} returns whatever is implemented by a type's Debug trait.
+%-10s | {:<10} | Format left aligned string padded to minimum of 10 spaces
+%04 | {:04} | Pad a number with zero's to a width of 4
+%.3 | {:.3} | Pad a number's precision to 3 decimal places. May also be zero-padded, e.g. {:.03}
+%e, %E | {:e}, {:E} | Exponent in lower or uppercase
+%x, %X | {:x}, {:X} | Hexadecimal in lower or uppercase. Note {:#x}, {:#X} precedes output with 0x
+%o | {:o} | Octal. Note {:#o} precedes output with 0o
+ | {:b} | Binary. Note {:#b} precedes output with 0b
+%p | {:p} | Presents a struct's memory location, i.e. pointer
 
+Rust formatting traits tend to be a little simpler than C because there is no need to worry about integer widths or whatever. So in C we might have to format a 64-bit int with %lld, whereas in Rust we just say {} and let the Display implemented by the type figure out what to create.
+
+Rust has many [more formatting traits](https://doc.rust-lang.org/std/fmt/#formatting-traits) than this.
+
+For example it allows named parameters like this example:
+
+```rust
+let message = format!("The temperature {temp}C is within {percent} of maximum", temp = 104, percent = 99);
+```
+
+Named parameters would be particularly useful for localization where the order of values may be different in one language compared to another.
 
 ### OsString / OsStr
 
