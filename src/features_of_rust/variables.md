@@ -34,7 +34,7 @@ let z = 100.0; // z: f64
 let v = vec![10, 20, 30]; // v: Vec<i32>
 let s = "Now is the winter of our discontent".to_string(); // s: String
 let s2 = "Battle of Waterloo"; // s2: &str
-let a = [i32; 5]
+let a: [i32; 5] = [1, 2, 3, 4, 5];
 ```
 
 ## Literals

@@ -12,7 +12,7 @@
 - [Compiling and Linking in More Detail](./compiling_and_linking/index.md)
 - [Source Layout and Other General Points](./source_layout/index.md)
 - [Namespacing With Modules](./namespacing_with_modules/index.md)
-- [Features of Rust](./features_of_rust/index.md)
+- [Features of Rust compared with C++](./features_of_rust/index.md)
     - [Types](./features_of_rust/types.md)
     - [Strings](./features_of_rust/strings.md)
     - [Variables](./features_of_rust/variables.md)
