@@ -1,8 +1,8 @@
 # Lint
 
-C/C++ compilers can issue a lot of warnings but they usually supplemented by code analysis tools that attempt to perform deeper inspection for problems that a compiler would not pick up.
+C/C++ compilers can issue many useful warnings but the amount of static analysis they can do is usually quite limited.
 
-The Rust compiler contains a lint check that extends beyond the syntactic correctness of your code and looks for potential errors that you may not notice.
+The Rust compiler performs a far more rigorous lifecycle check on data and then follows up with a lint check that inspects your code for potentially bad or erroneous
 
 In particular it looks for:
 
@@ -11,11 +11,12 @@ In particular it looks for:
 * Deprecated methods
 * Undocumented functions
 * Camel case / snake case violations
-* Unbounded recursion code (i.e. no conditionals)
+* Unbounded recursion code (i.e. no conditionals to stop recursion)
+* Use of heap memory when stack could be used
 * Unused extern crates, imports, variables, attributes, mut, parentheses
-* Using while true{} instead of loop
-* Lint rules can be enforced more strictly or ignored by using attributes:
-* TODO
+* Using "while true {}" instead of "loop {}"
+
+Lint rules can be enforced more strictly or ignored by using attributes:
 
 ```rust
 #[allow(rule)]
@@ -24,6 +25,20 @@ In particular it looks for:
 #[forbid(rule)]
 ```
 
-Where rule is an underscored version of the rules supported by the compiler. A full list of lint rules can be found by typing "rustc -W help".
+A full list of lint rules can be found by typing "rustc -W help":
 
-There are a lot more than are listed here.
+```
+                         name  default  meaning
+                         ----  -------  -------
+                box-pointers   allow    use of owned (Box type) heap memory
+           fat-ptr-transmutes  allow    detects transmutes of fat pointers
+ missing-copy-implementations  allow    detects potentially-forgotten implementations of `Copy`
+missing-debug-implementations  allow    detects missing implementations of fmt::Debug
+                 missing-docs  allow    detects missing documentation for public members
+                trivial-casts  allow    detects trivial casts which could be removed
+        trivial-numeric-casts  allow    detects trivial casts of numeric types which could be removed
+                  unsafe-code  allow    usage of `unsafe` code
+...
+```
+
+There are a lot checks than are listed here.

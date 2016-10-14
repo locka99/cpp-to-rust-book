@@ -1,10 +1,12 @@
 # Strings
 
-Strings in C++ can be a bit messy and to understand why requires some backstory.
+Strings in C++ are a bit messy. They have to deal with how they were historically defined and how strings in the modern world must behave to deal with multiple languages that don't fit neatly into a byte.
+
+To explain the issue requires some backstory...
 
 ## What is a character exactly?
 
-Traditionally in C++, a char type is 8-bits. Strictly speaking it's a signed type, but the values essentially represent the values 0-255. Standards like US-ASCII used the first 7-bits (0-127) to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters. Other standards like EBDIC also assign values to upper and lower case letters, number, punctuation marks, but different values! By default, the encoding the compiler choose is what it sees fit - most compilers would use ASCII but some mainframes may still use EBDIC.
+Historically in C and C++, a char type is 8-bits. Strictly speaking a char is signed type (-127 to 128), but the values essentially represent the values 0-255. Standards like US-ASCII used the first 7-bits (0-127) to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters. Other standards like EBDIC also assign values to upper and lower case letters, number, punctuation marks, but different values! By default, the encoding the compiler choose is what it sees fit - most compilers would use ASCII but some mainframes may still use EBDIC.
 
 The problem is that the world uses MANY symbols, and they can't all fit in 256 values.
 

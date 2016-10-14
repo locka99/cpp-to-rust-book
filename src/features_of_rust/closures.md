@@ -2,7 +2,9 @@
 
 ## Lambdas in C++
 
-A lambda expression, or lambda is a C++11 feature for creating an anonymous function that can be declared and passed to a function from within the scope of the call itself. This can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring a function and making it work.
+A lambda expression, or lambda is a feature introduced in C++11 for creating an anonymous function that can be declared and passed around from within the scope of the call itself.
+
+This can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring a function and making it work.
 
 In C++ a lambda looks like this:
 
@@ -13,22 +15,40 @@ std::sort(values, values + 10, [](float a, float b) {
 });
 ```
 
-Here we sort an array of values using a lambda to do the comparison.
+This lambda is passed to a std::sort function to sort an array of values by some criteria.
 
-A C++ lambda can (but doesn't have to) capture variables from the enclosing scope if it wishes and it can specify capture clauses in the [ ] section that define how capture is made. A lambda that captures variables effectively becomes a closure.
+A C++ lambda can (but doesn't have to) capture variables from the enclosing scope if it wishes and it can specify capture clauses in the [ ] section that define how capture is made. Captures can by value or reference, and can explicitly list the variables to capture, or specify to capture everything by reference or assignment. A lambda that captures variables effectively becomes a closure.
 
-TODO capture clause
+```c++
+auto v1 = 10.;
+auto v2 = 2.;
+// Capture by value
+auto multiply = [v1, v2]() { return v1 * v2; };
+// Capture by reference
+auto sum = [&v1, &v2]() { return v1 + v2; };
+cout << multiply() << endl;
+cout << sum() << endl;
+v1 = 99; // Now v1 in sum() references 99
+cout << multiply() << endl;
+cout << sum() << endl;
+```
 
-Prior to C++11 there was no lambda support however Boost provided a poor-man's version lambda function called a binding - basically a call to a function preloaded with arguments so it could be copied around and invoked.
+We can see from the output that multiply() has captured immutable copies of the values, whereas sum() is sensitive to changes to the variables:
 
-TODO boost::bind
+```
+20
+12
+20
+101
+```
+
+Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures references to variables that go out of scope, the lambda's behaviour is undefined. In  practice that could mean the application crashes.
 
 ## Closures in Rust
 
-Rust doesn't implement lambdas, it implements closures. What's the difference?
+Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can make reference to any variable that is in the function it was declared in. So a closure is basically a lambda that captures everything around it.
 
-A lambda is an anonymous function and a closure is an anonymous function with access to its enclosing environment. So a closure is a form by which a lambda may be implemented.
-Rust's lambdas have access to their enclosing environment so they are closures. When the closure is called it borrows the binding for any variable it accesses in that scope.
+Unlike a C++ capture however, the closure is directly referencing the outer variables and is subject to the same lifetime & borrowing rules that any other code is.
 
 TODO closure example
 

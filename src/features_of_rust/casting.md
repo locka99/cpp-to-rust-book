@@ -2,10 +2,18 @@
 
 Casting is the act of coercing one type to be another, or dynamically producing the equivalent value in the other type.
 
-C++ has a range of cast operators that turn a pointer or value of one kind into a pointer or value of another kind. It also has const_cast<> which allows code to violate const enforcement even in the times it might be enforced.
+C++ has a range of cast operators that turn a pointer or value of one kind into a pointer or value of another kind.
 
-The equivalent of casting in Rust is the "[as](https://doc.rust-lang.org/book/casting-between-types.html#as)" command. You may cast values from one numeric type subject to the normal rules of data loss and truncation.
+* Traditional C-style cast - a C++ compiler will attempt to interpret it as a const_cast, a static_cast and a reinterpret_cast in varying combinations.
+* const_cast<T>(value) - removes the const enforcement from a value so it may be modified.
+* static_cast<T>(value) - attempts to convert between types using implicit and user defined conversions.
+* reinterpret_cast<T>(value) - a compiler directive to just treat the input as some other kind. It does not involve any form of conversion.
+* dynamic_cast<T>(value) - attempts to convert a class pointer / reference to/from other classes in its inheritance hierarchy. Involves runtime checks.
+
+That's a very brief summary of casting which probably invokes more questions than it answers. Casting in C++ is very complex and nuanced. Some casts merely instruct the compiler to ignore const or treat one type as another. A static cast might involve code generation to convert a type. A dynamic cast might add runtime checks and throw exceptions.
+
+Rust has nothing equivalent to this complexity. A numeric type may be converted to another numeric type using the "[as](https://doc.rust-lang.org/book/casting-between-types.html#as)" keyword. The compiler does not permit code to cast away const-ness or treat one type as another except through unsafe code blocks. One example of an unsafe action is transmutation.
 
 # Transmutation
 
-Rust also allows some types to be [transmuted](https://doc.rust-lang.org/book/casting-between-types.html#transmute) to others. Transmute is an unsafe action but it allows a memory location to be treated as another type, e.g. an array of bytes as an integer.
+Rust allows some types to be [transmuted](https://doc.rust-lang.org/book/casting-between-types.html#transmute) to others. Transmute is an unsafe action but it allows a memory location to be treated as another type, e.g. an array of bytes as an integer.

@@ -1,28 +1,36 @@
 # Types
 
-C/C++ and Rust have mostly analogous primitive types:
+C/C++ and Rust have mostly analogous primitive types.
+
+For the purposes of comparison, this table also includes *typedefs* in C++ (those types ending with \_t) that have an unambiguous width. The standard only says that shorts, ints and longs must be "at least" a certain bit length, not what that length actually is. Compilers implement a *data model* that affects what the width of these types are.
+
+Rust benefits from integer types that unambiguously denote their signedness and width in their name, for example a u32 is an unsigned 32-bit integer. An i64 is a signed 64-bit integer.
 
 | C/C++ | Rust | Notes
 | --- | ----
-| char32_t / wchar_t | char (4 bytes!) | See Note 1
-| char | i8 |
-| unsigned char | u8 |
-| short (int) / signed short (int) | i16 |
-| unsigned short (int) | u16 |
-| int / signed int | i32 or i16 (LP32) | See Note 2
-| unsigned int | u32 or u16 (LP32) | See Note 2
-| float | f32 |
-| double | f64 |
-| size_t | usize / isize | size_t is a #define whereas usize / isize are part of the language and hold numbers as large as the address space |
-| long (int) | i32 or i64 (LP64) | See Note 2
-| unsigned long (int) | u32 or u64 (LP64) | See Note 2
+| char32_t / wchar_t | char | A Rust char is always 4 bytes. A wchar_t may be 2 or 4 bytes. See Note 1
+| char / int8_t | i8 |
+| unsigned char / uint8_t | u8 |
+| short (int) / signed short (int) / int16_t | i16 |
+| unsigned short (int) / uint16_t | u16 |
+| uint32_t | u32 |
+| int32_t | i32 |
+| int / signed int | i32 or i16 (LP32) | Data model dependent. See Note 2
+| unsigned int | u32 or u16 (LP32) | Data model dependent. See Note 2
+| int64_t | i64 |
+| uint64_t | ui64 |
+| long (int) | i32 or i64 (LP64) | Data model dependent. See Note 2
+| unsigned long (int) | u32 or u64 (LP64) | Data model dependent. See Note 2
 | long long (int) | i64 |
 | unsigned long long (int) | u64 |
+| size_t | usize / isize | usize / isize hold numbers as large as the address space |
+| float | f32 |
+| double | f64 |
 | bool | bool |
 
 Note 1: that Rust's char type, is 32-bits wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appeared in C++11. On some operating systems / compilers wchar_t may be 32-bits but you can't rely on that being true, because on Windows they are 16-bits. When you iterate strings in Rust you may either iterate by character or u8, i.e. a byte.
 
-Note 2: There are various data models used by C/C++ compilers. The standard only says that shorts, ints and longs must be "at least" a certain bit length, not what that length must be. Therefore the size of a short, int, long could differ from one compiler and architecture to the next.
+Note 2:
 
 The four data models in C++ are:
 
@@ -31,9 +39,7 @@ The four data models in C++ are:
 * LLP64 - ints and long are 32-bit, long long and pointer are 64-bit. Used by Win64
 * LP64 - int is 32-bit, long / long long and pointer are 64-bit. Used by Linux, OS X
 
-The recommended way to avoid these issues is to use the explicitly sized and signed typedefs in [<stdint.h>](http://www.cplusplus.com/reference/cstdint/) to avoid these issues. But random code may or may not do that or still get it wrong. e.g. code might coerce a pointer into a 32-bit int which won't work on a 64-bit platform.
-
-Rust avoids the length ambiguity by explicitly spelling out the length of the type.
+The best way to avoid these issues is to use the explicitly sized and signed typedefs from [<cstdint.h> or <stdint.h>](http://www.cplusplus.com/reference/cstdint/)(depending on if you are using C++ or C). Code frequently doesn't bother with exact types though and that can become a problem. e.g. code might coerce a pointer into a 32-bit int which works fine in 32-bits but not on a 64-bit platform.
 
 # Arrays
 
