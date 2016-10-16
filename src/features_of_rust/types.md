@@ -1,10 +1,8 @@
 # Types
 
-C/C++ and Rust have mostly analogous primitive types.
+Bit for bit, C/C++ and Rust have mostly analogous numeric types. The problem for C++ is that most of the default types only guarantee "at least" a certain number of bits. So an int is at least 16-bits but more usually it is 32-bits. Compilers implement a *data model* that affects what the width of these types are.
 
-For the purposes of comparison, this table also includes *typedefs* in C++ (those types ending with \_t) that have an unambiguous width. The standard only says that shorts, ints and longs must be "at least" a certain bit length, not what that length actually is. Compilers implement a *data model* that affects what the width of these types are.
-
-Rust benefits from integer types that unambiguously denote their signedness and width in their name, for example a u32 is an unsigned 32-bit integer. An i64 is a signed 64-bit integer.
+Rust benefits from integer types that unambiguously denote their signedness and width in their name, for example a u32 is an unsigned 32-bit integer. An i64 is a signed 64-bit integer. More recent versions of C and C++ include a [<stdint.h> or <cstdint.h>](http://www.cplusplus.com/reference/cstdint/) with typedefs that ensure the precision.
 
 | C/C++ | Rust | Notes
 | --- | ----
@@ -28,7 +26,7 @@ Rust benefits from integer types that unambiguously denote their signedness and 
 | double | f64 |
 | bool | bool |
 
-Note 1: that Rust's char type, is 32-bits wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appeared in C++11. On some operating systems / compilers wchar_t may be 32-bits but you can't rely on that being true, because on Windows they are 16-bits. When you iterate strings in Rust you may either iterate by character or u8, i.e. a byte.
+Note 1: that Rust's char type, is 32-bits wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appears in C++11 to rectify the abused wchar_t type which on some operating systems / compilers wchar_t may be 16-bits. When you iterate strings in Rust you may do so either by character or u8, i.e. a byte.
 
 Note 2:
 
@@ -39,7 +37,7 @@ The four data models in C++ are:
 * LLP64 - ints and long are 32-bit, long long and pointer are 64-bit. Used by Win64
 * LP64 - int is 32-bit, long / long long and pointer are 64-bit. Used by Linux, OS X
 
-The best way to avoid these issues is to use the explicitly sized and signed typedefs from [<cstdint.h> or <stdint.h>](http://www.cplusplus.com/reference/cstdint/)(depending on if you are using C++ or C). Code frequently doesn't bother with exact types though and that can become a problem. e.g. code might coerce a pointer into a 32-bit int which works fine in 32-bits but not on a 64-bit platform.
+The best way to avoid these issues is to use the explicitly sized and signed typedefs from <stdint.h> / <cstdint.h>(depending on if you are using C or C++). Code frequently doesn't bother with exact types though and that can become a problem. e.g. code might coerce a pointer into a 32-bit int which works fine in 32-bits but not on a 64-bit platform.
 
 # Arrays
 
