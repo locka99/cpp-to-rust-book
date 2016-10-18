@@ -1,34 +1,16 @@
 # Types
 
-Bit for bit, C/C++ and Rust have mostly analogous numeric types. The problem for C++ is that most of the default types only guarantee "at least" a certain number of bits. So an int is at least 16-bits but more usually it is 32-bits. Compilers implement a *data model* that affects what the width of these types are.
+## C++
 
-Rust benefits from integer types that unambiguously denote their signedness and width in their name, for example a u32 is an unsigned 32-bit integer. An i64 is a signed 64-bit integer. More recent versions of C and C++ include a [<stdint.h> or <cstdint.h>](http://www.cplusplus.com/reference/cstdint/) with typedefs that ensure the precision.
+C/C++ have accumulated a number of primitive types for numeric values, floating point values, booleans and strings. Strings will be dealt in a separate section.
 
-| C/C++ | Rust | Notes
-| --- | ----
-| char32_t / wchar_t | char | A Rust char is always 4 bytes. A wchar_t may be 2 or 4 bytes. See Note 1
-| char / int8_t | i8 |
-| unsigned char / uint8_t | u8 |
-| short (int) / signed short (int) / int16_t | i16 |
-| unsigned short (int) / uint16_t | u16 |
-| uint32_t | u32 |
-| int32_t | i32 |
-| int / signed int | i32 or i16 (LP32) | Data model dependent. See Note 2
-| unsigned int | u32 or u16 (LP32) | Data model dependent. See Note 2
-| int64_t | i64 |
-| uint64_t | ui64 |
-| long (int) | i32 or i64 (LP64) | Data model dependent. See Note 2
-| unsigned long (int) | u32 or u64 (LP64) | Data model dependent. See Note 2
-| long long (int) | i64 |
-| unsigned long long (int) | u64 |
-| size_t | usize / isize | usize / isize hold numbers as large as the address space |
-| float | f32 |
-| double | f64 |
-| bool | bool |
+### Integer types
 
-Note 1: that Rust's char type, is 32-bits wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appears in C++11 to rectify the abused wchar_t type which on some operating systems / compilers wchar_t may be 16-bits. When you iterate strings in Rust you may do so either by character or u8, i.e. a byte.
+Integer types (char, short, int, long) come in signed and unsigned versions.
 
-Note 2:
+A char is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an "int" is ordinarily 32-bits but the standards only say it should be at least as large as a short, so potentially it could be 16-bits! More recent versions of C and C++ include a [<stdint.h> or <cstdint.h>](http://www.cplusplus.com/reference/cstdint/) with typedefs that are unambiguous about their precision.
+
+C/C++ compilers implement a *data model* that affects what width the standard types are.
 
 The four data models in C++ are:
 
@@ -37,7 +19,79 @@ The four data models in C++ are:
 * LLP64 - ints and long are 32-bit, long long and pointer are 64-bit. Used by Win64
 * LP64 - int is 32-bit, long / long long and pointer are 64-bit. Used by Linux, OS X
 
-The best way to avoid these issues is to use the explicitly sized and signed typedefs from <stdint.h> / <cstdint.h>(depending on if you are using C or C++). Code frequently doesn't bother with exact types though and that can become a problem. e.g. code might coerce a pointer into a 32-bit int which works fine in 32-bits but not on a 64-bit platform.
+Even though stdint.h can clear up the ambiguities, code frequently sacrifices correctness for terseness. It is not unusual to see an "int" used as a temporary incremental value in a loop:
+
+```c++
+string s = read_file();
+for (int i = 0; i < s.size(); ++i) {
+  //...
+}
+```
+
+This loop is not using negative values so it shouldn't use a signed integer, but writing "int" is easier than writing "unsigned int", or "size_t" for that matter. While int is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong.
+
+C/C++ types can also be needlessly wordy such as "unsigned long long int". Again, this sort of puffery encourages code to take short cuts, or bloat the code with typedefs or potentially use the wrong type altogether. The best action is of course to use stdint.h if it is available.
+
+### Real types
+
+C/C++ has float, double and long double precision floating point types. A floating point number can represent, with varying degrees of precision, real numbers including fractional portions.
+
+* float
+* double - "at least as much precision as a float"
+* long double - "at least as much precision as a double"
+
+The C and C++ standards are vague on what precision these values represent. In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
+
+The "long double" has proven quite problematic for compilers. Despite expectations it is not normally a quadruple precision value. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. The Microsoft Visual C++ compiler treats it with the same precision as a double. The fundamental problem with "long double" is that most desktop processors would not have the ability to perform 128-bit floating point operations in hardware so a compiler must implement code in software.
+
+Some GPU C-derived shader languages may also support a "half" precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
+
+### Booleans
+
+A boolean in C/C++ can have the value true or false, however it can be promoted to an integer (0 = false, 1, true) and even be incremented and decremented with ++ and -- operators(!).
+
+## Rust
+
+Rust benefits from integer types that unambiguously denote their signedness and width in their name.
+
+They are also extremely terse making it easy to declare and use them. For example a u32 is an unsigned 32-bit integer. An i64 is a signed 64-bit integer.
+
+Types may be inferred or explicitly prefixed to the value:
+
+```rust
+let v1 = 1000;
+let v2 : u32 = 25;
+let v3 = 126i8;
+let v4 = 99.3333f64;
+let v5 = v4 as f32;
+let f1 = true;
+```
+
+
+| C/C++ | Rust | Notes
+| --- | ----
+| char / int8_t | i8 |
+| unsigned char / uint8_t | u8 |
+| signed short int / int16_t | i16 |
+| unsigned short int / uint16_t | u16 |
+| uint32_t | u32 |
+| int32_t | i32 |
+| int / signed int | i32 or i16 (LP32) | Data model dependent.
+| unsigned int | u32 or u16 (LP32) | Data model dependent.
+| int64_t | i64 |
+| uint64_t | ui64 |
+| signed long int | i32 or i64 (LP64) | Data model dependent.
+| unsigned long int | u32 or u64 (LP64) | Data model dependent.
+| signed long long int | i64 |
+| unsigned long long int | u64 |
+| size_t | usize / isize | usize / isize hold numbers as large as the address space |
+| float | f32 |
+| double | f64 |
+| long double | <s>f128</s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it. Even "long double" on Microsoft C++ resolves to be double.
+| bool | bool |
+| char32_t / wchar_t | char | A Rust char is always 4 bytes. A wchar_t may be 2 or 4 bytes. [^notechars]
+
+[^notechars] Rust's char type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appears in C++11 to rectify the abused wchar_t type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or u8, i.e. a byte.
 
 # Arrays
 
