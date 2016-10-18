@@ -2,13 +2,15 @@
 
 ## C++
 
-C/C++ have accumulated a number of primitive types for numeric values, floating point values, booleans and strings. Strings will be dealt in a separate section.
+C/C++ has primitive types for numeric values, floating point values and booleans. Strings will be dealt in a separate section.
 
 ### Integer types
 
 Integer types (char, short, int, long) come in signed and unsigned versions.
 
-A char is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an "int" is ordinarily 32-bits but the standards only say it should be at least as large as a short, so potentially it could be 16-bits! More recent versions of C and C++ include a [<stdint.h> or <cstdint.h>](http://www.cplusplus.com/reference/cstdint/) with typedefs that are unambiguous about their precision.
+A char is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an "int" is ordinarily 32-bits but the standard only say it should be at least as large as a short, so potentially it could be 16-bits!
+
+More recent versions of C and C++ include a [<stdint.h> or <cstdint.h>](http://www.cplusplus.com/reference/cstdint/) with typedefs that are unambiguous about their precision.
 
 C/C++ compilers implement a *data model* that affects what width the standard types are.
 
@@ -42,7 +44,7 @@ C/C++ has float, double and long double precision floating point types. A floati
 
 The C and C++ standards are vague on what precision these values represent. In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
 
-The "long double" has proven quite problematic for compilers. Despite expectations it is not normally a quadruple precision value. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. The Microsoft Visual C++ compiler treats it with the same precision as a double. The fundamental problem with "long double" is that most desktop processors would not have the ability to perform 128-bit floating point operations in hardware so a compiler must implement code in software.
+The "[long double](https://en.wikipedia.org/wiki/Long_double)" has proven quite problematic for compilers. Despite expectations it is not normally a quadruple precision value. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. The Microsoft Visual C++ compiler treats it with the same precision as a double. Other architectures may treat it as quadruple precision. The fundamental problem with "long double" is that most desktop processors would not have the ability to perform 128-bit floating point operations in hardware so a compiler must implement code in software.
 
 Some GPU C-derived shader languages may also support a "half" precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
 
@@ -67,31 +69,42 @@ let v5 = v4 as f32;
 let f1 = true;
 ```
 
+The C/C++ data model affects what the equivalent type is for Rust in some cases.
 
 | C/C++ | Rust | Notes
-| --- | ----
-| char / int8_t | i8 |
-| unsigned char / uint8_t | u8 |
-| signed short int / int16_t | i16 |
-| unsigned short int / uint16_t | u16 |
-| uint32_t | u32 |
-| int32_t | i32 |
-| int / signed int | i32 or i16 (LP32) | Data model dependent.
-| unsigned int | u32 or u16 (LP32) | Data model dependent.
-| int64_t | i64 |
-| uint64_t | ui64 |
-| signed long int | i32 or i64 (LP64) | Data model dependent.
-| unsigned long int | u32 or u64 (LP64) | Data model dependent.
-| signed long long int | i64 |
+| --- | ---- | ---
+| char  | i8 | A Rust char is not the same as a C/C++ char [^notechars]
+| unsigned char  | u8 |
+| signed short int | i16 |
+| unsigned short int | u16 |
+| (signed) int | i32 or i16 | Data model dependent.
+| unsigned int | u32 or u16 | Data model dependent.
+| (signed) long int | i32 or i64 | Data model dependent.
+| unsigned long int | u32 or u64 | Data model dependent.
+| (signed) long long int | i64 |
 | unsigned long long int | u64 |
-| size_t | usize / isize | usize / isize hold numbers as large as the address space |
+| size_t | usize | usize holds numbers as large as the address space [^usize] |
 | float | f32 |
 | double | f64 |
-| long double | <s>f128</s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it. Even "long double" on Microsoft C++ resolves to be double.
+| long double | <s>f128</s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
 | bool | bool |
-| char32_t / wchar_t | char | A Rust char is always 4 bytes. A wchar_t may be 2 or 4 bytes. [^notechars]
 
 [^notechars] Rust's char type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appears in C++11 to rectify the abused wchar_t type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or u8, i.e. a byte.
+
+[^usize] Rust has a specific numeric type for indexing on arrays and collections called usize. A usize is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length.
+
+The stdint.h typedefs are directly analogous.
+
+| C/C++ | Rust
+| --- | ----
+| int8_t | i8
+| uint8_t | u8
+| int16_t | i16
+| uint16_t | u16
+| uint32_t | u32
+| int32_t | i32
+| int64_t | i64
+| uint64_t | u64
 
 # Arrays
 
@@ -117,7 +130,6 @@ let mut values: Box<[f64; 100]> = Box::new([0f64; 100]);
 ```
 
 Note how Rust provides a shorthand to initialise the array with zeroes or any other value.
-
 
 ## Slices
 
