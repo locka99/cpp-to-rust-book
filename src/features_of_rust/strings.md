@@ -48,13 +48,13 @@ Rust only has str and std::String but they handle all cases.
 | C++ | Rust
 | --- | ----
 | char * or wchar_t *
-| C++11 - char16_t \*, char32_t \* | &str
+| C++11 - char16_t \*, char32_t \* | str, &str
 | std::string, std::wstring
 | std::u16string std::u32string | std::String
 
 ## char * vs str
 
-The closest C or C++ has to a string primitive is a char pointer, i.e. a string points to an arbitrary sequence of non zero bytes.  A zero byte terminates the string. The same applies for wider chars, except of course they require 2 or 4 bytes.
+C/C++ do not have a string primitive. A string is a pointer to some bytes in memory that are nul terminated. The same applies for wider chars, except of course they require 2 or 4 bytes.
 
 ```c++
 // The traditional way
@@ -69,16 +69,16 @@ auto hello_16 =  u"\u4f60\u597d"; // UTF-16
 auto hello_32 =  U"\u4f60\u597d"; // UTF-32
 ```
 
-Rust would use a str for all of these and does not need to specify a width or escape its Unicode characters.
+Rust would use a str for this purpose. A str is an *immutable* array of bytes  somewhere in memory. The str could be on the heap, in the case of a String object, or it could be in global memory if the string is static. A str *slice*, is a pointer to a str which also contains a length value.
 
 ```rust
 let my_str = "Hello";
 let hello_chinese = "你好";
 ```
 
-We can instantly see it removes the mess of character width and literal prefixes that C and C++ have to suffer under.
+Type inferences for these assignments will create a string slice pointing to the statically allocated string data. The data itself doesn't move and the &str is read-only.
 
-Type inference creates a reference to a string slice, a &str. A string slice is a pointer to the data and a length (in bytes) of the portion to view. The string itself doesn't move and &str is read-only.
+We can also observe that Rust removes the mess of character width and literal prefixes that C and C++ have to suffer under because Unicode characters are implicitly supported.
 
 The str has functions for iterating over the string in bytes / characters, splitting, find a pattern etc.
 

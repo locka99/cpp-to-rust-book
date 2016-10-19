@@ -1,6 +1,8 @@
 # Literals
 
-## Numbers
+## C++
+
+### Numbers
 
 Numbers are a decimal value followed by an optional type suffix.
 
@@ -25,6 +27,33 @@ In C++ an [integer literal](http://en.cppreference.com/w/cpp/language/integer_li
 The u, l, and ll suffixes on integers denotes if it is unsigned,  long or a long long type. The u and l/ll can be upper or lowercase. Ordinarily the u must precede the size but C++14 allows the reverse order.
 
 C++14 also allows single quotes to be inserted into the number as separators - these quotes can appear anywhere and are ignored.
+
+
+### Booleans
+
+C/C++ booleans are true or false.
+
+### Strings
+
+Strings in C/C++ have grown (in complexity) as they have tried to accomodate code pages, multi-byte character sets and finally Unicode. Therefore there are prefixes to declare strings in a variety of widths and compliance / assumptions with Unicode.
+
+```c++
+"Hello"
+u8"Hello" // char with UTF-8
+L"Hello"   // wchar_t
+u"Hello"   // char16_t with UTF-16
+U"Hello"   // char32_t with UTF-32
+```
+
+### User-defined literals
+
+C++11 introduced [user-defined literals](http://en.cppreference.com/w/cpp/language/user_literal). These allow integer, floats, chars and strings to have a user defined type suffix consisting of an underscore and a lowercase string. The prefix may act as a form of decorator or even a constant expression operator which modifies the value at compile time.
+
+C++14 goes further and defines user-defined literals for complex numbers and units of time.
+
+See the link for more information.
+
+## Rust
 
 In Rust [number literals](https://doc.rust-lang.org/reference.html#integer-literals) can also be expressed as just the number or also with a suffix. Values in hexadecimal, octal and binary are also denoted with a prefix:
 
