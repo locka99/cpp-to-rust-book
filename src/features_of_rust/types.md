@@ -42,7 +42,7 @@ C/C++ has float, double and long double precision floating point types. A floati
 * double - "at least as much precision as a float"
 * long double - "at least as much precision as a double"
 
-The C and C++ standards are vague on what precision these values represent. In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
+The C and C++ standards are vague on what precision these values represent. In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
 
 The "[long double](https://en.wikipedia.org/wiki/Long_double)" has proven quite problematic for compilers. Despite expectations it is not normally a quadruple precision value. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. The Microsoft Visual C++ compiler treats it with the same precision as a double. Other architectures may treat it as quadruple precision. The fundamental problem with "long double" is that most desktop processors would not have the ability to perform 128-bit floating point operations in hardware so a compiler must implement code in software.
 
@@ -99,6 +99,11 @@ The C/C++ data model affects what the equivalent type is for Rust in some cases.
 [^notechars] Rust's char type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated char32_t that appears in C++11 to rectify the abused wchar_t type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or u8, i.e. a byte.
 
 [^usize] Rust has a specific numeric type for indexing on arrays and collections called usize. A usize is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length.
+
+Typically both C/C++ and Rust will share the same machine types for each corresponding language type, i.e.:
+
+1. Signed types are two's complement
+2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
 
 The stdint.h typedefs are directly analogous.
 

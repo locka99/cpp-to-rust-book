@@ -38,7 +38,9 @@ The char type is a byte wide. The std::string template wraps a char pointer and 
 The wchar_t type is for wide strings and is either 2 or 4 bytes wide and is compiler / platform specific. In Microsoft Visual C++ it is an unsigned short (corresponding to Win32's Unicode API), in gcc it can be 32-bits or 16-bits according to the compile flags. There is a corresponding  std::wstring.
 
 ### Rust
+
 Rust has been rather fortunate in that Unicode existed before it did and therefore it doesn't have any legacy baggage. It can choose to be UTF-8 encoding internally and expose 32-bit chars.
+
 Rust only has str and std::String but they handle all cases.
 
 ## Types Comparison
