@@ -50,7 +50,14 @@ Some GPU C-derived shader languages may also support a "half" precision 16-bit f
 
 ### Booleans
 
-A boolean in C/C++ can have the value true or false, however it can be promoted to an integer (0 = false, 1, true) and even be incremented and decremented with ++ and -- operators(!).
+A boolean in C/C++ can have the value true or false, however it can be promoted to an integer (0 = false, 1, true) and even be incremented with ++ to be true although it cannot be decremented to false !?
+
+Inverting true with a ! becomes false and vice versa.
+
+```c++
+!false == true
+!true == false
+```
 
 ## Rust
 

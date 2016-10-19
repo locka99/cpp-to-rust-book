@@ -1,6 +1,8 @@
 # Variables
 
-## Type Inference
+## C++
+
+### Type Inference
 
 C++11 has type inference, previous versions of C++ do not. Type inference allows the compiler to figure out the type of a variable based upon the value being assigned to it.
 
@@ -25,7 +27,9 @@ template <typename T, int N> using raw_array = T[N];
 auto a = raw_array<int, 5>{};
 ```
 
-In Rust, the equivalent is let and it has no problem with arrays:
+## Rust
+
+Rust, variables are declared with a let command. The let may specify the variable's type, or it may also use type inference to infer it from the value it is assigned with.
 
 ```rust
 let x = true; // x: bool
@@ -34,48 +38,18 @@ let z = 100.0; // z: f64
 let v = vec![10, 20, 30]; // v: Vec<i32>
 let s = "Now is the winter of our discontent".to_string(); // s: String
 let s2 = "Battle of Waterloo"; // s2: &str
-let a: [i32; 5] = [1, 2, 3, 4, 5];
+let a1: [i32; 5] = [1, 2, 3, 4, 5];
 ```
 
-## Literals
-
-### Strings
-
-See the separate section on strings. (TODO ref)
-
-### Booleans
-
-Booleans are true or false.
-
-### Numbers
-
-Numbers are a decimal value followed by an optional type.
+Rust has no problem with using type inference in array assignments:
 
 ```rust
-123i32;
-123u32;
-123_u32;
-0usize;
+let a2 = ["Mary", "Fred", "Sue"];
 ```
 
-There are also hex, octal and binary representations:
+## Scope rules
 
-```rust
-0xff_u8;
-0o70_i16;
-0b111_111_11001_0000_i32;
-```
-
-Floating point numbers are similar.
-
-```rust
-let a = 100.0f64;
-let b = 0.134f64;
-let c = 2.3f32; // But 2.f32 is not valid (note 1)
-let d = 12E+99_E64;
-```
-
-Note 1: One quirk with floating point numbers is the decimal point is used for float assignments but it's also used for member and function invocation. So you can't say 2.f32 since it thinks you are referencing f32 on 2. Instead syntax requires you to say 2.f32 or alter how you declare the type, e.g. "let v: f32 = 2.;".
+TODO
 
 ## Pointers
 

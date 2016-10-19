@@ -43,12 +43,12 @@ Rust only has str and std::String but they handle all cases.
 
 ## Types Comparison
 
-C++ | Rust
---- | ----
-char * or wchar_t *
-C++11 - char16_t \*, char32_t \* | &str
-std::string, std::wstring
-std::u16string std::u32string | std::String
+| C++ | Rust
+| --- | ----
+| char * or wchar_t *
+| C++11 - char16_t \*, char32_t \* | &str
+| std::string, std::wstring
+| std::u16string std::u32string | std::String
 
 ## char * vs str
 
