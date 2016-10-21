@@ -2,9 +2,9 @@
 
 ## C++
 
-### Numbers
+### Integers
 
-Numbers are a decimal value followed by an optional type suffix.
+Integer numbers are a decimal value followed by an optional type suffix.
 
 In C++ an [integer literal](http://en.cppreference.com/w/cpp/language/integer_literal#The_type_of_the_literal) can be expressed as just the number or also with a suffix. Values in hexadecimal, octal and binary are denoted with a prefix:
 
@@ -28,6 +28,9 @@ The u, l, and ll suffixes on integers denotes if it is unsigned,  long or a long
 
 C++14 also allows single quotes to be inserted into the number as separators - these quotes can appear anywhere and are ignored.
 
+### Floating point numbers
+
+Floating point numbers may represent whole or fractional numbers.
 
 ### Booleans
 
@@ -55,6 +58,8 @@ See the link for more information.
 
 ## Rust
 
+## Integers
+
 In Rust [number literals](https://doc.rust-lang.org/reference.html#integer-literals) can also be expressed as just the number or also with a suffix. Values in hexadecimal, octal and binary are also denoted with a prefix:
 
 ```rust
@@ -71,7 +76,9 @@ In Rust [number literals](https://doc.rust-lang.org/reference.html#integer-liter
 
 The underscore in Rust is a separator and functions the same way as the single quote in C++14.
 
-Floating point numbers are similar.
+### Floating point numbers
+
+Floating point numbers may represent whole or fractional numbers. As with integers they may be suffixed to indicate their type.
 
 ```rust
 let a = 100.0f64;
@@ -93,11 +100,12 @@ false
 
 ## Characters and Strings
 
-A character is 4-bytes in Rust and can be any Unicode character. A literal is expressed using single quote characters:
+A character in Rust is 4-bytes and can be any Unicode character. A single byte character can be specified by use of a prefix.  A literal is expressed using single quote characters.:
 
 ```rust
 'x'
 '\'' # Escaped single quote
+b'&' # byte character is a u8
 ```
 
 Strings are the string text enclosed by double quotation marks:
