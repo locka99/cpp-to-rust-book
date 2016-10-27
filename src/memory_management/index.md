@@ -1,10 +1,11 @@
 # Memory Management
 
-Variables that you declare in C++ or Rust reside on the stack or they reside in the heap.
+Variables that you declare in C++ or Rust reside on the stack or they reside in the heap. When they reside in the stack they are automatically cleared out when a function exits. When they reside in the heap they are cleared out when they are deallocated.
 
 ## Stack
 
 The stack is a memory reserved by the operating system for each thread in your program. The runtime uses it for local variables within your code including those passed in function calls.
+
 When you declare local variables, or call a function, the compiler will generate code to reserve backing space for them in the stack. When local variables go out of scope, the stack pointer is moved back and the space is reclaimed. It's a simple and effective mechanism.
 
 ```rust
@@ -25,15 +26,19 @@ The gcc can support a segmented stack, but it greatly complicates stack unwindin
 ## Stack Overflows
 
 The main worry from using the stack is the possibility of a stack overflow, i.e the stack pointer moves out of the memory reserved for the stack and starts trampling on other memory.
+
 This can occur in two common ways in isolation or combination:
-Deeply nested function calls, e.g. a recursive function that traverses a binary tree, or a recursive function that never stops
-Exhausting stack by using excessive and/or large local variables in functions, e.g. lots of 64KB byte arrays.
+
+* Deeply nested function calls, e.g. a recursive function that traverses a binary tree, or a recursive function that never stops
+* Exhausting stack by using excessive and/or large local variables in functions, e.g. lots of 64KB byte arrays.
 
 ### C++
 
-Most C++ compilers won't catch an overflow at all. They have no guard page and thus allow the stack pointer to just grow whereever memory takes it until the program is destabilized and crashes.
+Some C++ compilers won't catch an overflow at all. They have no guard page and thus allow the stack pointer to just grow whereever memory takes it until the program is destabilized and crashes.
 
 The gcc compiler has support segmented stacks but as described earlier not without issue.
+
+The MSVC compiler adds a guard page and stack pointer checks when when the stack pointer could advance more than a page in a single jump and potentially miss the guard page.
 
 ### Rust
 
@@ -118,11 +123,6 @@ for (int i = 0; i < 10; i++) {
 
 Rust also has this issue and strings / collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
 
-## Lifetimes and membership
-
-Rust rigorously enforces lifetimes this means if you take a reference to a member of a struct you may get in trouble if you don’t release that reference before it goes out of scope.
-You might also get in trouble if you pass an object to the c
-
 ## RAII
 
 RAII stands for Resource Acquisiton Is Initalization. It's a programming pattern that ties access to some resource the object's lifetime
@@ -136,36 +136,3 @@ Rust is inherently RAII and enforces it through lifetimes. When an object goes o
 RAII is most commonly seen for heap allocated memory but it can apply to files, system handles etc.
 
 TODO Rust example
-
-## Allocating memory
-
-### Box<T>
-
-A Box is for allocating structs on the heap. It holds a reference to some data but there can only be one valid reference to the box itself. Essentially, that means you can pass the box around from one place to another and whoever binds to it last can open it. Everyone else’s binding is invalid will generate a compile error.
-
-It can be useful for situations where one piece of code creates an object on behalf of another piece of code and hands it over. The Box makes sure that the ownership is explicit at all times and when the box goes, so too does the thing it contains.
-
-### Cell<T>
-
-A Cell is something that can copied with a get() or set() to overwrite its own copy. As the contents must be copyable they must implement the Copy trait.
-The Cell has a zero-cost at runtime because it doesn’t have to track borrows but the restriction is it only works on Copy types. Therefore it would not be suitable for large objects or deep-copy objects.
-
-### RefCell<T>
-
-Somewhat more useful is the RefCell<T> but it incurs a runtime penalty to maintain read-write locks.
-
-The RefCell holds a reference to an object that can be borrowed either mutably or immutably. These references are read-write locked so there is a runtime cost to this since the borrow must check if something else has already borrowed the reference.
-
-Typically a piece of code might borrow the reference for a scope and then the borrow disappears when it goes out of scope. If a borrow happens before the last borrow releases, it will cause a panic.
-
-## Reference Counting objects
-
-### Rc<T>
-
-From std::rc::Rc. A reference counted object can be held by multiple owners at a time. Each own holds a cloned Rc<T> but the T contents are shared. The last reference to the object causes the contents to be destroyed.
-
-Most often T will actually be something such as a Cell, RefCell or a Box
-
-### Arc<T>
-
-From std::sync::Arc. An atomic reference counted object that works like Rc<T> except it uses an atomically incremented counter which makes it thread safe. If multiple threads access the same object they would use Arc<T>

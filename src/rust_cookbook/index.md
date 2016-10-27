@@ -4,11 +4,7 @@
 
 ### Convert a number to a string
 
-Let's say you have an integer you want to turn into a string:
-
-```rust
-let value = 17i32;
-```
+Let's say you have an integer you want to turn into a string.
 
 In C++ you might do one of the following:
 
@@ -16,25 +12,28 @@ In C++ you might do one of the following:
 const int value = 17;
 std::string value_as_string;
 
-// THIS
+// Nonstandard C itoa() (also not thread safe)
 value_as_string = itoa(value);
 
-// OR THIS
-value_as_string.ensure_capacity(16);
-sprintf(value_as_string.c_str(), "%d", value);
+// OR _itoa()
+char buffer[16];
+_itoa(value, buffer, 10);
 
-// OR THIS
+// OR
+sprintf(buffer, "%d", value);
+
+// OR
 stringstream ss;
 ss << value;
 value_as_string = ss.str();
 
-// OR THIS
+// OR (boost)
 value_as_string = boost::lexical_cast<std::string>(ivalue);
 ```
 
-There are other ways, but none of them are especially concise and some have issues. Probably the safest to use is the boost::lexical_cast if you use that library.
-Rust makes it far easier because numeric primitives implement a trait called ToString. The ToString trait has a to_string() function.
-So to convert the number to string is as simple as this:
+All of these have issues be it standards compliance, thread safety, sensitivity to changes to the type of "value", clumsy code, or dependency on third party libs.
+
+Rust makes it far easier because numeric primitives implement a trait called ToString. The ToString trait has a to_string() function. So to convert the number to string is as simple as this:
 
 ```rust
 let value = 17u32;
@@ -48,21 +47,23 @@ let value = 100.00345f32;
 let value_as_string = value.to_string();
 ```
 
-Convert a number to a string with precision / padding
+### Convert a number to a string with precision / padding
 
 In C you would add precision of padding using printf operations:
 
 ```c++
 double value = 1234.66667;
-printf("Value = %04.2d", value);
+char result[32];
+sprintf(result, "%08.2d", value);
 ```
 
-In C++ you could use the C way (and to be honest it's easier), but you can also set padding and precision through an iostream:
+In C++ you could use the C way (and to be honest it's easier than what is written below), or you can set padding and precision through an ostream:
 
 ```c++
 // TODO validate
 double value = 1234.66667;
-cout << setprecision(2) << setfill('0') << setw(8) << value << endl;
+ostringstream ss;
+ss << setfill('0') << setw(8) << setprecision(2) << value;
 ```
 
 In Rust you can use format!() [https://doc.rust-lang.org/std/fmt/] for this purpose and it is similar to printf / sprintf:
@@ -87,7 +88,17 @@ TODO
 
 ### Convert a string to a number
 
-So we have a &str containing a number:
+In C / C++ a number might be converted from a string to a number in a number of ways
+
+```c++
+
+int value = atoi(value_as_str);
+
+```
+
+TODO
+
+In Rust we have a &str containing a number:
 
 ```rust
 let value_as_str = "12345";
@@ -110,6 +121,9 @@ let value = value_as_str.parse::<i32>().unwrap();
 ```
 
 The string's implementation of parse() is a generic that works with any type implementing FromStr. So calling parse::<i32> is equivalent to calling i32::from_str().
+
+Note one immediate advantage of Rust is it uses string slices. That means you could have a long, comma separated string and use slices to parse numbers straight out of the middle of it without constructing intermediate copies.
+
 
 ### Converting between numeric types
 

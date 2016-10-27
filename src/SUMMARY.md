@@ -34,6 +34,7 @@
     - [Attributes](./features_of_rust/attributes.md)
     - [Lint](./features_of_rust/lint.md)
     - [Macros](./features_of_rust/macros.md)
+    - [Memory Allocation](./features_of_rust/memory_allocation.md)
     - [Foreign Function Interface](./features_of_rust/ffi.md)
 - [Fixing Problems in C/C++](./fixing_problems_in_c_cpp/index.md)
     - [Copy Constructor / Assignment Operators](./fixing_problems_in_c_cpp/copy_constructors.md)
