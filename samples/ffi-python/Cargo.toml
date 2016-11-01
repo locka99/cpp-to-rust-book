@@ -1,0 +1,11 @@
+[package]
+name = "ffi-python"
+version = "0.1.0"
+authors = ["Adam Lock <locka99@gmail.com>"]
+
+[lib]
+name = "file_checksum"
+crate-type = ["dylib"]
+
+[dependencies]
+libc = "0.2.17"

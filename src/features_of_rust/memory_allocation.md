@@ -6,11 +6,11 @@ This section is concerned with memory allocation, i.e. creating objects that res
 
 C and C++ have various standard ways to allocate memory:
 
-1. malloc/calloc() and free()
+1. malloc/calloc/realloc() and free() functions
 2. new and delete (C++ only)
 3. new[] and delete[] for arrays (C++ only)
-4. System functions for creating heaps, allocating memory from them. Under the covers all of the above calls map onto system functions at the discretion of the runtime.
 
+Invoking malloc()/free() on a C++ class or struct is never a good idea since it will not call the corresponding class constructor or destructor. The realloc function allocates a new piece of memory, copying the contents of an existing piece of memory before freeing the original.
 
 ```c++
 // malloc / free
@@ -27,24 +27,18 @@ Node *nodes = new Node[100];
 delete []nodes;
 ```
 
-The use of malloc()/free() is generally deprecated in C/C++ since it does not invoke constructors or destructors on classes or any of their members.
+In each case the allocation must be matched by the corresponding free action so immediately we can see scope for error here:
 
-An allocation must be matched by the corresponding free action so immediately we can see scope for error here:
+1. Ownership rules can get messy, especially when a class is passed around a lot - who deletes the object and when?
+2. Not using the correct new & delete pair, causing a memory leak. e.g. calling delete instead of delete[]
+3. Forgetting to free memory at all causing a memory leak.
+4. Freeing memory more than once.
+5. Calling a dangling pointer, i.e. a pointer which refers to freed memory.
+6. Allocating / freeing in a way that causes heap fragmentation. Reallocation can cause fragmentation to happen a lot faster.
 
-1. Not using the correct new & delete pair, e.g. calling delete instead of delete[]
-2. Forgetting to free memory causing a leak.
-3. Freeing memory more than once
-4. Calling a dangling pointer, i.e. a pointer which refers to freed memory.
+C++ has smart pointers which manage the lifetime on objects and are a good way to programmer error:
 
 ```c++
-Node *nodes = new Node[100];
-// Oops, potential memory leak - only destructor of first node was invoked
-delete nodes;
-```
-
-C/C++ do not enforce lifetimes on memory allocation. C++ has smart pointers which impose a life time on objects
-
-```
 {
   std::auto_ptr<Database> db(new Database());
   //... object is deleted when db goes out of scope
@@ -71,17 +65,26 @@ C/C++ do not enforce lifetimes on memory allocation. C++ has smart pointers whic
 }
 ```
 
-There are *many* other solutions to managing memory. The lack of any concrete lifetimes means every library has its own concept of ownership which is usually different from one to the next. Boost for example has scoped_ptr and shared_ptr which work in a similar fashion to those in C++11.
+Unfortunately it is not always possible to use smart pointers but wherever possible they should be used.
+
+### Other ways of allocating memory
+
+Virtually every C and C++ library has solutions for managing memory. They all their own indivual concept of ownership which is usually different from one to the next. Boost and QT have their own memory management "smart" pointers. QT even requires certain objects to be deleted "later" by a message processing loop on the thread that created the object. Some libraries even adopt a COM-like model of reference counting objects with smart pointers. Most C libraries will expose an alloc and free function for creating and destroying context objects that callers pass to the API.
+
+Memory allocation can even be overwritten and replaced in some circumstances. In C, the standard malloc / free can be substituted for another memory allocator, e.g. TCMalloc
+[TCMalloc](http://goog-perftools.sourceforge.net/doc/tcmalloc.html). Or perhaps the code wants to use garbage collected memory in which case [Bohem GC](http://www.hboehm.info/gc/) is a popular library for that purpose. Boehm can also be used for leak detection since it can find objects which were never released. C++ can also [override](http://en.cppreference.com/w/cpp/memory/new/operator_new) the global or class specific new / delete operators. Some standard C++ template classes also allow memory allocation to be overridden.
 
 ## Rust
 
 As you can guess by now Rust tends to be a lot more strict about allocation that C/C++. Lifetimes of objects are tracked and enforced by the compiler and that includes memory allocated objects.
 
-In normal safe programming there is no explicit new / delete so there is no way to forget to free an object. There are no pointers either so code cannot call a dangling pointer.
+In normal safe programming there is no explicit new / delete so there is no way to forget to free an object. There are no pointers either so code cannot call a dangling pointer or inadvertently call a NULL pointer.
 
 1. A Box is a managed pointer that holds a heap allocated object. A box cannot be cloned, so there is only one owner at any time.
 2. A Cell is a mutable memory location - it can hold any kind of copyable type and the value within it can be changed.
 3. A RefCell is a mutable memory location that can hold a reference
+
+The advantage for programmers, is that once you define the lifetime of an object properly it just comes into existence and goes away correctly. In many cases this lifetime management comes with zero runtime cost, or if there is a cost it is no more than the same code correctly written in C/C++.
 
 Rust requires most heap allocated memory to be contained by one or more of the structs below. The struct manages the lifetime and access to the object inside ensuring the lifetime is managed correctly.
 

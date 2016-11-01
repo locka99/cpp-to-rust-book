@@ -4,7 +4,7 @@ The usual introduction to any language is "Hello, World!".  A simple programme t
 
 Here is how we might write it for C:
 
-```c
+```c++
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
@@ -45,12 +45,21 @@ The println!() is actually a macro that expands into code that writes to the sta
 
 ## Compiling our code
 
-Open a command prompt and set up your compiler environments. In C++ you’d compile your code like this:
+Open a command prompt and set up your compiler environments.
+
+If you were using gcc, you’d compile your code like this:
 
 ```
-gcc hw.cpp -o hw (or cl /o hw.exe hw.cpp)
+gcc hw.cpp -o hw
 ```
-And in Rust
+
+If you were using Microsoft Visual C++ you'd compile like this:
+
+```
+cl /o hw.exe hw.cpp
+```
+
+To compile in Rust you invoke the rustc compiler.
 
 ```
 rustc hw.rs
@@ -67,6 +76,9 @@ Again there are points of similarity:
 
 * There is a shell command that compiles the code and creates an executable from it.
 * The binary runs in the same way.
-* In addition but not obvious is that Rust uses the LLVM bitcode compiler to generate its code. So:
-  - It shares part of its toolchain with clang and gcc-llvm compilers. The front end is different but the backend is the same.
-  - Rust executables are debuggable through gdb or other such debuggers
+
+A less obvious point of similarity is that Rust shares its code generation backend with gcc-llvm and clang. Rustc outputs llvm bitcode which is compiled (and optimized) into machine code via LLVM. This means the resulting executable is very similar in form to that output by C++ compilers. That includes the symbolic information it supplies for debugging purposes. A rust executable can be debugged in gdb, lldb or Microsoft Visual Studio depending on the target platform.
+
+```
+rustc -O hw.rs
+```
