@@ -1,6 +1,6 @@
 # Missing Braces in Conditionals
 
-I expect every programmer has encountered an error like this and spent hours trying to figure out why it wasn't working.
+Every programmer eventually encounters an error like this and spends hours trying to figure out why it wasn't working.
 
 ```c++
 const bool result = fetch_files();
@@ -11,7 +11,7 @@ else
   print_error()
   return false;
 
-// Now cleanup and
+// Now cleanup and return success
 cleanup_files();
 return true;
 ```

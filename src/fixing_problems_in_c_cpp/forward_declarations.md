@@ -50,6 +50,6 @@ public:
 
 ## How Rust helps
 
-In Rust forward declarations are unnecessary. The struct and function’s definition can reside in a .rs and be referenced with a use directive.
+In Rust forward declarations are unnecessary. The struct and function’s definition reside in a .rs and can be referenced with a use directive.
 
 TODO

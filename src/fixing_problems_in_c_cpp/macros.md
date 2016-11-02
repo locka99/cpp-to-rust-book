@@ -6,7 +6,7 @@ Modern coding practice these days is to use inline functions and constants inste
 
 But the reality is they can still be (ab)used and code often does. For example code might insert debug statements or logging which is compiled away in release mode.
 
-Another common use is on Windows where the type TCHAR compiles to be either char or wchar_t depending on UNICODE being defined or not. Along with it go macros like USES_CONVERSION, A2CT, T2CW etc. Code should compile cleanly either way but the reality is usually it doesn't.
+Another common use is on Windows where the type `TCHAR` compiles to be either `char` or `wchar_t` depending on `#define UNICODE` being present or not. Along with it go macros like `USES_CONVERSION`, `A2CT`, `T2CW` etc. Code should compile cleanly either way but the reality is usually it doesn't.
 
 A classic problem would be something like this:
 
@@ -42,12 +42,12 @@ Tooltip tooltip;
 memset(&tooltip, 0, sizeof(tooltip));
 ```
 
-If we fail to define TOOLTIP_VERSION to the same value in the implementation as in the caller, then this code may stomp all over memory because it thinks the struct is 128 bytes in one place and 64 bytes in another.
+If we fail to define `TOOLTIP_VERSION` to the same value in the implementation as in the caller, then this code may stomp all over memory because it thinks the struct is 128 bytes in one place and 64 bytes in another.
 
 ## Namespace issues
 
 Macros aren't namespaced and in some cases this leads to problems where a macro definition collides with a well qualified symbol.
-For example in Windows, TRUE is a #define for 1. But that excludes any other code that expects to compile on Windows from ever using TRUE as a const no matter how well they qualify it. Consequently code has to do workarounds such as #undef macros to make code work or using another value.
+For example code that `#include <windows.h>` gets a `#define TRUE 1`. But that excludes any other code that expects to compile on Windows from ever using `TRUE` as a const no matter how well they qualify it. Consequently code has to do workarounds such as `#undef` macros to make code work or using another value.
 
 ```c++
 #ifdef TRUE

@@ -7,6 +7,7 @@ std::string &getValue() {
   std::string value("Hello world");
   return value;
 }
+```
 
 This function returns a reference to a temporary variable. Whoever calls it will get a reference to garbage on the stack. Even if it appears to work (e.g. if we called the reference immediately) it is only through luck that it does.
 

@@ -62,10 +62,10 @@ BadNews::~BadNews() {
 
 ## How Rust helps
 
-The recommended way of dealing with errors is to use the Option and Result types to formally pass errors to your caller.
+The recommended way of dealing with errors is to use the `Option` and `Result` types to formally pass errors to your caller.
 
-For irregular errors your code choose invoke panic!()  which is a little like an exception in that it will cause the entire thread to unwind. If the main thread panics then the process terminates.
+For irregular errors your code can choose to invoke `panic!()`  which is a little like an exception in that it will cause the entire thread to unwind. If the main thread panics then the process terminates.
 
-A panic!() can be caught and recovered from in some scenarios but it is the nuclear option.
+A `panic!()` can be caught and recovered from in some scenarios but it is the nuclear option.
 
 Lacking exceptions might seem a bad idea but C++ demonstrates that they come with a whole raft of considerations of their own.

@@ -16,16 +16,16 @@ int main() {
 
 The function hello() is part of the global namespace. Calls to hello() could be replaced with calls to ::hello(). The problem of course is that the more code we write into the global namespace, or the more libraries we pull in that have no namespaces, the more chance there is of collisions.  
 
-C has learned to live without namespaces. Most C code tends to prefix all their functions and structs to avoid collisions, e.g sqlite3_exec() is a function belonging to SQLite3 and uses the prefix because exec() by itself is too common. So the prefix acts as a pseudo namespace. But this adds noise to our code and would be unnecessary if namespaces were supported and enforced.
+C has learned to live without namespaces. Most C code tends to prefix all their functions and structs to avoid collisions, e.g `sqlite3_exec()` is a function belonging to SQLite3 and uses the prefix because exec() will collide with standard POSIX call of that name. So the prefix acts as a pseudo namespace. But this adds noise to our code and would not be necessary if namespaces were supported and enforced.
 
-Of course C++ does have namespaces, but code has to choose to use them and it has to use them correctly. It is easy to abuse them because the compiler doesn’t really care what we do in a header, for example this is never a good idea:
+Of course C++ does have namespaces, but code has to choose to use them and it has to use them correctly. It is easy to abuse them because the compiler doesn’t really care what we do in a header. For example this is never a good idea:
 
 ```c++
 // Inside of foo.h...
 using namespace std;
 ```
 
-Any file that #includes foo.h is inadvertently setting the compiler to automatically look up unscoped types and functions against std which may not be what the code wants at all.
+Any file that says `#include "foo.h"` will inadvertently tell the compiler to automatically look up unscoped types and functions against std which may not be what the code wants at all.
 
 Namespacing requires code enclose the namespaced portion in a block.
 

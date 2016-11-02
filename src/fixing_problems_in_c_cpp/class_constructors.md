@@ -21,16 +21,17 @@ int main() {
 }
 ```
 
-The function magic takes a const reference to a MagicNumber but we passed an int. How did it work? Well our MagicNumber class has a constructor that takes an int so the compiler helpfully implicitly converted the value for us.
+The function magic takes a `const` reference to a MagicNumber but we passed an `int`. How did it even compile? Well our MagicNumber class has a constructor that takes an `int` so the compiler helpfully implicitly converted the value for us.
 
-If we didn't want the implicit conversion (e.g. maybe it's horribly expensive to do this without knowing), then we'd have to tack an "explicit" keyword to the constructor to basically turn off that behaviour.
+If we didn't want the implicit conversion (e.g. maybe it's horribly expensive to do this without knowing), then we'd have to tack an `explicit` keyword to the constructor to negate the behaviour.
 
 ```c++
 explicit MagicNumber(int value) {}
 ```
 
-It demonstrates that the default behavior is probably wrong. The default should be explicit and if programmers want implicit they should be required to say it.
-C++11 adds to the confusion by allowing classes to declare deleted constructors which generate an error instead of code if they match.
+It demonstrates an instance where the default behavior is probably wrong. The default *should* be `explicit` and if programmers want implicit they should be required to say it.
+
+C++11 adds to the confusion by allowing classes to declare deleted constructors which are anti-constructors that generate an error instead of code if they match.
 
 ```c++
 class MagicNumber {
