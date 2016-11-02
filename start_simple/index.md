@@ -34,7 +34,7 @@ fn main() {
 }
 ```
 
-There are some obvious points of similarity that we can observe: 
+There are some obvious points of similarity that we can observe:
 
 * C\/C++ and Rust follow the convention of having a `main()` function as the entry point into code. Note that Rust's main doesn't return anything. It's effectively a void method.
 * There is a general purpose print statement.
@@ -49,25 +49,25 @@ Open a command prompt and set up your compiler environments.
 
 If you were using gcc, you’d compile your code like this:
 
-```
+```bash
 gcc hw.cpp -o hw
 ```
 
 If you were using Microsoft Visual C++ you'd compile like this:
 
-```
+```bash
 cl /o hw.exe hw.cpp
 ```
 
 To compile in Rust you invoke the rustc compiler.
 
-```
+```bash
 rustc hw.rs
 ```
 
 And to run either
 
-```
+```bash
 ./hw (or .\hw.exe)
 Hello, World!
 ```
@@ -79,7 +79,7 @@ Again there are points of similarity:
 
 A less obvious point of similarity is that Rust shares its code generation backend with gcc-llvm and clang. Rustc outputs llvm bitcode which is compiled \(and optimized\) into machine code via LLVM. This means the resulting executable is very similar in form to that output by C++ compilers. That includes the symbolic information it supplies for debugging purposes. A rust executable can be debugged in gdb, lldb or Microsoft Visual Studio depending on the target platform.
 
-```
+```bash
 rustc -O hw.rs
 ```
 
