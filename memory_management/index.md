@@ -21,7 +21,7 @@ In C-style languages it is normal for the stack in each thread to be a single co
 
 Some languages support the concept of split or segmented stack. In this case, the stack is a series of "stacklets" joined together by a linked list. When the stack is insufficient for the next call, it allocates another stacklet.
 
-The gcc can support a segmented stack, but it greatly complicates stack unwinding when an exception is thrown and also when calls are made across linker boundaries, e.g. between a segmented-stack aware process and a non segmented stack dynamic library.  
+The gcc can support a segmented stack, but it greatly complicates stack unwinding when an exception is thrown and also when calls are made across linker boundaries, e.g. between a segmented-stack aware process and a non segmented stack dynamic library.
 
 ## Stack Overflows
 
@@ -30,7 +30,7 @@ The main worry from using the stack is the possibility of a stack overflow, i.e 
 This can occur in two common ways in isolation or combination:
 
 * Deeply nested function calls, e.g. a recursive function that traverses a binary tree, or a recursive function that never stops
-* Exhausting stack by using excessive and/or large local variables in functions, e.g. lots of 64KB byte arrays.
+* Exhausting stack by using excessive and\/or large local variables in functions, e.g. lots of 64KB byte arrays.
 
 ### C++
 
@@ -71,6 +71,7 @@ Allocation simply means a portion of the heap is marked as in-use and the code i
 A heap can grow and code might create multiple heaps and might even be compelled to in order control problems such as heap fragmentation.
 
 ## Boxing objects
+
 To allocate memory on the heap in Rust you must put a struct in a box. For example to create a 1k block of bytes:
 
 ```rust
@@ -81,35 +82,35 @@ Many structs in std:: and elsewhere will have a stack based portion and also use
 
 ## Heap fragmentation
 
-Heap fragmentation happens when contiguous space in the heap is limited by the pattern of memory allocations that it already contains. When this happens a memory allocation can fail and the heap must be grown to make it succeed. In systems which do not have virtual memory / paging, memory exhaustion caused by fragmentation can cause the program or even the operating system to fail completely.
+Heap fragmentation happens when contiguous space in the heap is limited by the pattern of memory allocations that it already contains. When this happens a memory allocation can fail and the heap must be grown to make it succeed. In systems which do not have virtual memory \/ paging, memory exhaustion caused by fragmentation can cause the program or even the operating system to fail completely.
 
 The easiest way to see fragmentation is with a simple example. We'll pretend there is no housekeeping structures, guard blocks or other things to get in the way. Imagine a 10 byte heap, where every byte is initially free.
 
-TODO
+**TODO fix examples**
 Now allocate 5 bytes for object of type A. The heap reserves 5 bytes and marks them used.
-A | A | A | A | A | | | | | | |
+A \| A \| A \| A \| A \| \| \| \| \| \| \|
 
 Now allocate 1 byte for object of type B. This is also marked used.
 
-A | A | A | A | A | B | | | | |
+A \| A \| A \| A \| A \| B \| \| \| \| \|
 
 Now free object A. The the portion of heap is marked unused. Now we have a block of 5 bytes free and a block with 4 bytes free.
 
- | | | | | B | | | | | |
+\| \| \| \| \| B \| \| \| \| \| \|
 
 Now allocate 2 bytes for object of type C. Now we have a block of 3 bytes free and a block with 4 bytes free.
 
-C | C | | | B | | | | |
+C \| C \| \| \| B \| \| \| \| \|
 
 Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes free but they are not contiguous. At this point the runtime would be forced to grow the heap, i.e. ask the operating system for another chunk of memory at which point it can allocate 5 bytes for A.
 
-C | C | | | B | | | | A | A | A | A | A
+C \| C \| \| \| B \| \| \| \| A \| A \| A \| A \| A
 
 But it's easy to see how if this pattern could continue to fragment no matter how much heap we created.
 
 Software running in embedded devices are particularly vulnerable to fragmentation.
 
-One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string / collection grows then it may have to reallocate more memory.
+One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string \/ collection grows then it may have to reallocate more memory.
 
 The only way to mitigate the issue is to choose the best collection, and to reserve capacity wherever possible.
 
@@ -121,18 +122,19 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-Rust also has this issue and strings / collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
+Rust also has this issue and strings \/ collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
 
 ## RAII
 
 RAII stands for Resource Acquisiton Is Initalization. It's a programming pattern that ties access to some resource the object's lifetime
 
-C++ classes allow a pattern called RAII (). A class constructor acquires some resource, the destructor releases that resource. As soon as the class goes out of scope, the resource is released.
+C++ classes allow a pattern called RAII \(\). A class constructor acquires some resource, the destructor releases that resource. As soon as the class goes out of scope, the resource is released.
 
-TODO C++ example
+**TODO **C++ example
 
 Rust is inherently RAII and enforces it through lifetimes. When an object goes out of scope, the thing it holds is released. Rust also allows the programmer to explicitly drop a struct earlier than its natural lifetime if there is a reason to.
 
 RAII is most commonly seen for heap allocated memory but it can apply to files, system handles etc.
 
-TODO Rust example
+**TODO **Rust example
+
