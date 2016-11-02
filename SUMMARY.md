@@ -5,7 +5,7 @@
 * [Introduction](introduction.md)
 * [Notation used through this book](notation.md)
 
-*  [Setting Up Rust](setting_up_rust/index.md)
+* [Setting Up Rust](setting_up_rust/index.md)
 * [C and C++ Background](c_and_cpp_background/index.md)
 * [Why Rust?](why_rust/index.md)
 * [Let's Start Simple](start_simple/index.md)
