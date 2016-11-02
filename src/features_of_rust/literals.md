@@ -24,7 +24,7 @@ In C++ an [integer literal](http://en.cppreference.com/w/cpp/language/integer_li
 0b111111110010000 // or 0B
 ```
 
-The u, l, and ll suffixes on integers denotes if it is unsigned,  long or a long long type. The u and l/ll can be upper or lowercase. Ordinarily the u must precede the size but C++14 allows the reverse order.
+The `u`, `l`, and `ll` suffixes on integers denotes if it is `unsigned`, `long` or a `long long` type. The `u` and `l`/`ll` can be upper or lowercase. Ordinarily the `u` must precede the size but C++14 allows the reverse order.
 
 C++14 also allows single quotes to be inserted into the number as separators - these quotes can appear anywhere and are ignored.
 
@@ -34,7 +34,7 @@ Floating point numbers may represent whole or fractional numbers.
 
 ### Booleans
 
-C/C++ booleans are true or false.
+C/C++ `bool` literals are `true` or `false`.
 
 ### Strings
 
@@ -87,11 +87,11 @@ let c = 2.3f32; // But 2.f32 is not valid (note 1)
 let d = 12E+99_E64;
 ```
 
-One quirk with floating point numbers is the decimal point is used for float assignments but it's also used for member and function invocation. So you can't say 2.f32 since it thinks you are referencing f32 on 2. Instead syntax requires you to say 2.f32 or alter how you declare the type, e.g. "let v: f32 = 2.;".
+One quirk with floating point numbers is the decimal point is used for float assignments but it's also used for member and function invocation. So you can't say `2.f32` since it thinks you are referencing f32 on 2. Instead syntax requires you to say `2.f32` or alter how you declare the type, e.g. `let v: f32 = 2.;`.
 
 ## Booleans
 
-Booleans are simply true or false.
+Boolean literals are simply `true` or `false`.
 
 ```rust
 true

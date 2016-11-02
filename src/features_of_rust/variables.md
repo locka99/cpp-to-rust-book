@@ -4,23 +4,26 @@
 
 ### Type Inference
 
-C++11 has type inference, previous versions of C++ do not. Type inference allows the compiler to figure out the type of a variable based upon the value being assigned to it.
+C++11 has type inference, previous versions of C++ do not. Type inference allows the programmer to assign a value to an `auto` typed variable and let the compiler infer the type based on the assignment.
 
-Boolean and numeric types are fairly easy to understand providing you are explicit as you need to be.
-
-Where C++ gets really messy is for arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++.
+Boolean and numeric types are fairly easy to understand providing the code is as explicit as it needs to be.
 
 ```c++
 auto x = true; // bool
 auto y = 42;   // int
 auto z = 100.; // double
+```
+
+Where C++ gets really messy is for arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++.
+
+```c++
 auto s = std::string("Now is the window of our discontent"); // char string
 auto s = U"Battle of Waterloo"; // char32_t pointer to UTF-32 string literal
 ```
 
 Strings are covered elsewhere, but essentially there are many kinds of strings and C++/C has grown a whole bunch of string prefixes to deal with them all.
 
-Arrays are a more interesting problem. The auto keyword has no easy way to infer array type so is one hack workaround to assign a templatized array to an auto and coerce it.
+Arrays are a more interesting problem. The `auto` keyword has no easy way to infer array type so is one hack workaround to assign a templatized array to an `auto` and coerce it.
 
 ```c++
 template <typename T, int N> using raw_array = T[N];
@@ -29,7 +32,7 @@ auto a = raw_array<int, 5>{};
 
 ## Rust
 
-Rust, variables are declared with a let command. The let may specify the variable's type, or it may also use type inference to infer it from the value it is assigned with.
+Rust, variables are declared with a `let` command. The `let` may specify the variable's type, or it may also use type inference to infer it from the value it is assigned with.
 
 ```rust
 let x = true; // x: bool
@@ -59,12 +62,14 @@ A pointer is a variable that points to an address in memory. The pointer may be 
 
 ### In Rust:
 
-The use of raw pointers tend to be reserved for a few use cases such as interacting with C/C++ where allocated memory may need to be extracted from a Box or placed into a Box outside the normal lifetime rules. Normally it is sufficient to use references only.
+The use of raw pointers tend to be reserved for unsafe programming and interaction with external libraries where pointers may be necessary.
+
+TODO std::ptr
 
 ## References
 
 ### In C++
-A reference is also a variable that points to an address but unlike a pointer, it cannot be reassigned and it cannot be NULL. Therefore a reference is generally assumed to be safer than a pointer. It is still possible for the a reference to become dangling, assuming the address it referenced is no longer valid.
+A reference is also a variable that points to an address but unlike a pointer, it cannot be reassigned and it cannot be `NULL`. Therefore a reference is generally assumed to be safer than a pointer. It is still possible for the a reference to become dangling, assuming the address it referenced is no longer valid.
 
 ### In Rust
 A reference is also lifetime tracked by the compiler.

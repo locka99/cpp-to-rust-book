@@ -2,9 +2,9 @@
 
 ## C++
 
-A class and a struct in C++ are largely the same thing from an implementation standpoint. They both hold fields and they both can have methods attached to the class (static) or instance level. It is only the default access level (public for struct, private for class) which is different and some rules about templates that only apply to classes.
+A `class` and a `struct` in C++ are largely the same thing from an implementation standpoint. They both hold fields and they both can have methods attached to the class (static) or instance level. It is only the default access level (`public` for struct, `private` for class) which is different and some rules about templates that only apply to classes.
 
-But from a psychological perspect a struct tends to be used to hold public data with few or no methods that is passed around. A class tends to be something more self contained with methods that are called to access or manage private fields.
+But from a psychological perspect a `struct` tends to be used to hold public data with few or no methods that is passed around. A `class` tends to be something more self contained with methods that are called to access or manage private fields.
 
 These are equivalents:
 
@@ -26,7 +26,7 @@ public:
 };
 ```
 
-Classes can also use an access specifier to inherit from a base class. So a class may choose to publically or private inherit from another class depending on whether it wants those methods to be visible to callers, or subclasses.
+Classes can also use an access specifier to inherit from a base class. So a class may specify `public` or `private` when deriving from another class depending on whether it wants those methods to be visible to callers, or subclasses.
 
 Classes and structs may have special constructor and destructor methods which are described in sections below.
 
@@ -52,7 +52,7 @@ int Size::area() { return width_ * height_; }
 
 ## Rust
 
-Rust only has structs. A struct consists of a definition which specifies the fields and their access level (public or not), and an implementation section which specifies functions bound to the struct.
+Rust only has structs. A `struct` consists of a definition which specifies the fields and their access level (public or not), and an `impl` section which contains the implementation of functions bound to the struct.
 
 ```rust
 struct Size {
@@ -61,7 +61,7 @@ struct Size {
 }
 ```
 
-An impl section follows containing the associated functions:
+An `impl` section follows containing the associated functions:
 
 ```rust
 impl Size {
@@ -75,16 +75,16 @@ impl Size {
 }
 ```
 
-The new() function here is a convenience method that returns a struct preinitialised with the arguments supplied. The area() function specifies a &self argument and returns an area calculation. Any function that supplies a &self, or &mut self can be called from the variable bound to the struct.
+The `new()` function here is a convenience method that returns a struct preinitialised with the arguments supplied. The `area()` function specifies a `&self` argument and returns an area calculation. Any function that supplies a `&self`, or `&mut self` can be called from the variable bound to the struct.
 
 ```rust
 let size = Size::new(10, 20);
 println!("Size = {}", size.area());
 ```
 
-The "self" keyword much the same way as C++ uses "this", as a reference to the struct from which the function was invoked. If a function modifies the struct it must say &mut self, which indicates the function modifies the struct.
+The `self` keyword works in much the same way as C++ uses `this`, as a reference to the struct from which the function was invoked. If a function modifies the struct it must say `&mut self`, which indicates the function modifies the struct.
 
-There is no inheritance in Rust. Instead, a struct may implement zero or more traits. A trait describes some kind of behavior that can be associated with the struct and described further later on in this chapter.
+There is no inheritance in Rust. Instead, a `struct` may implement zero or more traits. A trait describes some kind of behavior that can be associated with the struct and described further later on in this chapter.
 
 ## Constructors
 
@@ -92,7 +92,7 @@ In C++ all classes have implicit or explicit constructors. Either the compiler g
 
 An implicit default constructor, copy constructor and assignment operator will be created when a class does not define its own. We saw on page 73 why this could be really bad news.
 
-What becomes obvious from reading there is a lot of noise and potential for error in C++ merely. There would be even more if raw pointers were used instead of a std::unique_ptr here.
+What becomes obvious from reading there is a lot of noise and potential for error in C++. There would be even more if raw pointers were used instead of a `std::unique_ptr` here.
 
 In Rust, things are simpler, and we'll see how it shakes out errors.
 
@@ -106,8 +106,8 @@ struct Person {
 }
 ```
 
-Since credentials are optional, we wrap in an Option object, i.e. credentials might be None or it might be Some(Credentials).
-Any code anywhere in the system can instantiate a Person simply be declaring an instance:
+Since credentials are optional, we wrap in an `Option` object, i.e. credentials might be None or it might be `Some(Credentials)`.
+Any code anywhere in the system can instantiate a `Person` simply be declaring an instance:
 
 ```rust
 let person = Person { name: String::from("Bob"), age: 20, credentials: None }
@@ -127,10 +127,18 @@ impl Person {
 }
 ```
 
-Note that Rust does not support overloads. So if we had multiple "constructor" methods, they would each have to have unique names, e.g. if we had reasons to create an empty person then perhaps we'd have a new_empty() method filled in with the default values.
+Note that Rust does not support overloads. So if we had multiple "constructor" methods, they would each have to have unique names.
 
-Finally what about copying the Person? There are two ways to do this, the first is to implement the Copy trait which means assignment is implicit, but is what we want? Do we really want to make copies of a struct by accident?
-Instead we probably want to implement Clone instead to add a clone() method and require an explicit call in order to create a copy. But the compiler can derive clone() providing all the members of the struct implement the Clone trait.
+Finally what is we wanted to copy the `Person` struct?
+
+By default Rust does not allow copying on user-defined structs. Assigning a variable to another variable moves ownership, it doesn't copy.
+
+There are two ways to make a user-defined struct copyable
+
+1. implement the `Copy` trait which means assignment is implicit, but is what we want? Do we really want to make copies of a struct by accident?
+2. implement `Clone` instead to add a `clone()` method and require an explicit call to `clone()` order to duplicate the struct a copy.
+
+But the compiler can derive clone() providing all the members of the struct implement the Clone trait.
 
 ```rust
 #[derive(Clone)]
@@ -146,14 +154,13 @@ impl Person {
   }
 }
 
-
 //...
 
 let p = Person::new(String::from("Michael"), 20);
 let p2 = p.clone();
 ```
 
-What we can see is that Rust's construction and clone() behavior is basically declarative.
+What we can see is that Rust's construction and `clone()` behavior is basically declarative.
 We saw how C++ has all kinds of rules and nuances to construction, copy construction and assignment which make it complicated and prone to error.  
 
 ## Destructors
@@ -172,11 +179,9 @@ private:
 }
 ```
 
-In C++ you can declare a class destructor to be called when the object is about to be destroyed.
+In C++ you can declare a class destructor to be called when the object is about to be destroyed. You have to use a virtual destructor if your class inherits from another class in case a caller calls `delete` on the base class.
 
-We saw on page 96 how you must ensure you use a virtual destructor your class inherits from another class. Otherwise you might end up calling the destructor on the base class but not the thing derived from it.
-
-Since Rust does not do inheritance and does not have constructors, the manner in which you cleanup is different and simpler. Instead of a destructor you implement the Drop trait.
+Since Rust does not do inheritance and does not have constructors, the manner in which you cleanup is different and simpler. Instead of a destructor you implement the `Drop` trait.
 
 ```rust
 impl Drop for Shape {
@@ -186,9 +191,9 @@ impl Drop for Shape {
 }
 ```
 
-The compiler recognizes this trait. If you implement this trait then the compiler knows to call your drop() function prior to destroying your struct. It’s that simple.
+The compiler recognizes this trait. If you implement this trait then the compiler knows to call your `drop()` function prior to destroying your struct. It’s that simple.
 
-Occasionally there might be a reason to explicitly drop a struct before it goes out of scope. Perhaps the resources held by the variable should be freed as soon as possible to release a resource which is in contention. Whatever the reason, the answer is to call drop like this:
+Occasionally there might be a reason to explicitly drop a struct before it goes out of scope. Perhaps the resources held by the variable should be freed as soon as possible to release a resource which is in contention. Whatever the reason, the answer is to call `drop` like this:
 
 ```rust
 {
@@ -205,29 +210,29 @@ Occasionally there might be a reason to explicitly drop a struct before it goes 
 
 A C++ class can hide or show methods and members to any other class, or to things that inherit from itself using the public, private and protected keywords:
 
-* public – can be seen by any code internal or external to the class
-* private – can only be used by code internal to the class. Not even subclasses can access these members
-* protected – can be used by code internal to the class and by subclasses.
+* `public` – can be seen by any code internal or external to the class
+* `private` – can only be used by code internal to the class. Not even subclasses can access these members
+* `protected` – can be used by code internal to the class and by subclasses.
 
 A class may designate another function or class as a friend which has access to the private and protected members of a class.
 
 Rust makes things somewhat simpler.
 
-If you want something to access a member of a struct (including modifying it if its mutable), then mark it pub.
+If you want something to access a member of a struct (including modifying it if its mutable), then mark it `pub`.
 
 TODO example
 
-If you want something to be able to call a function on your struct you mark it pub.
+If you want something to be able to call a function on your struct you mark it `pub`.
 
 TODO example
 
-If you want a struct to be visible outside your module you mark it pub
+If you want a struct to be visible outside your module you mark it `pub`
 
 TODO example
 
-## Methods
+## Functions
 
-And then it has methods that you bind to the struct contained within an impl block:
+And then it has functions that you bind to the struct contained within an `impl` block:
 
 ```rust
 impl Shape {
@@ -241,13 +246,13 @@ impl Shape {
 }
 ```
 
-Note how the first parameter is a reference to self  which is the struct instance itself. In one method we pass a immutable reference to self because it doesn’t need to modify the struct. In the second we pass a mutable reference so we can modify the struct.
+Note how the first parameter is `&self` which is a reference to the struct instance. In one method we pass a immutable `&self` because it doesn’t need to modify the struct. In the second we pass a mutable `&mut self` so we can modify the struct.
 
-Unlike C++, all access to the struct has to be qualified. In C++ you don't have to say "this->foo" to access a member foo. Rust requires code to say unambiguously "self.foo".
+Unlike C++, all access to the struct has to be qualified. In C++ you don't have to say `this->foo()` to call foo() from another member of the class. Rust requires code to say unambiguously `self.foo()`.
 
 ## Static methods
 
-Static methods are merely functions in the impl block that do not have self as their first parameter, e.g.
+Static methods are merely functions in the `impl` block that do not have `&self` as their first parameter, e.g.
 
 ```rust
 impl Circle {

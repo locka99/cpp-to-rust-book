@@ -1,8 +1,17 @@
-# Rust's std:: library
+# Rust's standard library
 
-The core functionality in Rust is provided by a module called std. This is the standard runtime library. Just like it's C++ namesake, everything is referenced through std:: unless you choose to explicitly reference via a use command.
+The core functionality in Rust is provided by a module called `std`. This is the standard runtime library.
 
-TODO describe which things from std are exposed by default.
+As with its C++ namesake, everything can be referenced through a `std::` namespace prefix or via a `use std::{foo}` import.
+
+The `std` is available by default so there is no need to call `extern crate std;` to reference it. In addition some core functionality of std is made implicitly available by a special [`std::prelude`](https://doc.rust-lang.org/beta/std/prelude/) which is automatically used without declaration. The prelude contains functionality that virtually all code is likely to use and therefore Rust spares code from having to import it:
+
+* String and ToString trait
+* Iterators traits of various kinds - Iterator, Exten, IntoIterator etc.
+* Result<> and Option<> enums
+* Conversion traits AsRef, AsMut, Into, From
+* Vec heap allocated vector
+* Other traits such as Drop, Fn, FnMut, FnOnce, Box, Clone, Copy, Send, Sized, Sync, PartialEq, PartialOrd etc.
 
 There are various sub-modules under std that concern themselves with aspects of development. Here are just some of them:
 

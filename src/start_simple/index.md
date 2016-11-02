@@ -1,6 +1,6 @@
 # Let's Start Simple
 
-The usual introduction to any language is "Hello, World!".  A simple programme that prints that message out to the console.
+The usual introduction to any language is "Hello, World!".  A simple program that prints that message out to the console.
 
 Here is how we might write it for C:
 
@@ -36,12 +36,12 @@ fn main() {
 
 There are some obvious points of similarity. Here are some observations.
 
-* C/C++ and Rust follow the convention of having a main() function as the entry point into code. Note that Rust's main doesn't return anything. It's effectively a void method.
+* C/C++ and Rust follow the convention of having a `main()` function as the entry point into code. Note that Rust's main doesn't return anything. It's effectively a void method.
 * There is a general purpose print statement.
 * The general structure in terms of main, use of { } and semi-colons is mostly the same. In both languages a { } represents a block of code and a semi-colon is a separator between statements.
 * Rust looks a little bit more terse than either C or C++ because it automatically includes references to part of its standard runtime.
 
-The println!() is actually a macro that expands into code that writes to the standard output. We know it's a macro because it ends in a ! character but you may treat it like a function call for now. We'll see how Rust macros differ to those in C/C++ later.
+The `println!()` is actually a macro that expands into code that writes to the standard output. We know it's a macro because it ends in a ! character but you may treat it like a function call for now. We'll see how Rust macros differ to those in C/C++ later.
 
 ## Compiling our code
 
