@@ -16,7 +16,7 @@ let x = {
 };
 ```
 
-Note how the last line inside the block is not terminated with a semicolon. So the result of the block expression is 2 * pi * r which is assigned to x. If we’d put a semicolon on the end of that line, the expression would evaluate to nothing.
+Note how the last line inside the block is not terminated with a semicolon. So the result of the block expression is `2 * pi * r` which is assigned to `x`. If we’d put a semicolon on the end of that line, the expression would evaluate to nothing.
 
 You could even do complex matching in your block and conditionally assign the output:
 
@@ -31,7 +31,7 @@ let result = {
 println!("The server state is {}", result);
 ```
 
-In this instance, the match returns a &str from each match and we then call to_string() to turn it to a String before binding it to the variable result.
+In this instance, the match returns a `&str` from each match and we then call `to_string()` to turn it to a `String` before binding it to the variable result.
 More normally you will see this in function blocks or closures. A trivial function can just omit the return statement:
 
 ```rust
@@ -41,6 +41,14 @@ pub fn add_values(x: i32, y: i32) -> i32 {
 ```
 
 Another case you might see is by using Rust's equivalent to a C++ ternary operator:
+
+In C++ a ternary operator is an abbreviated way to perform an if/else expression condition, usually to assign the result to a variable.
+
+```c++
+bool x = y / 2 == 4 ? true : false;
+```
+
+Rust has no ternary operator but it can be accomplished using block expressions.
 
 ```rust
 let x = if y / 2 == 4 { true } else { false };

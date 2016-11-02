@@ -1,6 +1,6 @@
 # Enumerations
 
-In C++ an enum is a bunch of labels assigned an integer value.
+In C++ an `enum` is a bunch of labels assigned an `int` value.
 
 ```c++
 enum HttpResponse {
@@ -10,9 +10,9 @@ enum HttpResponse {
 };
 ```
 
-C++11 extends this concept a little, allowing you to declare an enum that uses another integer type, e.g. a char to hold the values.
+C++11 extends this concept a little, allowing you to declare an `enum` that uses another integer type, e.g. a `char` to hold the values.
 
-In Rust an [enum](https://doc.rust-lang.org/book/enums.html) can hold actual data so you can convey far more information than a static value could by itself.
+In Rust an [`enum`](https://doc.rust-lang.org/book/enums.html) can hold actual data so you can convey far more information than a static value could by itself.
 
 ```rust
 enum HttpResponse {

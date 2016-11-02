@@ -11,7 +11,7 @@ Rust comments are pretty much like C++ except they may contain Unicode since .rs
 ```
 
 
-Anything that uses triple slash notation is parsed by a tool called rustdoc (which you can also invoke indirectly via "cargo doc") to produce documentation:
+Anything that uses triple slash `///` notation is parsed by a tool called `rustdoc` (which you can also invoke indirectly via `cargo doc`) to produce documentation:
 
 ```rust
 /// This is a comment that becomes documentation for do_thing below

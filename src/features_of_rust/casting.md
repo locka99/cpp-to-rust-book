@@ -4,15 +4,22 @@ Casting is the act of coercing one type to be another, or dynamically producing 
 
 C++ has a range of cast operators that turn a pointer or value of one kind into a pointer or value of another kind.
 
-* Traditional C-style cast - a C++ compiler will attempt to interpret it as a const_cast, a static_cast and a reinterpret_cast in varying combinations.
-* const_cast<T>(value) - removes the const enforcement from a value so it may be modified.
-* static_cast<T>(value) - attempts to convert between types using implicit and user defined conversions.
-* reinterpret_cast<T>(value) - a compiler directive to just treat the input as some other kind. It does not involve any form of conversion.
-* dynamic_cast<T>(value) - attempts to convert a class pointer / reference to/from other classes in its inheritance hierarchy. Involves runtime checks.
+* `const_cast<T>(value)` - removes the const enforcement from a value so it may be modified.
+* `static_cast<T>(value)` - attempts to convert between types using implicit and user defined conversions.
+* `reinterpret_cast<T>(value)` - a compiler directive to just treat the input as some other kind. It does not involve any form of conversion.
+* `dynamic_cast<T>(value)` - attempts to convert a class pointer / reference to/from other classes in its inheritance hierarchy. Involves runtime checks.
+* Traditional C-style cast - a C++ compiler will attempt to interpret it as a `const_cast`, a `static_cast` and a `reinterpret_cast` in varying combinations.
 
 That's a very brief summary of casting which probably invokes more questions than it answers. Casting in C++ is very complex and nuanced. Some casts merely instruct the compiler to ignore const or treat one type as another. A static cast might involve code generation to convert a type. A dynamic cast might add runtime checks and throw exceptions.
 
-Rust has nothing equivalent to this complexity. A numeric type may be converted to another numeric type using the "[as](https://doc.rust-lang.org/book/casting-between-types.html#as)" keyword. The compiler does not permit code to cast away const-ness or treat one type as another except through unsafe code blocks. One example of an unsafe action is transmutation.
+Rust has nothing equivalent to this complexity. A numeric type may be converted to another numeric type using the [`as`](https://doc.rust-lang.org/book/casting-between-types.html#as) keyword.
+
+```rust
+let a = 123i32;
+let b = a as usize;
+```
+
+The compiler does not permit code to cast away `const`-ness or treat one type as another except through unsafe code blocks. 
 
 # Transmutation
 
