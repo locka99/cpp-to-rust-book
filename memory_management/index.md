@@ -88,27 +88,29 @@ The easiest way to see fragmentation is with a simple example. We'll pretend the
 
 **TODO fix examples**
 Now allocate 5 bytes for object of type A. The heap reserves 5 bytes and marks them used.
-A \| A \| A \| A \| A \| \| \| \| \| \| \|
+
+
+![](/assets/aaaaa-----.png)
 
 Now allocate 1 byte for object of type B. This is also marked used.
 
-A \| A \| A \| A \| A \| B \| \| \| \| \|
+![](/assets/aaaaaab.png)
 
 Now free object A. The the portion of heap is marked unused. Now we have a block of 5 bytes free and a block with 4 bytes free.
 
-\| \| \| \| \| B \| \| \| \| \| \|
+![](/assets/-----b----.png)
 
 Now allocate 2 bytes for object of type C. Now we have a block of 3 bytes free and a block with 4 bytes free.
 
-C \| C \| \| \| B \| \| \| \| \|
+![](/assets/cc---b----.png)
 
 Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes free but they are not contiguous. At this point the runtime would be forced to grow the heap, i.e. ask the operating system for another chunk of memory at which point it can allocate 5 bytes for A.
 
-C \| C \| \| \| B \| \| \| \| A \| A \| A \| A \| A
+![](/assets/rect3336.png)
 
 But it's easy to see how if this pattern could continue to fragment no matter how much heap we created.
 
-Software running in embedded devices are particularly vulnerable to fragmentation.
+Software running in embedded devices are particularly vulnerable to fragmentation because they do not have virtual memory, have low physical memory and normally have to run for days, weeks or years at a time.
 
 One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string \/ collection grows then it may have to reallocate more memory.
 
