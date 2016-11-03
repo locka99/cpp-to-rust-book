@@ -86,9 +86,7 @@ Heap fragmentation happens when contiguous space in the heap is limited by the p
 
 The easiest way to see fragmentation is with a simple example. We'll pretend there is no housekeeping structures, guard blocks or other things to get in the way. Imagine a 10 byte heap, where every byte is initially free.
 
-**TODO fix examples**
 Now allocate 5 bytes for object of type A. The heap reserves 5 bytes and marks them used.
-
 
 ![](/assets/aaaaa-----.png)
 
