@@ -104,7 +104,7 @@ Now allocate 2 bytes for object of type C. Now we have a block of 3 bytes free a
 
 Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes free but they are not contiguous. At this point the runtime would be forced to grow the heap, i.e. ask the operating system for another chunk of memory at which point it can allocate 5 bytes for A.
 
-![](/assets/rect3336.png)
+![](/assets/cc---baaaaa---.png)
 
 But it's easy to see how if this pattern could continue to fragment no matter how much heap we created.
 
