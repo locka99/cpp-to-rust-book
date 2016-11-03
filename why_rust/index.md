@@ -1,12 +1,43 @@
 # Why Rust?
 
-The C and C++ are the defacto languages for producing very fast close-to-the-metal software. The problem is not with that but with their safe-by-design. 
+TODO
+
+## Problems with C/C++
 
 It is trivial \(by accident\) to write code that is in error such as causing a memory leak. It is easy \(by malice\) to exploit badly written code to force it into error. It easy with the best testing in the world for some of these errors to only manifest themselves when the code is in production.
 
 At best, bugs are a costly burden for developers to find and fix, not just in time and dollars but also their reputation. At worst, the bug could causes catastrophic failure but more ordinarily leaves code unstable or vulnerable to hacking.
 
 Rust is a language that produces machine code that is comparable in performance as C\/C++ but enforces a safe-by-design philosophy. Simply put, the language and the compiler try to stop errors from happening in the first place. For example the compiler rigorously enforces lifetime tracking on objects and generates errors on violations. Most of these checks and guards are done at compile time so there is a zero-cost at runtime.
+
+
+## Active Development
+
+TODO
+
+The Rust team releases a new version of Rust approximately every 6 weeks. This means Rust receives code and speed improvements over time.
+
+Most releases focus on marking APIs as stable, improving code optimization and compile times.
+
+## Open source and free
+
+Rust is dual licensed under the Apache 2.0 and MIT open source licenses. The full copyright message is viewable [online](https://github.com/rust-lang/rust/blob/master/COPYRIGHT).
+
+Essentially the license covers your right to modify and distribute the Rust source code. Note that Rust generates code for LLVM so LLVM also has its own software license (TODO link).
+
+What you compile with Rust (or LLVM) is not affected by the open source license. So you may compile, execute and distribute proprietary code without obligation to these licenses.
+
+## Is Rust for everybody?
+
+No of course not. Performance and safety are only two things to consider when writing software. Sometimes you want something quick and dirty. Other times you can tolerate a few crashes.
+
+If you have code that's written that does what you want then why throw that away?
+
+Or if your code spends much of its life waiting for other things to happen - network requests, database queries and so on then performance may not be a big deal.
+
+But you may find there is partial benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
+
+## Safe by design
 
 Some examples of this safe-by-design philosophy:
 
@@ -41,4 +72,3 @@ Rust recognizes you may need to call an external libraries, e.g. in a C library 
 Therefore it provides an unsafe keyword that throws some of the safety switches when it is necessary to talk to the outside world.
 
 This allows you consider the possibility of porting code partially to Rust while still allowing some of it to remain as C.
-

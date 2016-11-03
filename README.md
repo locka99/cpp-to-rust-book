@@ -1,15 +1,22 @@
-This repository holds a "A Guide to Porting C/C++ to Rust" book. It's written in Markdown and can be turned into HTML by doing the following:
+# A Guide to Porting C/C++ to Rust
 
-In a Rust environment type:
+The book is an introduction to Rust as well as a comparative guide for people working with C/C++. The book also provides some justification as to *why* you might want to switch or at least use Rust for critical portions of your software.
 
-1. cd to/this/repo
-2. cargo install mdbook
-3. mdbook build
+As a taster consider these common problems in C++.
 
-You may also browse the book online by starting with src/SUMMARY.md and browsing the links.
+* Dangling pointers - writing to an address that contains garbage or is invalid causing a page exception.
+* Buffer overruns / underruns - code that writes beyond the ends of the allocated buffer causing memory corruption or a page exception.
+* Memory leaks - code that doesn't free allocated objects properly and eventually the system runs out of memory.
+* Data races - code doesn't protect its data structures from concurrent access causing a race condition when one thread reads while another is writing.
 
-This will generate a book/ folder containing the generated HTML output.
+Rust stops these bad things happening **by design**.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+* It tracks the lifetime of objects preventing memory leaks, dangling pointer calls, ownership problems.
+* It prevents buffer overflows by enforcing the length of arrays and other collections.
+* It prevents data race conditions in threads by using mutex / guards to protect data.
+* Most of these enforcements have no additional runtime cost over the same (correctly written) code in C++.
+* The compiler catches violations and generates efficient, correct machine code.
+* It offers modern conveniences of other high level languages - type  inference, collections, build & package management.
+* It can still invoke C libraries and system APIs when necessary.
 
-Refer to the link for the exact legal terms. But in essence you may share and modify this book providing you do not sell or derive profit from doing so.
+Simply put, using Rust can make your code more reliable without compromising on performance.

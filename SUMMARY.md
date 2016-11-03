@@ -1,10 +1,10 @@
 # Summary
 
 * [Introduction](README.md)
+* [Licence](licence.md)
 * [Foreword](foreword.md)
 * [Credits](credits.md)
 * [Notation used through this book](notation.md)
-* [Introduction](introduction.md)
 * [Setting Up Rust](setting_up_rust/index.md)
 * [C and C++ Background](c_and_cpp_background/index.md)
 * [Why Rust?](why_rust/index.md)
@@ -59,4 +59,3 @@
 * [Memory Management](memory_management/index.md)
 * [Rust's std:: library](std_library/index.md)
 * [Rust Cookbook](rust_cookbook/index.md)
-
