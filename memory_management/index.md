@@ -1,12 +1,10 @@
 # Memory Management
 
-Variables that you declare in C++ or Rust reside on the stack or they reside in the heap. When they reside in the stack they are automatically cleared out when a function exits. When they reside in the heap they are cleared out when they are deallocated.
+Structures that you declare in C++ or Rust reside on the stack or they reside in the heap. 
 
 ## Stack
 
-The stack is a memory reserved by the operating system for each thread in your program. The runtime uses it for local variables within your code including those passed in function calls.
-
-When you declare local variables, or call a function, the compiler will generate code to reserve backing space for them in the stack. When local variables go out of scope, the stack pointer is moved back and the space is reclaimed. It's a simple and effective mechanism.
+The stack is a memory reserved by the operating system for each thread in your program. Stack is reserved for local variables based upon their predetermined size by moving a stack pointer register forward by that amount. When the local variables go out of scope, the stack pointer reduces by the same amount. 
 
 ```rust
 // Stack allocated
