@@ -69,9 +69,9 @@ rustup update
 
 If you prefer manual installation of Rust then there are packages and instructions on the [Rust site](https://www.rust-lang.org/en-US/downloads.html) for this purpose.
 
-Just be aware that Rust has a fairly fast release cycle so you probably only want to do this if you have a reason to choose a specific version of Rust and stick with it. Otherwise you may find yourself uninstalling and reinstalling a new version6 weeks later all over again.
+Just be aware that Rust updates from time to time so you probably only want to do this if you have a reason to choose a specific version of Rust and stick with it. 
 
-TODO
+Otherwise you may find yourself uninstalling and reinstalling a new version 6 weeks later all over again.
 
 ## Setting up a debugger
 
@@ -81,14 +81,23 @@ Debugging Rust is little different from debugging C or C++.
 
 You must install gdb for your platform and then you may invoke it from a console or your favourite front-end to debug Rust code.
 
-TODO rust-gdb
-TODO rust-lldb
+On Linux systems you would normally install gdb from a package with one of these commands:
+
+```
+sudo apt-get install gdb
+# or
+sudo dnf install gdb
+```
+
+You may also prefer to use lldb which is a companion project to LLVM (the backend compiler used by Rust). Refer to the [lldb website](http://lldb.llvm.org/) for information on using it.
+
+Rust comes with a few scripts that wrap gdb and lldb to provide pretty-printing to assist with debugging. When debugging, you can invoke `rust-gdb` or `rust-lldb` to use them.
 
 ### Windows
 
 If you have chosen Rust with the MSVC ABI then you can debug through Visual Studio. When you create a debug build of your code, the compile will also create a .pdb file to go with it. You may open your executable in Visual Studio and step debug it.
 
-TODO If you have chosen Rust with the GNU ABI, then you must debug with GDB
+TODO If you have chosen Rust with the GNU ABI, then you must debug with GDB. GDB on Windows is somewhat tricky to get going. The best advice is to find a prebuilt version of MSYS (Mini
 
 ## Setting up an IDE
 
@@ -96,7 +105,7 @@ Rust is still behind some other languages when it comes to IDE integration but t
 
 Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work to varying degrees of integration with Rust.
 
-* [Rust plugin for IntelliJ](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality.
+* [Rust plugin for IntelliJ](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development. 
 * [RustDT for Eclipse](https://github.com/RustDT/RustDT) is also under active development. It adds syntax highlighting, autocomplete \(via racer\), cargo builds and rustfmt functionality to Eclipse.
 * [Visual Rust plugin for Microsoft Studio](https://github.com/PistonDevelopers/VisualRust) . Offers syntax highlighting, autocompletion, interactive debugging.
 * Atom is a popular editor with heaps of plugins. These plugins are very useful for Rust:
@@ -104,7 +113,6 @@ Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work
   * [racer](https://atom.io/packages/racer) for autocompletion functionality
   * [atom-beautify](https://atom.io/packages/atom-beautify) invokes rustfmt to make code look pretty.
   * [build-cargo](https://atom.io/packages/build-cargo) invokes cargo for you showing errors and warnings inline.
-
 
 For other editors and IDEs refer to [https:\/\/forge.rust-lang.org\/ides.html](https://forge.rust-lang.org/ides.html)
 
