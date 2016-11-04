@@ -105,7 +105,7 @@ Rust is still behind some other languages when it comes to IDE integration but t
 
 Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work to varying degrees of integration with Rust.
 
-* [Rust plugin for IntelliJ](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development. 
+* [Rust plugin for IntelliJ IDEA](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development. 
 * [RustDT for Eclipse](https://github.com/RustDT/RustDT) is also under active development. It adds syntax highlighting, autocomplete \(via racer\), cargo builds and rustfmt functionality to Eclipse.
 * [Visual Rust plugin for Microsoft Studio](https://github.com/PistonDevelopers/VisualRust) . Offers syntax highlighting, autocompletion, interactive debugging.
 * Atom is a popular editor with heaps of plugins. These plugins are very useful for Rust:
@@ -114,7 +114,7 @@ Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work
   * [atom-beautify](https://atom.io/packages/atom-beautify) invokes rustfmt to make code look pretty.
   * [build-cargo](https://atom.io/packages/build-cargo) invokes cargo for you showing errors and warnings inline.
 
-For other editors and IDEs refer to [https:\/\/forge.rust-lang.org\/ides.html](https://forge.rust-lang.org/ides.html)
+For other editors and IDEs refer to the [Rust and IDEs](https://forge.rust-lang.org/ides.html) page on the Rust website.
 
 ## Racer \/ Rustfmt
 
