@@ -16,7 +16,7 @@ int main(int arcg, char **argv) {
 }
 ```
 
-The `argc `value says how many elements are in the argv array of `char *`. Many executables want to process arguments which can become inordinately complex \(and and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process. 
+The `argc`value says how many elements are in the argv array of `char *`. Many executables want to process arguments which can become inordinately complex \(and and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process.
 
 Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C\/C++ forces us to solve.
 
@@ -101,7 +101,9 @@ $(EXE): $(OBJS)
 
 When you invoke "make", the software will check all the dependencies of your target, looking at their filestamps and determine which rules need to be invoked and which order to rebuild your code.
 
-Rust makes things a lot easier – there is no makefile! Consider this main.rs for a pacman game:
+Rust makes things a lot easier – there is no makefile! The source code is the makefile. Each file says what other files it uses via depencies on other crates, and on other modules. 
+
+Consider this main.rs for a pacman game:
 
 ```rust
 mod pacman;
@@ -175,7 +177,7 @@ authors = ["Joe Blogs <jbloggs@somewhere.com>"]
 time = "0.1.35"
 ```
 
-Now when we run "cargo build", it will fetch "time" from crates.io and also any dependencies that "time" has itself. Then it will build each crate in turn automatically. It does this efficiently so iterative builds do not incur a penalty. External crates are download and built in your .cargo home directory.
+Now when we run `cargo build`, it will fetch "time" from crates.io and also any dependencies that "time" has itself. Then it will build each crate in turn automatically. It does this efficiently so iterative builds do not incur a penalty. External crates are download and built in your .cargo home directory.
 
 To use our external crate we declare it in the main.rs of our code, e.g.
 
@@ -184,24 +186,25 @@ extern crate time;
 ///
 fn main() {
   let now = time::PreciseTime::now();
+  println!("The time is {:?}", now);
 }
 ```
 
 So the change to the Cargo.toml and a reference in the source is sufficient to:
 
 1. Fetch the crate \(and any dependencies\)
-2. Build it
-3. Compile and link to it
+2. Build the crate \(and any dependencies\)
+3. Compile and link to the crate and dependencies
 
-We didn't have to do any of the sort of mess that C\/C++ would put us through - multiple makefiles, compiler \/ linker flags etc.
+All that happened with a line in Cargo.toml and a line in our code to reference the crate. We didn't have to mess around figuring how to build the other library, or maintain multiple makefiles, or getting our compiler \/ linker flags right. It just happened.
 
 #### Cargo.lock
 
-Also note that cargo maintains a Cargo.lock file in our root directory.
+Also note that once we build, cargo creates a Cargo.lock file in our root directory. 
 
-This file was generated when we did the "cargo build". It provides a manifest of what packages our project pulled in, their version, their source url and any dependencies they had their of their own.
+This file is an exact list of what packages our project pulled in, their version, their source url and any dependencies they had their of their own.
 
-This means if we invoke "cargo build" again the tool can exactly reproduce the same dependency configuration even from a clean configuration.
+This means if we invoke `cargo build` again the tool can exactly reproduce the same dependency configuration even from a clean configuration. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
 
 [^1]: You can change the main entry point using a special  `#[start]` directive if you want on another function but the default is main\(\)
 
