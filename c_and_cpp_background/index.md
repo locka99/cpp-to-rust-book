@@ -1,5 +1,7 @@
 # C and C++ Background
 
+This section talks about C and C++. It describes its history, standards and provides a background as to how it ended up where it is today.
+
 ## History of C
 
 The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Up until that point most development was expressed in assembly language which was error prone and obviously non portable.
