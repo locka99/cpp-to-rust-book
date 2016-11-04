@@ -10,7 +10,7 @@ Integer types (`char`, `short`, `int`, `long`) come in `signed` and `unsigned` v
 
 A `char` is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an `int` is ordinarily 32-bits but the standard only say it should be at *least as large* as a `short`, so potentially it could be 16-bits!
 
-More recent versions of C and C++ include a [`<cstdint.h>`](http://www.cplusplus.com/reference/cstdint/) (`<stdint.h>` for C) with typedefs that are unambiguous about their precision.
+More recent versions of C and C++ provide a [`<cstdint.h>`](http://www.cplusplus.com/reference/cstdint/) (or `<stdint.h>` for C) with typedefs that are unambiguous about their precision.
 
 C/C++ compilers implement a *data model* that affects what width the standard types are.
 
@@ -30,7 +30,9 @@ for (int i = 0; i < s.size(); ++i) {
 }
 ```
 
-This loop is not using negative values so it shouldn't use a signed integer, but writing `int` is easier than writing `unsigned int`, or `size_t` for that matter. While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong.
+This loop only uses positive integer values so it should use an `unsigned int` but writing `int` is easier to write, or `size_t` for that matter. 
+
+While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
 C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to take short cuts, or bloat the code with typedefs or potentially use the wrong type altogether. The best action is of course to use `<stdint.h>` if it is available.
 
