@@ -34,27 +34,33 @@ This loop only uses positive integer values so it should use an `unsigned int` b
 
 While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
-C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to take short cuts, or bloat the code with typedefs or potentially use the wrong type altogether. The best action is of course to use `<stdint.h>` if it is available.
+C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to make bad assumptions, use a less wordy type, or bloat the code with typedefs. The best action is of course to use `<cstdint.h>` / `<stdint.h>` if it is available.
 
 ### Real types
 
-C/C++ has float, double and long double precision floating point types. A floating point number can represent, with varying degrees of precision, real numbers including fractional portions.
+C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types. 
 
 * `float`
 * `double` - "at least as much precision as a `float`"
 * `long double` - "at least as much precision as a `double`"
 
-The C and C++ standards are vague on what precision these values represent. In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
+In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
 
-The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations it is not normally a quadruple precision value. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors would not have the ability to perform 128-bit floating point operations in hardware so a compiler must implement code in software.
+#### Long double
+
+The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. 
+
+The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
+
+#### Half
 
 As an aside, some GPU C-derived shader languages may also support a `half` precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
 
 ### Booleans
 
-A `bool` (boolean) type in C/C++ can have the value `true` or `false`, however it can be promoted to an integer type (0 = `false`, 1, `true`) and even be incremented with ++ to be true although it cannot be decremented to false !?
+A `bool` (boolean) type in C/C++ can have the value `true` or `false`, however it can be promoted to an integer type (0 == `false`, 1 == `true`) and a bool even has a ++ operator for turning false to true although it has no -- operator!?
 
-Inverting true with a ! becomes false and vice versa.
+But inverting true with a ! becomes false and vice versa.
 
 ```c++
 !false == true
