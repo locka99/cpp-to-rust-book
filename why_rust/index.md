@@ -29,13 +29,13 @@ What you compile with Rust (or LLVM) is not affected by the open source license.
 
 ## Is Rust for everybody?
 
-No of course not. Performance and safety are only two things to consider when writing software. Sometimes you want something quick and dirty. Other times you can tolerate a few crashes.
+No of course not. Rust is not a magic wand and rewriting any code requires effort and adds risk. Besides that performance and safety are only two things to consider when writing software.
 
-If you have code that's written that does what you want then why throw that away?
+* Sometimes it's okay for a program to crash every so often
+* If you have code that's written and works then why throw that away?
+* Performance may not be a big deal especially for network bound code
 
-Or if your code spends much of its life waiting for other things to happen - network requests, database queries and so on then performance may not be a big deal.
-
-But you may find there is partial benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
+But you may still find there is benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
 
 ## Safe by design
 
