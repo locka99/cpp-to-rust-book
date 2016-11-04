@@ -101,7 +101,7 @@ $(EXE): $(OBJS)
 
 When you invoke "make", the software will check all the dependencies of your target, looking at their filestamps and determine which rules need to be invoked and which order to rebuild your code.
 
-Rust makes things a lot easier – there is no makefile! The source code is the makefile. Each file says what other files it uses via depencies on other crates, and on other modules. 
+Rust makes things a lot easier – there is no makefile! The source code is the makefile. Each file says what other files it uses via depencies on other crates, and on other modules.
 
 Consider this main.rs for a pacman game:
 
@@ -183,7 +183,7 @@ To use our external crate we declare it in the main.rs of our code, e.g.
 
 ```rust
 extern crate time;
-///
+
 fn main() {
   let now = time::PreciseTime::now();
   println!("The time is {:?}", now);
@@ -200,7 +200,7 @@ All that happened with a line in Cargo.toml and a line in our code to reference 
 
 #### Cargo.lock
 
-Also note that once we build, cargo creates a Cargo.lock file in our root directory. 
+Also note that once we build, cargo creates a Cargo.lock file in our root directory.
 
 This file is an exact list of what packages our project pulled in, their version, their source url and any dependencies they had their of their own.
 
