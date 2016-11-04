@@ -1,6 +1,8 @@
 # Setting up Rust
 
-Rust runs on Windows, Linux and MacOS. Setup is different per your platform but once you have the toolchain installed, most of the differences from there on out are relatively minor.
+This section will talk you through setting up Rust for the first time and also how to keep it up to date.
+
+Set up depends upon your target platform. Rust runs on Windows, Linux and MacOS. In addition you might wish to cross-compile code for the consumption of another platform.
 
 ## Use Rustup
 
@@ -13,7 +15,7 @@ The instructions differ for Windows and Unix-like systems:
 
 Either way, when you follow the instructions rustup-init will download.
 
-The installer will put rustc, cargo, and rustup in your bin directory which is ~\/.cargo\/bin on Unix and %USERPROFILE%.cargo.\bin on Windows. It will also set your PATH so that you can open a terminal and type rustc, cargo, rustup etc.
+The installer will download and install put rustc, cargo, and rustup in your bin directory which is `~/.cargo/bin` on Unix and `%USERPROFILE%.cargo.\bin` on Windows. It will also set your `PATH` environment variable so that you can open a terminal and type rustc, cargo, rustup etc.
 
 Once rustup is installed you can use the tool to:
 
@@ -54,6 +56,14 @@ The second choice concerns the application binary interface \(ABI\) you want Rus
 
 * If you don't care about linking to anything then choose the GNU ABI. Also choose it if you have DLLs produced by MingW \/ MSYS. The advantage of this ABI is that it is more mature.
 * If you have Visual Studio installed or intend to use Rust against DLLs created with Visual Studio, that's the ABI you need. One advantage of this option is that you can debug Rust inside of Visual Studio- the compiler will produce .pdb files that allow you to step debug Rust.
+
+### Keeping Rust up to date
+
+New versions of Rust appear in a semi-frequent basis. If you want to update your environment to the latest version, it is as simple as this:
+
+```
+rustup update
+```
 
 ## Manual installation
 
