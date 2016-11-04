@@ -4,15 +4,23 @@
 
 Rust has a main function just like C\/C++ which is usually called `main()`. [^1]
 
-It doesn’t take any arguments unlike C++ and it doesn’t return anything but if you need to get arguments or set a return code you can do so.
+It doesn’t take any arguments and it doesn’t return anything unlike C\/C++. Let's see how we might do those things.
 
 ### Processing command-line arguments
 
 In C\/C++, the entry point takes argc, and argv arguments. Argc is the number of arguments and argv is an array of char \* pointers that specify those arguments.
 
-These are used to access the command-line parameters that the program was invoked with.
+```c++
+int main(int arcg, char **argv) {
+  // our code
+}
+```
 
-Rust doesn't expose them this way. Instead you can access the command-line parameters from std::env::args\(\). Namespacing is covered later, but std::env::args\(\) means we are invoking the function called args\(\) which resides inside a module env which resides inside a module std.
+The `argc `value says how many elements are in the argv array of `char *`. Many executables want to process arguments which can become inordinately complex \(and and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process. 
+
+Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C\/C++ forces us to solve.
+
+Rust doesn't arguments this way. Instead you can access the command-line parameters from std::env::args\(\). Namespacing is covered later, but std::env::args\(\) means we are invoking the function called args\(\) which resides inside a module env which resides inside a module std.
 
 The function args\(\) returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
 
@@ -23,6 +31,8 @@ fn main() {
     }
 }
 ```
+
+Rust also supplies a [getopts](https://doc.rust-lang.org/getopts/getopts/) crate that simplifies argument processing if it is necessary.
 
 We can see some clear advantages to how Rust supplies args:
 
@@ -44,9 +54,9 @@ When main\(\) drops out, the runtime cleans up and returns the code to the envir
 
 ## Optimized compilation
 
-In a typical edit \/ compile \/ debug cycle there is no need to optimize code and so Rust doesn't optimize
+In a typical edit \/ compile \/ debug cycle there is no need to optimize code and so Rust doesn't optimize unless you ask it to.
 
-Aside from slowing down compilation it may obfuscate the code so that backtraces and debugging may not point at the proper lines of code in the source.
+Optimization takes longer to happen and can reorder the code so that backtraces and debugging may not point at the proper lines of code in the source.
 
 If you want to optimize your code, add a -O argument to rustc:
 
@@ -62,12 +72,10 @@ Incremental compilation is also important for edit \/ compile \/ debug cycles. I
 
 Rust has a different incremental compilation model to C++.
 
-* C++ doesn't support incremental compilation per se. That function is left to the make \/ project \/ solution tool. Most maintain a current list of what file depends on what so if file foo.h changes then the makefile knows to invoke the compiler over foo.cpp and main.cpp and relink.
+* C++ doesn't support incremental compilation per se. That function is left to the make \/ project \/ solution tool. Most builders will track a list of project files and which file depends on other files. So if file foo.h changes then the builder knows what other files depend on it and ensures they are rebuilt before relinking the target executable.
 * In Rust incremental compilation is at the crate level - that if any file in a crate changes then the crate as a whole has to be rebuilt. Thus larger code bases tend to be split up into crates to reduce the incremental build time.
 
-There is a recognition that this model kind of sucks especially if you have a large crate with lots of code.
-
-The rust compiler is getting [incremental per-file compilation support](https://blog.rust-lang.org/2016/09/08/incremental.html) in addition to per-crate.
+There is a recognition in the Rust community that the crate-level model can suck for large crates so the Rust compiler is getting [incremental per-file compilation support](https://blog.rust-lang.org/2016/09/08/incremental.html) in addition to per-crate.
 
 At the time of writing this support is experimental because it is tied to refactoring the compiler for other reasons to improve performance and optimization but will eventually be enabled and supported by rustc and cargo.
 
