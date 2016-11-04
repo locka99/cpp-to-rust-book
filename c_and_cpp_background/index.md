@@ -4,15 +4,22 @@ This section talks about C and C++. It describes its history, standards and prov
 
 ## History of C
 
+
+### Early Days
+
 The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Up until that point most development was expressed in assembly language which was error prone and obviously non portable.
 
 Ritchie developed C so that he could write code in terms of variables, expressions, loops, functions etc. and use a _compiler_ to translate C code into machine code. The generated code ran almost as fast as hand written assembly and was more portable since only the compiler had to be changed in order to support a new architecture. C itself was influenced by B (hence why it was called C), which itself was influenced by BCPL.
 
+### Defacto standard and emerging popularity
+
+In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book. 
+
 Over time the use of C became more widespread and compilers such as Turbo C, Lattice C, Microsoft C popularized C on other operating systems including personal computers.
 
-In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book. C later became an ANSI & international standard, C89. A further standard followed with C99 and C is still under review and development.
+### International Standards 
 
-So C started life as a systems programming language but spread into application development - games, word processors and other high level software.
+C later became an ANSI & international standard, C89. A further standard followed with C99 and C is still under review and development.
 
 Some functionality that was introduced in C++ has also found its way back into C standards. For example, single-line comments and variable declaration rules in blocks.
 
