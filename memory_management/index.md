@@ -1,10 +1,10 @@
 # Memory Management
 
-Structures that you declare in C++ or Rust reside on the stack or they reside in the heap. 
+Structures that you declare in C++ or Rust reside on the stack or they reside in the heap.
 
 ## Stack
 
-The stack is a memory reserved by the operating system for each thread in your program. Stack is reserved for local variables based upon their predetermined size by moving a stack pointer register forward by that amount. When the local variables go out of scope, the stack pointer reduces by the same amount. 
+The stack is a memory reserved by the operating system for each thread in your program. Stack is reserved for local variables based upon their predetermined size by moving a stack pointer register forward by that amount. When the local variables go out of scope, the stack pointer reduces by the same amount.
 
 ```rust
 // Stack allocated
@@ -104,7 +104,9 @@ Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes 
 
 ![](/assets/cc---baaaaa---.png)
 
-But it's easy to see how if this pattern could continue to fragment no matter how much heap we created.
+The above assumes the heap is a contiguous, or that memory paging makes it seem so. On some systems, it might be that the heap is a linked list of chunks, in which case the allocated space for A would have to reside be in a single chunk, the newly allocated portion above. 
+
+This is also an exagerated example, but it demonstrates how heap can have space, but not enough to fufilly allocations without growing.
 
 Software running in embedded devices are particularly vulnerable to fragmentation because they do not have virtual memory, have low physical memory and normally have to run for days, weeks or years at a time.
 
