@@ -2,12 +2,14 @@
 
 ## Header files
 
-### C++
+### C\/ C++
 
-C++ code splits itself across several files.
+C and C++ code tends to split itself over two kinds of file:
 
 * Header file \(.h, .hpp, .inl\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like QT may sometimes omit the extension.
 * Source file \(.c, .cc, .cpp\) contains the implementation of classes and anything private.  Sometimes C++ will use tricks such as forward class references and Pimpl patterns to keep complex, dependent code out of the header file.  
+
+Compilers are only interested in source files so what's really happening in most C\/C++ code is that a preprocessor concatenates various header files to the front of the source file according to the \# directives within it and the resulting file is fed to a compiler. 
 
 Splitting definition and implementation across multiple files can be a nuisance since it means that changes to a single class can require modifications to multiple files.
 
@@ -21,7 +23,7 @@ Rust files reference non-dependent modules with the "use" keyword and pull-in de
 
 ## C \/ C++
 
-C does not use namespaces. Libraries tend to prefix their functions and structs with a qualifying name of some sort. C++ does have namespaces but their use is optional and varies from one piece of code to the next. 
+C does not use namespaces. Libraries tend to prefix their functions and structs with a qualifying name of some sort. C++ does have namespaces but their use is optional and varies from one piece of code to the next.
 
 ### Rust
 
