@@ -209,7 +209,7 @@ This slice represents the portion of array starting from index 2.
 
 ## Functions of an array
 
-One serious disadvantage of C++ arrays is there is no `.len()` method so if you want to specify the length then you either do something ugly like this:
+One serious disadvantage of C++ arrays is there is no `.len()` method so the length has to be passed in to any function that wishes to manipulate it.
 
 ```c++
 const size_t num_elements = 1024;
