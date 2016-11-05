@@ -1,5 +1,49 @@
 # Types
 
+The C/C++ data model affects what the equivalent type is for Rust in some cases.
+
+
+| C/C++ | Rust | Notes
+| --- | ---- | ---
+| `char` | `i8` | A Rust `char` is not the same as a C/C++ `char` [^notechars]
+| `unsigned char` | `u8` |
+| `short int` | `i16` |
+| `unsigned short int` | `u16` |
+| `int` | `i32` or `i16` | Data model dependent.
+| `unsigned int` | `u32` or `u16` | Data model dependent.
+| `long int` | `i32` or `i64` | Data model dependent.
+| `unsigned long int` | `u32` or `u64` | Data model dependent.
+| `long long int` | `i64` |
+| `unsigned long long int` | `u64` |
+| `size_t` | `usize` | usize holds numbers as large as the address space [^usize] |
+| `float` | `f32` |
+| `double` | `f64` |
+| `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
+| `bool` | `bool` |
+| void | `()` | The unit type (see below)
+
+[^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
+
+[^usize] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
+
+Typically both C/C++ and Rust will share the same machine types for each corresponding language type, i.e.:
+
+1. Signed types are two's complement
+2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
+
+The `<stdint.h>` / `<cstdint.h>` typedefs are directly analogous.
+
+| C/C++ | Rust
+| --- | ----
+| `int8_t` | `i8`
+| `uint8_t` | `u8`
+| `int16_t` | `i16`
+| `uint16_t` | `u16`
+| `uint32_t` | `u32`
+| `int32_t` | `i32`
+| `int64_t` | `i64`
+| `uint64_t` | `u64`
+
 ## C++
 
 C/C++ has primitive types for numeric values, floating point values and booleans. Strings will be dealt in a separate section.
@@ -84,47 +128,41 @@ let v5 = v4 as f32;
 let f1 = true;
 ```
 
-The C/C++ data model affects what the equivalent type is for Rust in some cases.
+# void / Unit type
 
-| C/C++ | Rust | Notes
-| --- | ---- | ---
-| `char`  | `i8` | A Rust `char` is not the same as a C/C++ `char` [^notechars]
-| `unsigned char`  | `u8` |
-| `short int` | `i16` |
-| `unsigned short int` | `u16` |
-| `int` | `i32` or `i16` | Data model dependent.
-| `unsigned int` | `u32` or `u16` | Data model dependent.
-| `long int` | `i32` or `i64` | Data model dependent.
-| `unsigned long int` | `u32` or `u64` | Data model dependent.
-| `long long int` | `i64` |
-| `unsigned long long int` | `u64` |
-| `size_t` | `usize` | usize holds numbers as large as the address space [^usize] |
-| `float` | `f32` |
-| `double` | `f64` |
-| `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
-| `bool` | `bool` |
+C/C++ uses `void` to specify a type of nothing or a pointer to something, e.g. a function that doesn't return anything will be marked as void:
 
-[^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
+```c++
+void delete_directory(const std::string &path);
+```
 
-[^usize] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
+And it is also used in many C functions for manipulating pointers to things whose type the function doesn't especially care about.
 
-Typically both C/C++ and Rust will share the same machine types for each corresponding language type, i.e.:
+```c++
+struct file_stat {
+  uint32_t creation_date;
+  uint32_t last_modified;
+  char file_name[MAX_PATH + 1];
+};
+// malloc returns a void * which must be cast to the type need
+file_stat *s = (file_stat *) malloc(sizeof(file_stat));
+```
 
-1. Signed types are two's complement
-2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
+The nearest thing to void in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`. Technically it's not analogous to void because void means nothing and `()` is a value but they serve a similar purpose. 
 
-The stdint.h typedefs are directly analogous.
+When a block evaluates to nothing it returns `()`. We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
 
-| C/C++ | Rust
-| --- | ----
-| `int8_t` | `i8`
-| `uint8_t` | `u8`
-| `int16_t` | `i16`
-| `uint16_t` | `u16`
-| `uint32_t` | `u32`
-| `int32_t` | `i32`
-| `int64_t` | `i64`
-| `uint64_t` | `u64`
+```rust
+fn do_action() -> Result<(), String> {
+ //...
+ Result::Ok(())
+}
+
+let result = do_action();
+if result.is_ok() {
+ println!("Success!");
+}
+```
 
 # Arrays
 
