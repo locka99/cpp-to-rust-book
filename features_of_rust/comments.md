@@ -1,6 +1,6 @@
 # Comments
 
-Rust comments are pretty much like C++ except they may contain Unicode since .rs files are UTF-8 encoded:
+Rust comments are similar to C++ except they may contain Unicode since .rs files are UTF-8 encoded:
 
 ```rust
 /*
@@ -10,7 +10,7 @@ Rust comments are pretty much like C++ except they may contain Unicode since .rs
 // This a comment with Unicode, 你好
 ```
 
-Anything that uses triple slash `///` notation can be parsed by a tool called `rustdoc` to produce documentation:
+But in addition anything that uses triple slash `///` notation can be parsed by a tool called `rustdoc` to produce documentation:
 
 ```rust
 /// This is a comment that becomes documentation for do_thing below

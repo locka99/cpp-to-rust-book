@@ -26,12 +26,12 @@ The C/C++ data model affects what the equivalent type is for Rust in some cases.
 
 [^usize] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
 
-Typically both C/C++ and Rust will share the same machine types for each corresponding language type, i.e.:
+C/C++ and Rust will share the same machine types for each corresponding language type and the same compiler / backend technology, i.e.:
 
 1. Signed types are two's complement
 2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
 
-The `<stdint.h>` / `<cstdint.h>` typedefs are directly analogous.
+The `<stdint.h>` / `<cstdint.h>` typedefs are also directly analogous.
 
 | C/C++ | Rust
 | --- | ----
