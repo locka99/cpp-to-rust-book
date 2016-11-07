@@ -206,7 +206,7 @@ struct PersonKey {
 }
 ```
 
-But this will create an error:
+But this will create an error because a String cannot be copied, it must be cloned.:
 
 ```rust
 #[derive(Copy)]
@@ -216,9 +216,7 @@ struct Person {
 }
 ```
 
-A `struct` can be copied if all its members can be copied and in this case `name` cannot be. The field is of type `String` that does not implement the `Copy` trait. However `String` implements the `Clone` trait.
-
-A `Clone` trait can be derived or explicitly implemented. We can derive it if every member of the struct can be cloned which in the case of Person it can:
+But we can still implement Clone. A `Clone` trait can be derived or explicitly implemented. We can derive it if every member of the struct can be cloned which in the case of Person it can:
 
 ```rust
 #[derive(Clone)]
@@ -254,4 +252,3 @@ y.persons.push(Person{ name: "Mary".to_string(), age: 24} );
 In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone \/ copy we can make our intent explicit and do that too.
 
 C++ just lets us dig a hole and fills the dirt in on top of us.
-
