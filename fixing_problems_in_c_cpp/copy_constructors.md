@@ -105,15 +105,13 @@ public:
 };
 ```
 
-Another alternative would be to a C++11 `std::unique_ptr` \(or a `boost::scoped_ptr`\). A `unique_ptr` is a way to permit only one owner of a pointer at a time. The owner can be moved from one `unique_ptr` to another and the old owner becomes `NULL` from the move. A `unique_ptr` that holds a non-NULL pointer will delete it from its destructor.
+Another alternative would be to use noncopyable types within the class itself. For example, the copy would fail if the pointer were managed with a C++11 `std::unique_ptr` \(or Boost's `boost::scoped_ptr`\).
 
-TODO unique\_ptr example
-
-This move is similar to the move semantics we'll see in Rust in a moment. But the object is allocated on the heap, is a pointer and is not directly analogous.
+Boost also provides a `boost::noncopyable` class which provides yet another option. Classes may inherit from noncopyable which implements a private copy constructor and assignment operator so any code that tries to copy will generate a compile error.
 
 ## How Rust helps
 
-Rust does allow structs to be copied or clone unless we explicitly implement the `Copy` and `Clone` traits respectively.
+Rust does allow structs to be copied or clone unless we explicitly implement either the `Copy` and / or `Clone` traits respectively.
 
 Most primitive types such as ints, chars, bools etc. implement `Copy` so you can just assign one to another
 
@@ -125,14 +123,16 @@ y = 20;
 assert_eq!(x, 8);
 ```
 
-A `String` cannot be copied this way. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. But you can explicitly clone a `String`:
+But a `String` cannot be copied this way. A string has an internal heap allocated pointer so the struct does not implement Copy. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. 
+
+But you can explicitly clone a `String` in which case the clone operation will make a duplicate of the allocated memory so that both strings are independent of each other:
 
 ```rust
 let copyright = "Copyright 2017 Acme Factory".to_string();
 let copyright2 = copyright.clone();
 ```
 
-If we just declare a struct it also be copied by accident:
+If we just declare a struct it can neither be copied nor cloned by default.
 
 ```rust
 struct Person {
@@ -141,15 +141,18 @@ struct Person {
 }
 ```
 
-The following code will compile but you are not copying, you are moving:
+The following code creates a `Person` object and assigns it to `person1`. When `person1` is assigned to `person2`, ownership of the data also moves:
 
 ```rust
 let person1 = Person { name: "Tony".to_string(), age: 38u8 };
 let person2 = person1;
-println!("{}", person1.name); // Error, use of a moved value
 ```
 
-Assignment moves ownership of the struct from person1 to person2. It is an error to use person1 any more.
+Attempting to use `person1` after ownership moves to `person2` will generate a compile error:
+
+```rust
+println!("{}", person1.name); // Error, use of a moved value
+```
 
 To illustrate consider this Rust which is equivalent to the PersonList we saw in C++
 
@@ -189,9 +192,19 @@ But Rust stops that from happening. When we assign `x` to `y`, the compiler will
 
 Rust has stopped the problem that we saw in C++. Not only stopped it but told us why it stopped it - the value moved from x to y and so we can't use x any more.
 
+### Implementing a Copy / Clone
+
 Sometimes we DO want to copy \/ duplicate an object and for that we must implement a trait to tell the compiler that we want that.
 
-The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it:
+The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it and you can only derive it if all the members of the struct also derive it:
+
+```rust
+#[derive(Copy)]
+struct PersonKey {
+  id: u32,
+  age: u8,
+}
+```
 
 But this will create an error:
 
