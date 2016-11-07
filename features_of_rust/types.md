@@ -1,7 +1,6 @@
 # Types
 
-The C/C++ data model affects what the equivalent type is for Rust in some cases.
-
+Rust has mostly analogous primitive types with C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
@@ -82,7 +81,7 @@ C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again
 
 ## Rust
 
-Rust benefits from integer types that unambiguously denote their signedness and width in their name.
+Rust benefits from integer types that unambiguously denote their signedness and width in their name - `i16`, `u8` etc.
 
 They are also extremely terse making it easy to declare and use them. For example a `u32` is an unsigned 32-bit integer. An `i64` is a signed 64-bit integer.
 
@@ -115,9 +114,45 @@ The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite 
 
 The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
 
-#### Half
+#### Math functions
 
-As an aside, some GPU C-derived shader languages may also support a `half` precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
+The `<math.h>` C header provides functions for working with different precision types.
+
+```c++
+#include <math.h>
+
+const double PI = 3.1415927;
+double result = cos(45.0 * PI / 180.0);
+//..
+double result2 = abs(-124.77);
+//..
+float result3 = sqrtf(9.0f);
+//
+long double result4 = powl(9,10);
+```
+
+Note how different calls are required according to the precision, e.g. sinf, sin or sinl. C99 supplies a "type-generic" set of macros in `<tgmath.h>` which allows sin to be used regardless of type.
+
+C++11 provides a `<cmath>` that uses specialised inline functions for the same purpose:
+
+```c++
+#include <cmath>
+float result = std::sqrt(9.0f);
+```
+
+### Rust
+
+Rust implements two floating point types - `f32` and `f64`. These would be analogous to a 32-bit `float` and 64-bit `double` in C/C++.
+
+```rust
+let v1 = 10.0;
+let v2 = 99.99f32;
+let v3 = -10e4f64;
+```
+
+Unlike in C/C++, the math functions are directly available from the type itself. 
+
+A f128 did exist for a period of time but was removed to portability complexity and maintenance issues. Note how `long double` is treated (or not) according to the compiler and target platform. At some point Rust might get a f128 or f80 but at this time does not have such a type.
 
 ## Booleans
 
@@ -130,8 +165,9 @@ But inverting true with a ! becomes false and vice versa.
 !true == false
 ```
 
+Rust also has a `bool` type that can have the value `true` or `false`. Unlike C/C++ it is a true type with no promotion to integer type
 
-# void / Unit type
+## void / Unit type
 
 C/C++ uses `void` to specify a type of nothing or an indeterminate pointer to something.
 
@@ -170,7 +206,9 @@ if result.is_ok() {
 }
 ```
 
-# Arrays
+## Tuples
+
+## Arrays
 
 An array is a fixed size list of elements allocated either on the stack or the heap.
 
