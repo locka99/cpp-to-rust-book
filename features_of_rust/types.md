@@ -20,7 +20,7 @@ The C/C++ data model affects what the equivalent type is for Rust in some cases.
 | `double` | `f64` |
 | `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
 | `bool` | `bool` |
-| void | `()` | The unit type (see below)
+| `void` | `()` | The unit type (see below)
 
 [^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
 
@@ -130,25 +130,28 @@ let f1 = true;
 
 # void / Unit type
 
-C/C++ uses `void` to specify a type of nothing or a pointer to something, e.g. a function that doesn't return anything will be marked as void:
+C/C++ uses `void` to specify a type of nothing or an indeterminate pointer to something.
 
 ```c++
+// A function that doesn't return anything
 void delete_directory(const std::string &path);
-```
 
-And it is also used in many C functions for manipulating pointers to things whose type the function doesn't especially care about.
-
-```c++
+// Indeterminate pointer use
 struct file_stat {
   uint32_t creation_date;
   uint32_t last_modified;
   char file_name[MAX_PATH + 1];
 };
+
 // malloc returns a void * which must be cast to the type need
 file_stat *s = (file_stat *) malloc(sizeof(file_stat));
+// But casting is not required when going back to void *
+free(s);
 ```
 
-The nearest thing to void in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`. Technically it's not analogous to void because void means nothing and `()` is a value but they serve a similar purpose. 
+The nearest thing to `void` in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`.
+
+Technically `void` is nothing and `()` is a single value so they're not analogous but they serve a similar purpose. 
 
 When a block evaluates to nothing it returns `()`. We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
 
