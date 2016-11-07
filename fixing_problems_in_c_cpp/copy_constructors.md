@@ -1,4 +1,4 @@
-# Copy Constructor / Assignment Operators
+# Copy Constructor \/ Assignment Operators
 
 In C++, imagine we have a class called PersonList:
 
@@ -31,19 +31,21 @@ Now let's see how we can create some really dangerous code:
 } // Here be dragons!!!!
 ```
 
-Well that was dangerously easy.
+Well that was easy. And dangerous.
 
-The PersonList had no copy constructor nor an assignment operator. So the compiler generated them for us. Lucky us since when we use them we are doomed!
+By default C++ allows us to copy and assign one class to another so that we make multiple copies of the same data. The compiler generated a copy constructor and assignment operator for us even though PersonList doesn't say anything about copy or assignment. Lucky us!
 
-The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program will crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
+Except copying doesn't work the way it should for managed data.
+
+The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program might crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
 
 ## The Rule of Three
 
 This is such a bad issue that it has given rise to the so-called the rule of three.
 
-The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction.
+The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction. In other words the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
 
-In order to fix this simple class we have to add a lot of bloat:
+So let's fix the class:
 
 ```c++
 class PersonList {
@@ -80,9 +82,9 @@ public:
 
 What a mess!
 
-The code even has to add a test to assignment in case someone writes `x = x` to stop the class clearing itself in preparation to adding elements from itself which would of course wipe out all its contents.
+We've added a copy constructor and an assignment operator to the class to handle copying safely. The code even had to check if it was being assigned to itself in case someone wrote `x = x`. Without that test, the receiving instance would clear itself in preparation to adding elements from itself which would of course wipe out all its contents.
 
-Alternatively we might disable copy / assignments by creating private constructors that prevents them being called by external code:
+Alternatively we might disable copy \/ assignments by creating private constructors that prevents them being called by external code:
 
 ```c++
 class PersonList {
@@ -103,9 +105,9 @@ public:
 };
 ```
 
-Another alternative would be to a C++11 `std::unique_ptr` (or a `boost::scoped_ptr`). A `unique_ptr` is a way to permit only one owner of a pointer at a time. The owner can be moved from one `unique_ptr` to another and the old owner becomes `NULL` from the move. A `unique_ptr` that holds a non-NULL pointer will delete it from its destructor.
+Another alternative would be to a C++11 `std::unique_ptr` \(or a `boost::scoped_ptr`\). A `unique_ptr` is a way to permit only one owner of a pointer at a time. The owner can be moved from one `unique_ptr` to another and the old owner becomes `NULL` from the move. A `unique_ptr` that holds a non-NULL pointer will delete it from its destructor.
 
-TODO unique_ptr example
+TODO unique\_ptr example
 
 This move is similar to the move semantics we'll see in Rust in a moment. But the object is allocated on the heap, is a pointer and is not directly analogous.
 
@@ -176,20 +178,18 @@ The variable `x` is bound to a PersonList on the stack. The vector is created in
 
 But Rust stops that from happening. When we assign `x` to `y`, the compiler will do a bitwise copy of the data in x, but it will bind ownership to `y`.  When we try to access the in the old var Rust generates a compile error.
 
-```
-error[E0382]: use of moved value: `*x.persons`
-   |
-10 | let mut y = x;
-   |     ----- value moved here
-11 | x.persons.push(Person{});
-   | ^^^^^^^^^ value used here after move
-   |
-   = note: move occurs because `x` has type `main::PersonList`, which does not implement the `Copy` trait
-```
+    error[E0382]: use of moved value: `*x.persons`
+       |
+    10 | let mut y = x;
+       |     ----- value moved here
+    11 | x.persons.push(Person{});
+       | ^^^^^^^^^ value used here after move
+       |
+       = note: move occurs because `x` has type `main::PersonList`, which does not implement the `Copy` trait
 
 Rust has stopped the problem that we saw in C++. Not only stopped it but told us why it stopped it - the value moved from x to y and so we can't use x any more.
 
-Sometimes we DO want to copy / duplicate an object and for that we must implement a trait to tell the compiler that we want that.
+Sometimes we DO want to copy \/ duplicate an object and for that we must implement a trait to tell the compiler that we want that.
 
 The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it:
 
@@ -238,6 +238,7 @@ x.persons.push(Person{ name: "Fred".to_string(), age: 30} );
 y.persons.push(Person{ name: "Mary".to_string(), age: 24} );
 ```
 
-In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone / copy we can make our intent explicit and do that too.
+In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone \/ copy we can make our intent explicit and do that too.
 
 C++ just lets us dig a hole and fills the dirt in on top of us.
+
