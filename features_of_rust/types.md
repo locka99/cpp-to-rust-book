@@ -44,11 +44,11 @@ The `<stdint.h>` / `<cstdint.h>` typedefs are also directly analogous.
 | `int64_t` | `i64`
 | `uint64_t` | `u64`
 
-## C++
+## Integer types
+
+### C++
 
 C/C++ has primitive types for numeric values, floating point values and booleans. Strings will be dealt in a separate section.
-
-### Integer types
 
 Integer types (`char`, `short`, `int`, `long`) come in `signed` and `unsigned` versions.
 
@@ -80,7 +80,26 @@ While `int` is unlikely to fail for most loops in a modern compiler supporting I
 
 C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to make bad assumptions, use a less wordy type, or bloat the code with typedefs. The best action is of course to use `<cstdint.h>` / `<stdint.h>` if it is available.
 
-### Real types
+## Rust
+
+Rust benefits from integer types that unambiguously denote their signedness and width in their name.
+
+They are also extremely terse making it easy to declare and use them. For example a `u32` is an unsigned 32-bit integer. An `i64` is a signed 64-bit integer.
+
+Types may be inferred or explicitly prefixed to the value:
+
+```rust
+let v1 = 1000;
+let v2 : u32 = 25;
+let v3 = 126i8;
+let v4 = 99.3333f64;
+let v5 = v4 as f32;
+let f1 = true;
+```
+
+## Real types
+
+### C++
 
 C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types. 
 
@@ -100,7 +119,7 @@ The Microsoft Visual C++ compiler treats it with the same precision as a `double
 
 As an aside, some GPU C-derived shader languages may also support a `half` precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
 
-### Booleans
+## Booleans
 
 A `bool` (boolean) type in C/C++ can have the value `true` or `false`, however it can be promoted to an integer type (0 == `false`, 1 == `true`) and a bool even has a ++ operator for turning false to true although it has no -- operator!?
 
@@ -111,22 +130,6 @@ But inverting true with a ! becomes false and vice versa.
 !true == false
 ```
 
-## Rust
-
-Rust benefits from integer types that unambiguously denote their signedness and width in their name.
-
-They are also extremely terse making it easy to declare and use them. For example a `u32` is an unsigned 32-bit integer. An `i64` is a signed 64-bit integer.
-
-Types may be inferred or explicitly prefixed to the value:
-
-```rust
-let v1 = 1000;
-let v2 : u32 = 25;
-let v3 = 126i8;
-let v4 = 99.3333f64;
-let v5 = v4 as f32;
-let f1 = true;
-```
 
 # void / Unit type
 
