@@ -24,7 +24,7 @@ void do_something() {
 }
 ```
 
-So here we allocate a pointer to A, assign it to "instance" which is of type ABase, do something with it and finally delete it. It looks fine but we just leaked memory! When we called "delete instance" the code invoked the destructor ~ABase() and NOT the destructor ~A() . And value_ was not deleted and the memory leaked. Even if we'd used a scoped pointer to wrap value_ it would still have leaked.
+So here we allocate a pointer to A, assign it to "instance" which is of type `ABase`, do something with it and finally delete it. It looks fine but we just leaked memory! When we called "delete instance" the code invoked the destructor `~ABase()` and NOT the destructor `~A()` . And `value_` was not deleted and the memory leaked. Even if we'd used a scoped pointer to wrap `value_` it would still have leaked.
 
 The code should have said
 
@@ -39,7 +39,7 @@ The compiler didn't care our code was in error. It just allowed us to leak for t
 
 ## How Rust helps
 
-Rust also does not use inheritance so problems like ABase above cannot exist. In Rust ABase would be declared as a trait that A implements.
+Rust also does not use inheritance so problems like ABase above cannot exist. In Rust `ABase` would be declared as a trait that A implements.
 
 ```rust
 trait ABase {
@@ -55,7 +55,7 @@ impl ABase for A {
 }
 ```
 
-Rust also allows our struct to implement another trait called Drop which is equivalent to a C++ destructor.
+Rust also allows our struct to implement another trait called `Drop` which is equivalent to a C++ destructor.
 
 ```rust
 impl Drop for A {
