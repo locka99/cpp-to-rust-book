@@ -12,6 +12,7 @@
 * [Compiling and Linking in More Detail](compiling_and_linking/index.md)
 * [Source Layout and Other General Points](source_layout/index.md)
 * [Namespacing With Modules](namespacing_with_modules/index.md)
+* [Porting Code](porting-code.md)
 * [Features of Rust compared with C++](features_of_rust/index.md)
     * [Types](features_of_rust/types.md)
     * [Strings](features_of_rust/strings.md)
@@ -59,3 +60,4 @@
 * [Memory Management](memory_management/index.md)
 * [Rust's std:: library](std_library/index.md)
 * [Rust Cookbook](rust_cookbook/index.md)
+
