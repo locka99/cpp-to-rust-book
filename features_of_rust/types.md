@@ -106,7 +106,7 @@ C/C++ has float, double and long double precision floating point types and they 
 * `double` - "at least as much precision as a `float`"
 * `long double` - "at least as much precision as a `double`"
 
-In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
+In most compilers and architectures however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
 
 #### Long double
 
@@ -116,7 +116,7 @@ The Microsoft Visual C++ compiler treats it with the same precision as a `double
 
 #### Math functions
 
-The `<math.h>` C header provides functions for working with different precision types.
+The `<math.h>` C header provides math functions for working with different precision types.
 
 ```c++
 #include <math.h>
@@ -150,7 +150,14 @@ let v2 = 99.99f32;
 let v3 = -10e4f64;
 ```
 
-Unlike in C/C++, the math functions are directly available from the type itself. 
+Unlike in C/C++, the math functions are directly bound to the type itself providing you properly qualify the type. 
+
+```rust
+let result = 10.0f32.sqrt();
+// 
+let degrees = 45.0f64;
+let result2 = angle.to_radians().cos();
+```
 
 A f128 did exist for a period of time but was removed to portability complexity and maintenance issues. Note how `long double` is treated (or not) according to the compiler and target platform. At some point Rust might get a f128 or f80 but at this time does not have such a type.
 
