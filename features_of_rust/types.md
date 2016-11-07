@@ -215,6 +215,24 @@ if result.is_ok() {
 
 ## Tuples
 
+A tuple is a collection of values of the same or different type returned or passed to a function as a single value.
+
+C/C++ has no concept of a tuple primitive type, however C++ can construct a tuple using a template:
+
+```c++
+std::tuple<std::string, int> v1 = std::make_tuple("Sally", 25);
+//
+std::cout << "Name = " << std::get<0>(v1)
+          << ", age = " << std::get<1>(v1) << std::endl;
+```
+
+Rust supports tuples as part of its language:
+
+```rust
+
+```
+
+
 ## Arrays
 
 An array is a fixed size list of elements allocated either on the stack or the heap.
