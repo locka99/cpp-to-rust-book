@@ -53,11 +53,10 @@
     * [Null Pointers](fixing_problems_in_c_cpp/null_pointers.md)
     * [Virtual Destructors](fixing_problems_in_c_cpp/virtual_destructors.md)
     * [Exception Handling \/ Safety](fixing_problems_in_c_cpp/exceptions.md)
-    * [Templates](fixing_problems_in_c_cpp/templates.md)
+    * [Templates vs Generics](fixing_problems_in_c_cpp/templates.md)
     * [Multiple Inheritance](fixing_problems_in_c_cpp/multiple_inheritance.md)
     * [Linker Errors](fixing_problems_in_c_cpp/linker.md)
 * [Debugging Rust](debugging_rust/index.md)
 * [Memory Management](memory_management/index.md)
 * [Rust's std:: library](std_library/index.md)
 * [Rust Cookbook](rust_cookbook/index.md)
-
