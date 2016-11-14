@@ -175,3 +175,18 @@ Basically it is there so that there can be a trailing comma in our declaration a
 ```rust
 let v = vec!(1, 2, 3, 4, 5,);
 ```
+
+## Procedural Macros
+
+So far we've talked about declarative macros that expand out to be Rust code based upon how they pattern match the rules defined by the macro.
+
+A second kind of macro is the *procedural macro*. A procedural macro is a plugin written in Rust that is compiled and loaded by the compiler to produce arbitrary Rust code as its output.
+
+A procedural macro can therefore be thought of as a code generator but one that forms part of the actual compiler. Procedural macros can be particularly useful for:
+
+* Serialization / deserialization (e.g. the [serde](https://github.com/serde-rs/serde) module generates code for reading and writing structs to a variety of formats - JSON, YAML, TOML, XML etc.)
+* Domain Specific Languages (e.g. embedded SQL, regular expressions etc)
+* Aspect oriented programming (e.g. extra debugging, metrics etc)
+* New lint and derive rules
+
+For more information look at this section on [compiler plugins](https://doc.rust-lang.org/book/compiler-plugins.html) in the Rust book.
