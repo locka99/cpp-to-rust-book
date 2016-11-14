@@ -1,6 +1,6 @@
 # Why Rust?
 
-TODO
+Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason". However if you have code that *doesn't* work or *isn't* reliable, or *hasn't* been written yet then perhaps you have answered your own question. You could write the code or fixes in C/C++ in which case you have to deal with all the unsafe issues that the language does not protect you from. Or you might consider that choosing a safe-by-design language is a good way to protect you from suffering more bugs in future.
 
 ## Problems with C/C++
 
@@ -12,8 +12,6 @@ Rust is a language that produces machine code that is comparable in performance 
 
 
 ## Active Development
-
-TODO
 
 The Rust team releases a new version of Rust approximately every 6 weeks. This means Rust receives code and speed improvements over time.
 
