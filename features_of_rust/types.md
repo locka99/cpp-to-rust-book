@@ -73,7 +73,7 @@ for (int i = 0; i < s.size(); ++i) {
 }
 ```
 
-This loop only uses positive integer values so it should use an `unsigned int` but writing `int` is easier to write, or `size_t` for that matter. 
+This loop only uses positive integer values so it should use an `unsigned int` but writing `int` is easier to write, or `size_t` for that matter.
 
 While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
@@ -100,7 +100,7 @@ let f1 = true;
 
 ### C++
 
-C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types. 
+C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types.
 
 * `float`
 * `double` - "at least as much precision as a `float`"
@@ -110,7 +110,7 @@ In most compilers and architectures however a float is a 32-bit single precision
 
 #### Long double
 
-The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. 
+The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour.
 
 The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
 
@@ -150,11 +150,11 @@ let v2 = 99.99f32;
 let v3 = -10e4f64;
 ```
 
-Unlike in C/C++, the math functions are directly bound to the type itself providing you properly qualify the type. 
+Unlike in C/C++, the math functions are directly bound to the type itself providing you properly qualify the type.
 
 ```rust
 let result = 10.0f32.sqrt();
-// 
+//
 let degrees = 45.0f64;
 let result2 = angle.to_radians().cos();
 ```
@@ -197,7 +197,7 @@ free(s);
 
 The nearest thing to `void` in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`.
 
-Technically `void` is nothing and `()` is a single value so they're not analogous but they serve a similar purpose. 
+Technically `void` is absolutely nothing and `()` is a single value of type `()` so they're not analogous but they serve a similar purpose.
 
 When a block evaluates to nothing it returns `()`. We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
 
@@ -212,6 +212,18 @@ if result.is_ok() {
  println!("Success!");
 }
 ```
+
+### Empty enums
+
+Rust *does* have something closer (but not the same as) `void` - empty enumerations.
+
+```rust
+enum Void {}
+```
+
+Essentially this enum has no values at all so anything that assigns or matches this nothing-ness is unreachable and the compiler can issue warnings or errors. If the code had used `()` the compiler might not be able to determine this.
+
+This link describes the [gory details](https://github.com/rust-lang/rfcs/blob/master/text/1216-bang-type.md) of this pattern and proposes compiler support for a special `!` notation. Until this lands as a feature you are better off to say `()`.
 
 ## Tuples
 
