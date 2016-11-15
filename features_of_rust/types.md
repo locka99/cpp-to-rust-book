@@ -1,7 +1,6 @@
 # Types
 
-The C/C++ data model affects what the equivalent type is for Rust in some cases.
-
+Rust has mostly analogous primitive types with C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
@@ -20,7 +19,7 @@ The C/C++ data model affects what the equivalent type is for Rust in some cases.
 | `double` | `f64` |
 | `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
 | `bool` | `bool` |
-| void | `()` | The unit type (see below)
+| `void` | `()` | The unit type (see below)
 
 [^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
 
@@ -44,11 +43,11 @@ The `<stdint.h>` / `<cstdint.h>` typedefs are also directly analogous.
 | `int64_t` | `i64`
 | `uint64_t` | `u64`
 
-## C++
+## Integer types
+
+### C++
 
 C/C++ has primitive types for numeric values, floating point values and booleans. Strings will be dealt in a separate section.
-
-### Integer types
 
 Integer types (`char`, `short`, `int`, `long`) come in `signed` and `unsigned` versions.
 
@@ -74,46 +73,15 @@ for (int i = 0; i < s.size(); ++i) {
 }
 ```
 
-This loop only uses positive integer values so it should use an `unsigned int` but writing `int` is easier to write, or `size_t` for that matter. 
+This loop only uses positive integer values so it should use an `unsigned int` but writing `int` is easier to write, or `size_t` for that matter.
 
 While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
 C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to make bad assumptions, use a less wordy type, or bloat the code with typedefs. The best action is of course to use `<cstdint.h>` / `<stdint.h>` if it is available.
 
-### Real types
-
-C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types. 
-
-* `float`
-* `double` - "at least as much precision as a `float`"
-* `long double` - "at least as much precision as a `double`"
-
-In most compilers however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
-
-#### Long double
-
-The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour. 
-
-The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
-
-#### Half
-
-As an aside, some GPU C-derived shader languages may also support a `half` precision 16-bit float (for interpolating values between 0 and 1 for example) but it is not part of the C/C++ standard.
-
-### Booleans
-
-A `bool` (boolean) type in C/C++ can have the value `true` or `false`, however it can be promoted to an integer type (0 == `false`, 1 == `true`) and a bool even has a ++ operator for turning false to true although it has no -- operator!?
-
-But inverting true with a ! becomes false and vice versa.
-
-```c++
-!false == true
-!true == false
-```
-
 ## Rust
 
-Rust benefits from integer types that unambiguously denote their signedness and width in their name.
+Rust benefits from integer types that unambiguously denote their signedness and width in their name - `i16`, `u8` etc.
 
 They are also extremely terse making it easy to declare and use them. For example a `u32` is an unsigned 32-bit integer. An `i64` is a signed 64-bit integer.
 
@@ -128,27 +96,108 @@ let v5 = v4 as f32;
 let f1 = true;
 ```
 
-# void / Unit type
+## Real types
 
-C/C++ uses `void` to specify a type of nothing or a pointer to something, e.g. a function that doesn't return anything will be marked as void:
+### C++
+
+C/C++ has float, double and long double precision floating point types and they suffer the same vagueness as integer types.
+
+* `float`
+* `double` - "at least as much precision as a `float`"
+* `long double` - "at least as much precision as a `double`"
+
+In most compilers and architectures however a float is a 32-bit single precision value, and a double is an 64-bit double precision value. The most common machine representation is the [IEEE 754-2008 format](https://en.wikipedia.org/wiki/IEEE_floating_point).
+
+#### Long double
+
+The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour.
+
+The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
+
+#### Math functions
+
+The `<math.h>` C header provides math functions for working with different precision types.
 
 ```c++
-void delete_directory(const std::string &path);
+#include <math.h>
+
+const double PI = 3.1415927;
+double result = cos(45.0 * PI / 180.0);
+//..
+double result2 = abs(-124.77);
+//..
+float result3 = sqrtf(9.0f);
+//
+long double result4 = powl(9,10);
 ```
 
-And it is also used in many C functions for manipulating pointers to things whose type the function doesn't especially care about.
+Note how different calls are required according to the precision, e.g. sinf, sin or sinl. C99 supplies a "type-generic" set of macros in `<tgmath.h>` which allows sin to be used regardless of type.
+
+C++11 provides a `<cmath>` that uses specialised inline functions for the same purpose:
 
 ```c++
+#include <cmath>
+float result = std::sqrt(9.0f);
+```
+
+### Rust
+
+Rust implements two floating point types - `f32` and `f64`. These would be analogous to a 32-bit `float` and 64-bit `double` in C/C++.
+
+```rust
+let v1 = 10.0;
+let v2 = 99.99f32;
+let v3 = -10e4f64;
+```
+
+Unlike in C/C++, the math functions are directly bound to the type itself providing you properly qualify the type.
+
+```rust
+let result = 10.0f32.sqrt();
+//
+let degrees = 45.0f64;
+let result2 = angle.to_radians().cos();
+```
+
+A f128 did exist for a period of time but was removed to portability complexity and maintenance issues. Note how `long double` is treated (or not) according to the compiler and target platform. At some point Rust might get a f128 or f80 but at this time does not have such a type.
+
+## Booleans
+
+A `bool` (boolean) type in C/C++ can have the value `true` or `false`, however it can be promoted to an integer type (0 == `false`, 1 == `true`) and a bool even has a ++ operator for turning false to true although it has no -- operator!?
+
+But inverting true with a ! becomes false and vice versa.
+
+```c++
+!false == true
+!true == false
+```
+
+Rust also has a `bool` type that can have the value `true` or `false`. Unlike C/C++ it is a true type with no promotion to integer type
+
+## void / Unit type
+
+C/C++ uses `void` to specify a type of nothing or an indeterminate pointer to something.
+
+```c++
+// A function that doesn't return anything
+void delete_directory(const std::string &path);
+
+// Indeterminate pointer use
 struct file_stat {
   uint32_t creation_date;
   uint32_t last_modified;
   char file_name[MAX_PATH + 1];
 };
+
 // malloc returns a void * which must be cast to the type need
 file_stat *s = (file_stat *) malloc(sizeof(file_stat));
+// But casting is not required when going back to void *
+free(s);
 ```
 
-The nearest thing to void in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`. Technically it's not analogous to void because void means nothing and `()` is a value but they serve a similar purpose. 
+The nearest thing to `void` in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`.
+
+Technically `void` is absolutely nothing and `()` is a single value of type `()` so they're not analogous but they serve a similar purpose.
 
 When a block evaluates to nothing it returns `()`. We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
 
@@ -164,7 +213,39 @@ if result.is_ok() {
 }
 ```
 
-# Arrays
+### Empty enums
+
+Rust *does* have something closer (but not the same as) `void` - empty enumerations.
+
+```rust
+enum Void {}
+```
+
+Essentially this enum has no values at all so anything that assigns or matches this nothing-ness is unreachable and the compiler can issue warnings or errors. If the code had used `()` the compiler might not be able to determine this.
+
+This link describes the [gory details](https://github.com/rust-lang/rfcs/blob/master/text/1216-bang-type.md) of this pattern and proposes compiler support for a special `!` notation. Until this lands as a feature you are better off to say `()`.
+
+## Tuples
+
+A tuple is a collection of values of the same or different type returned or passed to a function as a single value.
+
+C/C++ has no concept of a tuple primitive type, however C++ can construct a tuple using a template:
+
+```c++
+std::tuple<std::string, int> v1 = std::make_tuple("Sally", 25);
+//
+std::cout << "Name = " << std::get<0>(v1)
+          << ", age = " << std::get<1>(v1) << std::endl;
+```
+
+Rust supports tuples as part of its language:
+
+```rust
+TODO
+```
+
+
+## Arrays
 
 An array is a fixed size list of elements allocated either on the stack or the heap.
 

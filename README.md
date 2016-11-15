@@ -1,6 +1,6 @@
 # A Guide to Porting C\/C++ to Rust
 
-This book is for people with C\/C++ who might be considering porting to Rust. It provides an introduction to Rust, supplies reasons you might want to fix and goes through some of the problems that you may have in your existing code that Rust would outright prevent.
+This book is for people with C or C++ who might be considering porting to Rust. It provides an introduction to Rust, demonstrates reasons you might want to switch and goes through some of the problems that you may have in your existing code that Rust would outright prevent.
 
 Think of all the software that needs to be reliable in this world. Software that can ill afford downtime or crashes. Software that is mission critical and must not or should not fail.
 

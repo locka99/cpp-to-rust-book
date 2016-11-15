@@ -1,6 +1,8 @@
-# Templates
+# Templates vs Generics
 
-C++ provides a way of substituting types and values into inline classes and functions called templates. This is a very powerful feature since it allows a class to be reused for many different types.
+## What's a template?
+
+C++ provides a way of substituting types and values into inline classes and functions called templates. Think of it as a sophisicated substitution macro - you specify a type T in the template and this can substitute for a type `int` or something else at compile time. During compilation you'll be told if there are any errors with the type you supply. This is a very powerful feature since it allows a class to be reused for many different types.
 
 Templates are used extensively in the C++ library, Boost and in other places. Collections, strings, algorithms and various other piece of code use templates in one form or another.
 

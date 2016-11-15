@@ -6,3 +6,4 @@ TODO
 2. TODO - design patterns repo
 3. TODO - Effective C++, Meyers
 4. TODO – various stackoverflow questions and answers
+5. Rustnomicon

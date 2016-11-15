@@ -53,6 +53,8 @@ C++ | Rust
 --- | ----
 Explicitly with "inline" or implicitly through methods implemented in class / struct | #[inline], #[inline(always)], #[inline(never)]
 
-Note that it may be better to leave inlining alone and trust the link-time optimisation in LLVM.
+Another alternative to explicitly inlining code is to use the link-time optimisation in LLVM.
 
-TODO inline example
+```
+rustc -C lto
+```

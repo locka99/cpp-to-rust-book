@@ -2,3 +2,4 @@ book
 _book
 target
 Cargo.lock
+*.pdf

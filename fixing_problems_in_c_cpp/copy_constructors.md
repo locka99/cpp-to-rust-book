@@ -1,4 +1,4 @@
-# Copy Constructor / Assignment Operators
+# Copy Constructor \/ Assignment Operators
 
 In C++, imagine we have a class called PersonList:
 
@@ -31,19 +31,21 @@ Now let's see how we can create some really dangerous code:
 } // Here be dragons!!!!
 ```
 
-Well that was dangerously easy.
+Well that was easy. And dangerous.
 
-The PersonList had no copy constructor nor an assignment operator. So the compiler generated them for us. Lucky us since when we use them we are doomed!
+By default C++ allows us to copy and assign one class to another so that we make multiple copies of the same data. The compiler generated a copy constructor and assignment operator for us even though PersonList doesn't say anything about copy or assignment. Lucky us!
 
-The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program will crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
+Except copying doesn't work the way it should for managed data.
+
+The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program might crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
 
 ## The Rule of Three
 
 This is such a bad issue that it has given rise to the so-called the rule of three.
 
-The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction.
+The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction. In other words the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
 
-In order to fix this simple class we have to add a lot of bloat:
+So let's fix the class:
 
 ```c++
 class PersonList {
@@ -80,9 +82,9 @@ public:
 
 What a mess!
 
-The code even has to add a test to assignment in case someone writes `x = x` to stop the class clearing itself in preparation to adding elements from itself which would of course wipe out all its contents.
+We've added a copy constructor and an assignment operator to the class to handle copying safely. The code even had to check if it was being assigned to itself in case someone wrote `x = x`. Without that test, the receiving instance would clear itself in preparation to adding elements from itself which would of course wipe out all its contents.
 
-Alternatively we might disable copy / assignments by creating private constructors that prevents them being called by external code:
+Alternatively we might disable copy \/ assignments by creating private constructors that prevents them being called by external code:
 
 ```c++
 class PersonList {
@@ -103,15 +105,13 @@ public:
 };
 ```
 
-Another alternative would be to a C++11 `std::unique_ptr` (or a `boost::scoped_ptr`). A `unique_ptr` is a way to permit only one owner of a pointer at a time. The owner can be moved from one `unique_ptr` to another and the old owner becomes `NULL` from the move. A `unique_ptr` that holds a non-NULL pointer will delete it from its destructor.
+Another alternative would be to use noncopyable types within the class itself. For example, the copy would fail if the pointer were managed with a C++11 `std::unique_ptr` \(or Boost's `boost::scoped_ptr`\).
 
-TODO unique_ptr example
-
-This move is similar to the move semantics we'll see in Rust in a moment. But the object is allocated on the heap, is a pointer and is not directly analogous.
+Boost also provides a `boost::noncopyable` class which provides yet another option. Classes may inherit from noncopyable which implements a private copy constructor and assignment operator so any code that tries to copy will generate a compile error.
 
 ## How Rust helps
 
-Rust does allow structs to be copied or clone unless we explicitly implement the `Copy` and `Clone` traits respectively.
+Rust does allow structs to be copied or clone unless we explicitly implement either the `Copy` and / or `Clone` traits respectively.
 
 Most primitive types such as ints, chars, bools etc. implement `Copy` so you can just assign one to another
 
@@ -123,14 +123,16 @@ y = 20;
 assert_eq!(x, 8);
 ```
 
-A `String` cannot be copied this way. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. But you can explicitly clone a `String`:
+But a `String` cannot be copied this way. A string has an internal heap allocated pointer so the struct does not implement Copy. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. 
+
+But you can explicitly clone a `String` in which case the clone operation will make a duplicate of the allocated memory so that both strings are independent of each other:
 
 ```rust
 let copyright = "Copyright 2017 Acme Factory".to_string();
 let copyright2 = copyright.clone();
 ```
 
-If we just declare a struct it also be copied by accident:
+If we just declare a struct it can neither be copied nor cloned by default.
 
 ```rust
 struct Person {
@@ -139,15 +141,18 @@ struct Person {
 }
 ```
 
-The following code will compile but you are not copying, you are moving:
+The following code creates a `Person` object and assigns it to `person1`. When `person1` is assigned to `person2`, ownership of the data also moves:
 
 ```rust
 let person1 = Person { name: "Tony".to_string(), age: 38u8 };
 let person2 = person1;
-println!("{}", person1.name); // Error, use of a moved value
 ```
 
-Assignment moves ownership of the struct from person1 to person2. It is an error to use person1 any more.
+Attempting to use `person1` after ownership moves to `person2` will generate a compile error:
+
+```rust
+println!("{}", person1.name); // Error, use of a moved value
+```
 
 To illustrate consider this Rust which is equivalent to the PersonList we saw in C++
 
@@ -176,24 +181,32 @@ The variable `x` is bound to a PersonList on the stack. The vector is created in
 
 But Rust stops that from happening. When we assign `x` to `y`, the compiler will do a bitwise copy of the data in x, but it will bind ownership to `y`.  When we try to access the in the old var Rust generates a compile error.
 
-```
-error[E0382]: use of moved value: `*x.persons`
-   |
-10 | let mut y = x;
-   |     ----- value moved here
-11 | x.persons.push(Person{});
-   | ^^^^^^^^^ value used here after move
-   |
-   = note: move occurs because `x` has type `main::PersonList`, which does not implement the `Copy` trait
-```
+    error[E0382]: use of moved value: `*x.persons`
+       |
+    10 | let mut y = x;
+       |     ----- value moved here
+    11 | x.persons.push(Person{});
+       | ^^^^^^^^^ value used here after move
+       |
+       = note: move occurs because `x` has type `main::PersonList`, which does not implement the `Copy` trait
 
 Rust has stopped the problem that we saw in C++. Not only stopped it but told us why it stopped it - the value moved from x to y and so we can't use x any more.
 
-Sometimes we DO want to copy / duplicate an object and for that we must implement a trait to tell the compiler that we want that.
+### Implementing a Copy / Clone
 
-The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it:
+Sometimes we DO want to copy \/ duplicate an object and for that we must implement a trait to tell the compiler that we want that.
 
-But this will create an error:
+The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it and you can only derive it if all the members of the struct also derive it:
+
+```rust
+#[derive(Copy)]
+struct PersonKey {
+  id: u32,
+  age: u8,
+}
+```
+
+But this will create an error because a String cannot be copied, it must be cloned.:
 
 ```rust
 #[derive(Copy)]
@@ -203,9 +216,7 @@ struct Person {
 }
 ```
 
-A `struct` can be copied if all its members can be copied and in this case `name` cannot be. The field is of type `String` that does not implement the `Copy` trait. However `String` implements the `Clone` trait.
-
-A `Clone` trait can be derived or explicitly implemented. We can derive it if every member of the struct can be cloned which in the case of Person it can:
+But we can still implement Clone. A `Clone` trait can be derived or explicitly implemented. We can derive it if every member of the struct can be cloned which in the case of Person it can:
 
 ```rust
 #[derive(Clone)]
@@ -238,6 +249,6 @@ x.persons.push(Person{ name: "Fred".to_string(), age: 30} );
 y.persons.push(Person{ name: "Mary".to_string(), age: 24} );
 ```
 
-In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone / copy we can make our intent explicit and do that too.
+In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone \/ copy we can make our intent explicit and do that too.
 
 C++ just lets us dig a hole and fills the dirt in on top of us.

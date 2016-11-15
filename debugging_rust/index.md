@@ -1,6 +1,1 @@
-# Debugging Rust
-
-Rust compiles to machine code - executable code - in just the same manner as C\/C++. A compiled binary may contain symbolic information that allows a debugger to "step" through the code, set a "breakpoint" and do the normal manner of debugging operations that you might expect.
-
-The main thing to be aware of debugging Rust is knowing which backend your compiled executable came through. On Windows, the choice is between MSVC and GNU. Depending on your choice you must debug within Visual Studio or use gdb. On other platforms you may have the choice of using gdb or lldb.
-
+```## Enabling backtraceIf your code is crashing because of a panic!() you can get a backtrace on the console by setting the `RUST_BACKTRACE` environment variable.```# Windowsset RUST_BACKTRACE=1# Unix/Linuxexport RUST_BACKTRACE=1```## Microsoft Visual StudioIf you have the MSVC toolchain the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.To debug your code:1. Open Visual Studio2. Choose File | Open | Project/Solution...3. Select the compiled executable4. Open a source file to debug and set a breakpoint5. Click the "Start" button## GDBGDB can be invoked directly from the command line or through a plugin / IDE. From the command line it's aTODO## LLDBTODO 
