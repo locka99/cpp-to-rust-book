@@ -2,15 +2,13 @@
 
 Rust compiles in to machine code the same as C and benefits from sharing the same ABI and compiler backend formats as C/C++.
 
-Consequently, it is possible to debug compiled Rust in the same way as C/C++.
+Consequently, it is possible to debug compiled Rust in the same way as C/C++. So if you built your Rust executable a gcc compatible binary format you can just invoke gdb on it:
 
 ```
-c:\dev\visu>rustup show
-Default host: x86_64-pc-windows-msvc
-
-stable-x86_64-pc-windows-msvc (default)
-rustc 1.13.0 (2c6933acc 2016-11-07)
+gdb my_executable
 ```
+
+Rust comes with a gdb wrapper script called `rust-gdb` that loads macros which perform syntax highlighting.
 
 ## Enabling backtrace
 
@@ -23,9 +21,23 @@ set RUST_BACKTRACE=1
 export RUST_BACKTRACE=1
 ```
 
+## Find our your target binary format
+
+If you are in doubt what you are targeting, you may use `rustup` to show you.
+
+```
+c:\dev\visu>rustup show
+Default host: x86_64-pc-windows-msvc
+
+stable-x86_64-pc-windows-msvc (default)
+rustc 1.13.0 (2c6933acc 2016-11-07)
+```
+
+The information will tell you which debugger you can use to debug your code.
+
 ## Microsoft Visual Studio
 
-If you have the MSVC toolchain the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.
+If you have the MSVC toolchain (32 or 64-bit) or the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.
 
 To debug your code:
 

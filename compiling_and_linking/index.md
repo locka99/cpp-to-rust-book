@@ -202,9 +202,6 @@ All that happened with a line in Cargo.toml and a line in our code to reference 
 
 Also note that once we build, cargo creates a Cargo.lock file in our root directory.
 
-This file is an exact list of what packages our project pulled in, their version, their source url and any dependencies they had their of their own.
-
-This means if we invoke `cargo build` again the tool can exactly reproduce the same dependency configuration even from a clean configuration. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
+This file is made so that if `cargo build` is invoked again it has an exact list of what packages need to be pulled and compiled. It stops situations where the code under our feet (so to speak) moves and suddenly our project no longer builds. So if the lock file exists, the same dependency configuration can be reproduced even from a clean. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
 
 [^1]: You can change the main entry point using a special  `#[start]` directive if you want on another function but the default is main\(\)
-
