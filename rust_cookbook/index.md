@@ -417,6 +417,14 @@ Rust comes with two standard modules:
 * std::io contains various stream related traits and other functionality.
 * std::fs contains filesystem related functionality including the implementation of IO traits to work with files.
 
+### Creating a directory
+
+A directory can be created with `std::fs::DirBuilder`, e.g.
+
+```
+let result = DirBuilder::new().recursive(true).create("/tmp/work_dir");
+```
+
 ### File paths
 
 Windows and Unix systems have different notation for path separators and a number of other differences. e.g. Windows has drive letters, long paths, and network paths called UNCs.
@@ -435,7 +443,7 @@ TODO example of a path being made from a drive letter and path
 
 ### Opening a file
 
-A `File` is a reference to an open file on the filesystem. When the struct goes out of scope the file is closed. There arestatic functions for creating or opening a file:
+A `File` is a reference to an open file on the filesystem. When the struct goes out of scope the file is closed. There are static functions for creating or opening a file:
 
 ```rust
 use std::io::prelude::*;
@@ -443,6 +451,20 @@ use std::fs::File;
 
 let mut f = try!(File::open("myfile.txt"));
 TODO
+```
+
+Note that File::open() opens a file read-only by default. To open a file read-write, there is an OpenOptions struct that has methods to set the behaviour of the open file - read, write, create, append and truncate.
+
+e.g. to open a file with read/write access, creating it if it does not already exist.
+
+```rust
+use std::fs::OpenOptions;
+
+let file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open("myfile.txt");
 ```
 
 ### Writing to a file
