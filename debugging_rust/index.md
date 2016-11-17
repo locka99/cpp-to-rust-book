@@ -33,9 +33,19 @@ stable-x86_64-pc-windows-msvc (default)
 rustc 1.13.0 (2c6933acc 2016-11-07)
 ```
 
+Or perhaps:
+
+```
+[foo@localhost ~]$ rustup show
+Default host: x86_64-unknown-linux-gnu
+
+stable-x86_64-unknown-linux-gnu (default)
+rustc 1.13.0 (2c6933acc 2016-11-07)
+```
+
 The information will tell you which debugger you can use to debug your code.
 
-## Microsoft Visual Studio
+### Microsoft Visual Studio
 
 If you have the MSVC toolchain (32 or 64-bit) or the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.
 
@@ -47,12 +57,12 @@ To debug your code:
 4. Open a source file to debug and set a breakpoint
 5. Click the "Start" button
 
-## GDB
+### GDB
 
 GDB can be invoked directly from the command line or through a plugin / IDE. From the command line it's a
 
 TODO
 
-## LLDB
+### LLDB
 
 TODO

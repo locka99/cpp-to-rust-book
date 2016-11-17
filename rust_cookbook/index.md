@@ -201,11 +201,17 @@ assert_eq!(message.chars().count(), 6);
 TODO
 
 ### Tokenizing a string
+
 TODO
+
 ### Joining strings together
+
 TODO
+
 ### Getting a substring
+
 TODO
+
 ### Converting a string between upper and lower case
 
 Strings have these functions for converting between upper and lower case:
@@ -218,30 +224,39 @@ fn to_uppercase(&self) -> String
 These functions will return a new String that contains the upper or lower case version of the input. Upper and lower case are defined by Unicode rules. Languages that have no upper or lowercase strings may return the same characters.
 
 ### Doing a case insensitive compare
+
 TODO
 
 ### Using regular expression matches
+
 TODO
 
 ## Date and Time
+
 ### Get the current date and time
+
 TODO time_rs
 
 ### UTC
+
 TODO explain what UTC is and why maintaining time in UTC is vital Epochs etc.
 TODO preamble about what an epoch is, the Unix epoch and other epochs
 
 ### Setting a timer
+
 TODO setting a timer
 
 ### System time vs UTC
+
 TODO the reason timers might be set in system uptime vs timers being set in UTC. Answer because users and NTP can change the UTC time wherease system time is relative to bootup. So setting a timer to run 10s from now will always work against system time where setting a timer to run 10s from now in UTC could fail if the OS sets time back by an hour.
 
 ### Formatting a date as a string
+
 TODO standard date formatting UTC
 TODO example
 
 ### Parsing a date from a string
+
 TODO parsing a date from a string's
 TODO example
 
@@ -298,8 +313,8 @@ This creates a mutable Vec and prepopulates it with 5 values. Note how the vec! 
 A new Vec can also be made using Vec::new() or Vec::with_capacity(size)
 
 ```rust
-let my_array = Vec::new();
-my_array.push("
+let mut my_array = Vec::new();
+my_array.push("Hello");
 let my_presized_array = Vec::with_capacity(100);
 ```
 
@@ -308,7 +323,7 @@ It is strongly recommended you use Vec::with_capacity() to create a vector with 
 ### Removing values from a vector
 
 Sometimes you want to strip out values from a list which match some predicate. In which case there is a handy function for that purpose.
-TODO .retain
+TODO `.retain`
 
 ### Sorting a vector
 
@@ -324,27 +339,33 @@ Sorting is done using the Ord trait and calling Ord::cmp() on the elements to co
 
 Comparison can also be done through a closure and Vec::sort_by()
 
-TODO .sort_by
-TODO .sort_by_key
+TODO `.sort_by`
+TODO `.sort_by_key`
 
 ### Stripping out duplicates from a vector
+
 Assuming your vec is sorted, you can strip out consecutive duplicate entries using dedup().
 This function won't work and the result will be undefined if your vector is not sorted.
 TODO .dedup
 
 ### Creating a linked list
+
 A linked list is more suitable than a vector when items are likely to be inserted or removed from either end or from points within the list.
-std::collections::LinkedList
+
+`std::collections::LinkedList`
 
 ### Creating a hash set
+
 A hash set is a unique collection of objects. It is particularly useful for removing duplicates that might occur in the input.
-std::collections::HashSet
+`std::collections::HashSet`
 
 ### Creating a hash map
+
 A hash map consists of a key and a value. It is used for look up operations
-std::collections::HashMap
+`std::collections::HashMap`
 
 ### Iterating collections
+
 TODO
 
 ### Iterator adaptors
@@ -353,37 +374,49 @@ TODO
 
 An adaptor turns the iterator into a new value
 
-.enum
-.map(X)
-.take(N)
-.filter(X)
+`.enum`
+`.map(X)`
+`.take(N)`
+`.filter(X)`
 
 ### Consuming iterators
+
 A consumer is a convenience way of iterating a collection and producing a value or a set of values from the result.
-.collect()
 
-.find() will return the first matching element that matches the closure predicate. TODO
+`.collect()`
 
-.fold() is a way of doing calculations on the collection. It takes a base value, and then calls a closure to accumulate the value upon the result of the last value. TODO
+`.find()` will return the first matching element that matches the closure predicate. TODO
+
+`.fold()` is a way of doing calculations on the collection. It takes a base value, and then calls a closure to accumulate the value upon the result of the last value. TODO
 Processing collections
 
 ## Localization
 
 ### Unicode considerations
+
 TODO
 
 ### Externalizing strings
+
 TODO
 
 ### Building strings from parameters
+
 TODO
 
 ### Creating a localization file
+
 TODO
 
 ## Logging
 
 ## Files and streams
+
+Rust comes with two standard modules:
+
+* std::io contains various stream related traits and other functionality.
+* std::fs contains filesystem related functionality including the implementation of IO traits to work with files.
+
 ### File paths
 
 Windows and Unix systems have different notation for path separators and a number of other differences. e.g. Windows has drive letters, long paths, and network paths called UNCs.
@@ -401,23 +434,39 @@ Windows has a bunch of path prefixes so std::path::Prefix provides a way to acce
 TODO example of a path being made from a drive letter and path
 
 ### Opening a file
-TODO simple example of opening a file, demonstrating scope rules with resources
+
+A `File` is a reference to an open file on the filesystem. When the struct goes out of scope the file is closed. There arestatic functions for creating or opening a file:
+
+```rust
+use std::io::prelude::*;
+use std::fs::File;
+
+let mut f = try!(File::open("myfile.txt"));
+TODO
+```
 
 ### Writing to a file
+
 TODO simple example of opening file to write
 
 ### Reading lines from a file
-TODO simlpe example of opening file text mode, printing contents
+
+TODO simple example of opening file text mode, printing contents
 
 ## Threading
 
 Rust actively enforces thread safety in your code. If you attempt to pass around data which is not marked thread safe (i.e. implements the Sync trait), you will get a compile error. If you use code which is implicitly not thread safe such as Rc<> you will get a compile error.
 
+This enforcement means that Rust protects against data race conditions, however be aware it cannot protect against other forms of race conditions or deadlocks, e.g. thread 1 waits for resource B (held by thread 2) while thread 2 waits for resource A (held by thread 1).
+
 ### Creating a thread
+
+Creating a thread is simple with a closure.
 
 TODO
 
 ### Waiting for a thread to complete
+
 TODO
 
 ### Using atomic reference counting
@@ -437,6 +486,7 @@ Therefore Rust allows you to create a mutex and lock access to shared data. The 
 This style of guard is called TODO
 
 ### Data race protection
+
 Rust can guarantee that protection from data races, i.e. more than one thread accessing / writing to the same data at the same time.
 
 However even Rust cannot protect against the more general problem of race conditions. e.g. if two threads lock each other's data, then the code will deadlock. This is a problem that no language can solve.
@@ -446,9 +496,11 @@ However even Rust cannot protect against the more general problem of race condit
 TODO
 
 ### Sending data to a thread
+
 Any struct that implements the Send trait is treated safe to send to another thread. Of course that applies to
 
 ### Receiving data from a thread
+
 A thread can receive messages and block until it receives one. Thus it is easy to create a worker thread of some kind.
 
 TODO
@@ -456,29 +508,50 @@ TODO
 ## Networking
 
 ### Connecting to a server
+
 TODO
+
 ###Listening to a socket
+
 TODO
 
 ## Interacting with C
+
 ### Using libc functions and types
+
 ### Calling a C library
+
 ### Generating a dynamic library
+
 ### Calling Win32 functions
 
 ## Common design patterns
+
 ### Singleton
+
 A singleton has one instance ever in your application.
 TODO
+
 ### Factory
+
 TODO
+
 ### Observer
+
 TODO
+
 ### Facade
+
 TODO
+
 ### Flyweight
+
 TODO
+
 ### Adapter
+
 An adapter is where we present a different interface to a client calling the adapter than the interface the code is implemented in. This might be done to make some legacy code conform to a new interface, or to manage / hide complexity which might leak out into the client.
+
 As Rust is a relatively new language you are most likely to use an adapter pattern to wrap some existing code in C. A common use for the adapter in C++ is to wrap up a C library in RAII classes or similar.
+
 TODO
