@@ -116,11 +116,12 @@ Note the unwrap() at the end - the FromStr::from_str() returns the value inside 
 Another way to get the string is to call parse() on the &str or String itself. In this case, you use a slightly odd looking syntax nicknamed 'turbofish' which looks like this:
 
 ```rust
+use std::str::FromStr;
 let value_as_str = "12345";
 let value = value_as_str.parse::<i32>().unwrap();
 ```
 
-The string's implementation of parse() is a generic that works with any type implementing FromStr. So calling parse::<i32> is equivalent to calling i32::from_str().
+The string's implementation of parse() is a generic that works with any type implementing `FromStr`. So calling `parse::<i32>` is equivalent to calling `i32::from_str()`.
 
 Note one immediate advantage of Rust is it uses string slices. That means you could have a long, comma separated string and use slices to parse numbers straight out of the middle of it without constructing intermediate copies.
 
