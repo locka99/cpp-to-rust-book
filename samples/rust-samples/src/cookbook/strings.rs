@@ -27,7 +27,22 @@ fn string_number_of_chars() {
 
 #[test]
 fn split_string() {
-    // TODO
+    //
+    // Split a string on a token
+    let input = "20,30,400,100,21,-1";
+    let values : Vec<&str> = input.split(",").collect();
+    for (i, s) in values.iter().enumerate() {
+        println!("Value {} = {}", i, s);
+    }
+    //
+    assert_eq!(values.len(), 6);
+}
+
+#[test]
+fn split_whitespace() {
+    for s in " All good   \n\n\tthings  to those who    wait".split_whitespace() {
+        println!("Part - {}", s);
+    }
 }
 
 #[test]

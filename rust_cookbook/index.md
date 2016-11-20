@@ -123,8 +123,7 @@ let value = value_as_str.parse::<i32>().unwrap();
 
 The string's implementation of parse() is a generic that works with any type implementing `FromStr`. So calling `parse::<i32>` is equivalent to calling `i32::from_str()`.
 
-Note one immediate advantage of Rust is it uses string slices. That means you could have a long, comma separated string and use slices to parse numbers straight out of the middle of it without constructing intermediate copies.
-
+Note one immediate advantage of Rust is it uses string slices. That means you could have a long string with many numbers separated by delimiters and parse numbers straight out of the middle of it without constructing intermediate copies.
 
 ### Converting between numeric types
 
@@ -199,7 +198,57 @@ assert_eq!(message.chars().count(), 6);
 ```
 
 ### Splitting a string
-TODO
+
+String slices and String have a variety of `split` methods that return an iterable collection of slices on a string:
+
+```rust
+let input = "20,30,400,100,21,-1";
+let values : Vec<&str> = input.split(",").collect();
+for (i, s) in values.iter().enumerate() {
+    println!("Value {} = {}", i, s);
+}
+```
+
+The standard `split()` takes a string pattern for the delimiter and returns a `std::str::Split` struct that is an double-ended iterator representation of the matching result. We could call the iterator directly if we so wished but the `collect()` method above puts the values of the iterator into a `Vec<&str>`.
+
+```
+Value 0 = 20
+Value 1 = 30
+Value 2 = 400
+Value 3 = 100
+Value 4 = 21
+Value 5 = -1
+```
+
+A string can also be split on an index, e.g.
+
+```rust
+let (left, right) = "No Mister Bond I expect you to die".split_at(14);
+println!("Left = {}", left);
+println!("Right = {}", right);
+```
+
+Note that index is the *byte index*! The function will panic if the index is in the centre of a UTF-8 codepoint.
+
+Another useful function is `split_whitespace` that splits on tabs, spaces, newlines and other Unicode whitespace. Any amount of whitespace is treated as a single delimiter.
+
+```rust
+// Split whitespace
+for s in " All good   \n\n\tthings  to those who    wait".split_whitespace() {
+    println!("Part - {}", s);
+}
+```
+Yields the output.
+
+```
+Part - All
+Part - good
+Part - things
+Part - to
+Part - those
+Part - who
+Part - wait
+```
 
 ### Tokenizing a string
 
