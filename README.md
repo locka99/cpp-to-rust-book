@@ -2,9 +2,8 @@
 
 This book is for people familiar with C or C++ who are thinking of using Rust.
 
-It provides an introduction to the Rust language, demonstrates problems in C/C++ that Rust would outright prevent. 
 
-Think of all the software that needs to be reliable in this world. Software that can ill afford downtime or crashes. Software that is mission critical and must not or should not fail.
+The first question is obvious why? We'll go into that in more detail but let's think of software that is mission critical and must not or should not fail.
 
 * Operating system services and daemons
 * Internet of things devices
@@ -13,9 +12,11 @@ Think of all the software that needs to be reliable in this world. Software that
 * High availability servers / databases / cloud storage etc.
 * Avionics, telemetry, rocketry, drones etc.
 
-All this code that has to run as efficiently and reliably as possible with the minimal of errors. It also has to be predictable without sudden freezes or mystery-memory behavior due to garbage collection.
+All this code that has to run as efficiently and reliably as possible. It is running on constrained environments and it should work reliably for days, weeks, months or even years with the minimal of errors. It cannot suffer sudden freezes or expanding / collapsing memory behavior due to garbage collection.
 
-In some cases, no general purpose programming meets the needs of the system and so we have specialised languages like IEC1131 programming languages. We will talk about the general purpose cases where a language like C or C++ would be used to achieve speed. But speed with a price.
+In some cases, no general purpose programming would meet the needs of the system. Some hardware such as programmable logic controllers will use specialised languages like IEC1131 programming languages. 
+
+This document talks about like for like. Where you might have used C or C++ but want extra reliability.
 
 Consider these common problems in C++.
 
