@@ -1,6 +1,14 @@
 # Copy Constructor \/ Assignment Operators
 
-In C++, imagine we have a class called PersonList:
+In C++ you can construct one instance from another via a constructor and also by an assignment operator. In some cases a constructor will be used instead of an assignment:
+
+```c++
+PersonList x;
+PersonList y = x; // Copy constructor, not assignment
+PersonList z;
+z = x; // Assignment operator
+
+So our class PersonList might look like this:
 
 ```c++
 class PersonList {
@@ -19,25 +27,9 @@ public:
 
 This is a fairly straightforward class that manages a list of people in some way. Each Person object is held in a vector that PersonList allocated from its constructor. The destructor for PersonList will delete this array.
 
-Now let's see how we can create some really dangerous code:
+By default C++ allows us to copy and assign one class to another so that we make multiple copies of the same data. So when we copy constructed x to y and z, the compiler did all that for us creating the code to copy those bytes from x to y and z. Lucky us! 
 
-```c++
-{
-  PersonList x;
-  PersonList y = x;
-  //...
-  PersonList z;
-  z = x;
-} // Here be dragons!!!!
-```
-
-Well that was easy. And dangerous.
-
-By default C++ allows us to copy and assign one class to another so that we make multiple copies of the same data. The compiler generated a copy constructor and assignment operator for us even though PersonList doesn't say anything about copy or assignment. Lucky us!
-
-Except copying doesn't work the way it should for managed data.
-
-The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program might crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
+Except we're not lucky, we just got slimed. The default copy constructor copies that member variable `personList_` even though its a pointing to private data. So `y` and `z` will contain a `personList_` that points to the same memory as `x`. So when `z`, `y` and `x` go out of scope, the same pointer will be deleted three times and the program might crash. On top of that, `z` allocated its own `personList_` but the assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
 
 ## The Rule of Three
 
