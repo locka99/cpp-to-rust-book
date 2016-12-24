@@ -15,9 +15,9 @@ Splitting definition and implementation across multiple files can be a nuisance 
 
 ### Rust
 
-Rust does not have header files. Every struct, implementation and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the pub keyword.
+Rust does not have header files. Every struct, implementation and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
 
-Rust files reference non-dependent modules with the "use" keyword and pull-in dependent modules with the "mod" keyword.
+Rust files reference non-dependent modules with the "use" keyword and pull-in dependent modules with the `mod` keyword.
 
 ## Namespaces
 
