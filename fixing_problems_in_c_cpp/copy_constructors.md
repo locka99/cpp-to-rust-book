@@ -32,7 +32,7 @@ Except we're not lucky, we just got slimed. The default byte copy takes the poin
 
 ## The Rule of Three
 
-This is such a bad issue that it has given rise to the so-called the rule of three.
+This is such a terrible bug enabling problem in C++ that it has given rise to the so-called the rule of three.
 
 The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction. In other words the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
 
@@ -102,7 +102,9 @@ Boost also provides a `boost::noncopyable` class which provides yet another opti
 
 ## How Rust helps
 
-Rust does allow structs to be copied or clone unless we explicitly implement either the `Copy` and / or `Clone` traits respectively.
+Structs cannot be copied by default. If you assign a struct from one variable to another, ownership moves with it. The old variable is invalid and the compiler will complain if you access it.
+
+If you want to copy a struct you must explicitly implement either the `Copy` and / or `Clone` trait on it.
 
 Most primitive types such as ints, chars, bools etc. implement `Copy` so you can just assign one to another
 
@@ -114,7 +116,7 @@ y = 20;
 assert_eq!(x, 8);
 ```
 
-But a `String` cannot be copied this way. A string has an internal heap allocated pointer so the struct does not implement Copy. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. 
+But a `String` cannot be copied this way. A string has an internal heap allocated pointer so the struct cannot implement Copy. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. 
 
 But you can explicitly clone a `String` in which case the clone operation will make a duplicate of the allocated memory so that both strings are independent of each other:
 
