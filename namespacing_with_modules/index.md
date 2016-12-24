@@ -76,3 +76,16 @@ pub use helpers::Helper;
 ```
 
 In this example, the module pulls in submodules helpers and gui. It also references tests if the unit tests are being built. It also calls "pub use helpers::Helper" which exposes that struct to the outside world as myapp::Helper.
+
+
+## Using a module
+
+Modules can be used once they are defined. 
+
+```rust
+use helpers::*;
+```
+
+Note that the use command is relative to the toplevel `main` or `lib` module. So if you declare a `mod helpers` at the top, then the corresponding `use helpers` will retrieve it. You can also use relative `use` commands with the `super` and `self` keywords.
+
+// TODOs
