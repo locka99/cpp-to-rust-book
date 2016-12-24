@@ -31,7 +31,7 @@ value_as_string = ss.str();
 value_as_string = boost::lexical_cast<std::string>(ivalue);
 ```
 
-All of these have issues be it standards compliance, thread safety, sensitivity to changes to the type of "value", clumsy code, or dependency on third party libs.
+All of these have issues. Some are extensions to the standard, others may not be thread safe, some may break if `value` was changed to another type, e.g. `long long`.
 
 Rust makes it far easier because numeric primitives implement a trait called ToString. The ToString trait has a to_string() function. So to convert the number to string is as simple as this:
 
