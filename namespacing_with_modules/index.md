@@ -1,8 +1,8 @@
 # Namespacing With Modules
 
-In C++ a namespace can be used to split your functions, variables and classes into logical blocks and allow the compiler to disambiguate them from other functions, variables and classes that might otherwise have the same name.
-Namespacing in C++ is completely optional which means some code doesn’t do it at all while other code does.
-e.g.
+In C++ namespaces allow you to group your functions, variables and classes into logical blocks and allow the compiler to disambiguate them from other functions, variables and classes that might otherwise have the same name.
+
+Namespacing in C++ is completely optional which means some code doesn’t do it at all while other code does. e.g.
 
 ```c++
 // Namespacing is usually a good idea
@@ -17,11 +17,11 @@ namespace myapp {
 }
 ```
 
-The equivalent in Rust is a module and serves a similar purpose.  Unlike C++ you don't need to explicitly create a module because each file is a module in its own right.
+The equivalent in Rust is a module and serves a similar purpose.  Unlike C++ though you get namespacing automatically from the structure of your files. Each file is a module in its own right.
 
-If a function bar() is in a file called foo.rs, the function can be referenced foo::bar(). It's implied and you don't have to do anything except name your file in a meaningful way.
+If a function bar() is in a file called foo.rs, the function can be referenced foo::bar(). That means modules implicit and you don't have to do anything except name your file something meaningful.
 
-But if you want an explicit module you may write it like so in the file it is being used from:
+But if you want an explicit module you may also write it like so in the file it is being used from:
 
 ```rust
 mod myapp {
@@ -89,3 +89,11 @@ use helpers::*;
 Note that the use command is relative to the toplevel `main` or `lib` module. So if you declare a `mod helpers` at the top, then the corresponding `use helpers` will retrieve it. You can also use relative `use` commands with the `super` and `self` keywords.
 
 // TODOs
+
+## Module aliasing
+
+TODO
+
+## External crates
+
+TODO
