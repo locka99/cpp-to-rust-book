@@ -39,19 +39,19 @@ In C++ the `std::string` class wraps a char pointer and provides safe methods fo
 
 ### Unicode support
 
-
-
-
 C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring`.
 
-Sorted right?
+We're sorted now right?
 
-Oops no, because `wchar_t` type is is either 2 or 4 bytes wide and is compiler / platform specific. In Microsoft Visual C++ it is an `unsigned short` (corresponding to Win32's Unicode API), in gcc it can be 32-bits or 16-bits according to the compile flags. There is a corresponding `std::wstring` template class in C++ for manipulating wide strings.
+Oops no, because `wchar_t` type can be either 2 or 4 bytes wide and is a compiler / platform specific decision.
 
+In Microsoft Visual C++ the wide char is an `unsigned short` (corresponding to Win32's Unicode API), in gcc it can be 32-bits or 16-bits according to the compile flags. 
 
+A 16-bit value will hold symbols from the Basic Multilingual Plane but not the full 32-bit range. This means that 16-bit wide strings should be assumed to be UTF-16 encoded because they cannot support Unicode properly otherwise.
 
-Note that `wchar_t` is usually a typedef. Some compilers might recognize it as a primitive but others may not. `wchar_t` is a 16 bits type on Windowsenough for the Basic Multilingual Plane. And the rest of Windows is also 16-bit wide characters. On Unix, gcc leaves it as a compiler switch. 
-C++11 rectifies this by introducing `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`.
+C++11 rectifies this by introducing explicit `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`.
+
+### Character types
 
 So now C++ has 4 character types. Great huh?
 
@@ -65,9 +65,15 @@ So now C++ has 4 character types. Great huh?
 
 ## Rust
 
-Rust has been rather fortunate in that Unicode existed before it did and therefore it doesn't have any legacy baggage. It can choose to be UTF-8 encoding internally and expose 32-bit chars.
+Rust has been rather fortunate. Unicode preceded it so it makes a very simple design choice. 
 
-Rust only has str and std::String but they handle all cases.
+* A `char` type is a 32-bit Unicode character, always enough to hold a single character. 
+* A `str` type is a UTF-8 encoded string held in memory. Code tends to use &str which is a string slice, basically a reference to the str, or a portion of it. A str does not need to be terminated with a zero byte and can contain zero bytes if it wants.
+* A `std::String` is a heap allocated string type use for manipulating strings, building them, reading them from file, cloning them etc.
+
+Note that internally UTF-8 is used for encoding yet a char is 32-bits. The length of a strings is considered to be its byte length. There are special iterators for walking the string and decoding UTF-8 into 32-bit characters.
+
+Finally there is a platform specific type `OSString` that handles any differences in how the operating system sees strings compared to Rust.
 
 ## Types Comparison
 
