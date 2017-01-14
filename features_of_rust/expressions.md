@@ -21,7 +21,17 @@ What does x get assigned? In this case the block was empty so x was assigned wit
 x = ()
 ```
 
+This block also returns a value of ().
+
+```rust
+let x = { println!("Hello"); };
+println!("x = {:?}", x);
+```
+
+Again, that's because although the block does stuff (print Hello), it doesn't evaluate to anything so the compiler returns () for us.
+
 So far so useless. But we can change what the block expression evaluates to:
+
 ```rust
 let x = {
     let pi = 3.141592735;
@@ -31,13 +41,11 @@ let x = {
 println!("x = {}", x);
 ```
 
-Now x assigned with the result of the last line which is an expression.
-
-Note how the last line inside the block is not terminated with a semicolon. That becomes the result of the block expression. If we’d put a semicolon on the end of that line, the expression would evaluate to ().
+Now x assigned with the result of the last line which is an expression. Note how the line is not terminated with a semicolon. That becomes the result of the block expression. If we’d put a semicolon on the end of that line as we did with the println!("Hello"), the expression would evaluate to ().
 
 ### Use in functions
 
-A trivial function can just omit the return statement:
+Trivial functions can just omit the return statement:
 
 ```rust
 pub fn add_values(x: i32, y: i32) -> i32 {
@@ -45,7 +53,7 @@ pub fn add_values(x: i32, y: i32) -> i32 {
 }
 ```
 
-### You can use return too
+### You can use return in blocks too
 
 Sometimes you might explicitly need to use the return statement. The block expression evaluates at the end of the block so if you need to bail early you could just use return.
 
@@ -58,9 +66,9 @@ pub fn find(value: &str) -> i32 {
 }
 ```
 
-### Even more complex cases
+### Simplifying switch statements
 
-In C or C++ it would not be uncommon to see code like this:
+In C or C++ you'll often see code like this:
 
 ```c++
 std::string result;
@@ -78,9 +86,9 @@ switch (server_state) {
 }
 ```
 
-We want to assign a value to result from a switch so each branch of the switch has an assignment action. Aside from looking a bit clunky it introduces the possibility of error since we might forget to assign, or add a break, or omit one of the values.
+The code wants to test a value in server_state and assign a string to result. Aside from looking a bit clunky it introduces the possibility of error since we might forget to assign, or add a break, or omit one of the values. 
 
-In Rust we can assign the result of from a match because each match condition is a block expression.
+In Rust we can assign directly into result of from a match because each match condition is a block expression.
 
 ```rust
 let result = match server_state {
