@@ -1,24 +1,57 @@
 # Strings
 
-Strings in C++ are a bit messy. They have to deal with how they were historically defined and how strings in the modern world must behave to deal with multiple languages that don't fit neatly into a byte.
-
-To explain the issue requires some backstory...
+Strings in C++ are a bit messy thanks to the way languages and characters have been mapped onto bytes in different ways. The explanation for this requires some backstory...
 
 ## What is a character exactly?
 
-Historically in C and C++, a char type is 8-bits. Strictly speaking a char is signed type (-127 to 128), but the values essentially represent the values 0-255. Standards like US-ASCII used the first 7-bits (0-127) to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters. Other standards like EBDIC also assign values to upper and lower case letters, number, punctuation marks, but different values! By default, the encoding the compiler choose is what it sees fit - most compilers would use ASCII but some mainframes may still use EBDIC.
+Historically in C and C++, a char type is 8-bits. Strictly speaking a char is signed type (-127 to 128), but the values essentially represent the values 0-255. 
 
-The problem is that the world uses MANY symbols, and they can't all fit in 256 values.
+The US-ASCII standard uses the first 7-bits (0-127) to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters. 
 
-So in time, some operating systems came up with a hack - the OS set itself to a "code page" which defined how values mapped onto symbols. Normally the upper 128-255 values were repurposed according to the code page in effect. Thus most languages only had a handful of additional symbols that could be specified in this range. But CJK (Chinese-Japanese-Korean) languages as well as Thai, Arabic etc. have thousands of symbols so some languages require 2-byte symbols. For example Microsoft's code page 932 implemented Shift JIS (Japanese) where some symbols are two bytes.
+It didn't help the rest of the world who use different character sets. And even ASCII was competing with another standard called EBDIC which was found on mainframe computers. 
 
-Obviously this was rapidly becoming a mess. Software that rendered properly in one language didn't on another. In some cases, the fact that characters could be multiple bytes broke code which attempted to count bytes or split strings.
+What about the upper values from 128-255? Some operating systems came up with a concept called a "code page". According to what "code page" was in effect, the symbol that the user would see for a character in the 128-255 range would change. 
 
-## Unicode to the rescue
+But even this is not enough. Some languages like Chinese, Japanese, Korean, Thai, Arabic etc. have thousands of symbols that must be encoded with more than one byte. So the first byte might be a modifier that combines with further bytes to render as a symbol. For example Microsoft's code page 932 implemented Shift JIS (Japanese) where some symbols are two bytes.
 
-The Unicode standard defines every printable symbol with a unique 32-bit value, a code point. Most symbols fall in the first 16-bits, the Basic Multilingual Plane (BMP) some Chinese characters still did not fit and China has mandated all software must to support all 32-bits.
+Obviously this was rapidly becoming a mess. Each code page interpretted the same byte array differently according to some external setting. So you could not send a file written in Chinese to someone with a different code page and expect it to render properly.
 
-C++ has a wide character called wchar_t that should correspond to a code point but on Windows it's only 16 bits wide, i.e. UTF-16. On gcc, it's a compiler switch. Normally this is fine, but some characters don't reside in 0-65535 and must be escaped. So C++11 adds explicit char16_t and char32_t types and corresponding versions of string called std::u16string and std::u32string.
+### Unicode to the rescue
+
+The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane (BMP). 
+
+But some Chinese characters do not so China has mandated all software must support all 32-bits. We'll see how this has become a major headache for C and C++
+
+## C / C++
+
+### There is no string primitive
+
+C and C++ does not have a string primitive type, instead it has `char` type, that is one byte. A string is a pointer to a char array terminated with a zero byte. 
+
+```c++
+// The array that my_string points at ends with a hidden \0
+char *my_string = "This is as close to a string primitive as you can get;
+```
+
+In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. It's very easy to accidentally copy a string into a buffer too large to hold it.
+
+In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled in just like every other class.
+
+### Unicode support
+
+
+
+
+C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring`.
+
+Sorted right?
+
+Oops no, because `wchar_t` type is is either 2 or 4 bytes wide and is compiler / platform specific. In Microsoft Visual C++ it is an `unsigned short` (corresponding to Win32's Unicode API), in gcc it can be 32-bits or 16-bits according to the compile flags. There is a corresponding `std::wstring` template class in C++ for manipulating wide strings.
+
+
+
+Note that `wchar_t` is usually a typedef. Some compilers might recognize it as a primitive but others may not. `wchar_t` is a 16 bits type on Windowsenough for the Basic Multilingual Plane. And the rest of Windows is also 16-bit wide characters. On Unix, gcc leaves it as a compiler switch. 
+C++11 rectifies this by introducing `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`.
 
 So now C++ has 4 character types. Great huh?
 
@@ -29,15 +62,8 @@ So now C++ has 4 character types. Great huh?
 | `char16_t` | UTF-16
 | `char32_t` | UTF-32
 
-### C++
 
-C and C++ never had a string primitive type, instead it uses a pointer to an array of chars which are zero-byte terminated.
-
-The char type is a byte wide. The std::string template wraps a char pointer and provides methods for modifying the string in a safe manner.
-
-The `wchar_t` type is for wide strings and is either 2 or 4 bytes wide and is compiler / platform specific. In Microsoft Visual C++ it is an `unsigned short` (corresponding to Win32's Unicode API), in gcc it can be 32-bits or 16-bits according to the compile flags. There is a corresponding `std::wstring` template class in C++ for manipulating wide strings.
-
-### Rust
+## Rust
 
 Rust has been rather fortunate in that Unicode existed before it did and therefore it doesn't have any legacy baggage. It can choose to be UTF-8 encoding internally and expose 32-bit chars.
 
