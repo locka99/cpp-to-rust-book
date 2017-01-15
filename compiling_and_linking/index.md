@@ -16,13 +16,13 @@ int main(int arcg, char **argv) {
 }
 ```
 
-The `argc`value says how many elements are in the argv array of `char *`. Many executables want to process arguments which can become inordinately complex \(and and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process.
+Processing arguments can become inordinately complex \(and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process.
 
 Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C\/C++ forces us to solve.
 
-Rust doesn't arguments this way. Instead you can access the command-line parameters from std::env::args\(\). Namespacing is covered later, but std::env::args\(\) means we are invoking the function called args\(\) which resides inside a module env which resides inside a module std.
+Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args\(\)` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line. 
 
-The function args\(\) returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
+The function `args\(\)` returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
 
 ```rust
 fn main() {
