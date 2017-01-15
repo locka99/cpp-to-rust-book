@@ -1,8 +1,16 @@
 # Rust Background
 
-Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation and progressed until the release of version 1.0 in 2015.
+Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation and progressed until the release of version 1.0 in 2015. Activity on the project is very strong and has only picked up since 1.0.
 
-Rust aims to be a safe-by-default alternative to C without compromising on speed.
+The catalyst for the language was the Mozilla Firefox web browser. Firefox is not special amongst browsers - virtually almost all of them are:
+
+* Written in C++.
+* Complex with millions of lines of code.
+* Numerous bugs and security vulnerabilities that were directly attributable to the unsafe nature of the language.
+* Mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc. 
+* Adding multi-threading to the existing engine would doubtless cause even more potential vulnerabilities than being single threaded.
+
+Therefore, Rust was conceived as a way to obtain C or C++ levels of performance but also feature up-front safety enforcement. Code that passed the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
 
 The project is hosted by [](https://github.com/rust-lang/rust)
 
@@ -31,11 +39,12 @@ What you compile with Rust (or LLVM) is not affected by the open source license.
 
 ## Is Rust for everybody?
 
-No of course not. Rust is not a magic wand and rewriting any code requires effort and adds risk. Besides that performance and safety are only two things to consider when writing software.
+No of course not. Performance and safety are only two things to consider when writing software.
 
 * Sometimes it's okay for a program to crash every so often
 * If you have code that's written and works then why throw that away?
-* Performance may not be a big deal especially for network bound code
+* Writing new code will always take effort and will still cause application level bugs of one sort or another.
+* Performance may not be a big deal especially for network bound code and a higher level language like Java, C#, Go may suit better.
 
 But you may still find there is benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
 
