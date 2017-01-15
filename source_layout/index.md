@@ -4,7 +4,7 @@
 
 ### C\/ C++
 
-C and C++ code tends to split itself over two separate kinds of file:
+C and C++ code tends to split itself over two general kinds of file:
 
 * The Header file \(.h, .hpp, .inl\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like QT may sometimes omit the extension.
 * The Source file \(.c, .cc, .cpp\) contains the implementation of classes and anything private.  Sometimes C++ will use tricks such as forward class references and Pimpl patterns to keep complex or dependent code out of the header file.  
