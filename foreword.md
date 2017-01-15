@@ -3,6 +3,7 @@
 **BEGIN DRAFT BOOK DISCLAIMER **
 
 * Some of the samples will not compile or may not have been syntax checked
+* C and Rust code snippets are not distinguished very well yet (styling)
 * Some of the text makes uncited assertions of fact
 * Some of the text is marked TODO
 * Some of the topics that should be covered are brushed over, given undue weight or omitted entirely
