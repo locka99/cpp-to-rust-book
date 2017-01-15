@@ -26,8 +26,10 @@ Rust stops these bad things happening **by design**. And it does so without impa
 * The length of arrays and collections is enforced.
 * Data race conditions are prevented by strict enforcement of mutex / guards and object ownership.
 
-Code that passes the compiler's checks is transformed into machine code with similar performance and speed as the equivalent C or C++. This so-called "zero-cost" approach means that safety does not compromise performance. 
+Code that passes the compiler's checks is transformed into machine code with similar performance and speed as the equivalent C or C++. 
 
-In addition Rust plays well C. You may have a large code base with a performance critical portion. You can choose to rewrite a part of it and leave the remainder alone. 
+This is a "zero-cost" approach. The compiler enforces the rules so that there is zero runtime cost over the equivalent and correctly written program in C or C++. Safety does not compromise performance. 
 
-For example, the Firefox browser uses Rust to analyse video stream data - headers and such like in order to reduce vulnerabilities caused by corrupt or malicious data.
+In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C using foreign function interfaces. You can choose to rewrite a critical section of your codebase leave the remainder alone. 
+
+For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable. 
