@@ -20,9 +20,9 @@ Processing arguments can become inordinately complex \(and buggy\) so most softw
 
 Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C\/C++ forces us to solve.
 
-Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args\(\)` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line. 
+Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args()` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line. 
 
-The function `args\(\)` returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
+The function `args()` returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
 
 ```rust
 fn main() {
@@ -36,8 +36,8 @@ Rust also supplies a [getopts](https://doc.rust-lang.org/getopts/getopts/) crate
 
 We can see some clear advantages to how Rust supplies args:
 
-* You don't need a separate argc, parameter. You get an array, the array defines its own length.
-* You can access arguments from anywhere in your program, not just from the main\(\). In C++ you would have to pass your args around from one place to another. In Rust you can simply ask for them from anywhere.
+* You don't need a separate argc, parameter. You have an array that defines its own length.
+* You can access arguments from anywhere in your program, not just from the `main()`. In C++ you would have to pass your args around from one place to another. In Rust you can simply ask for them from anywhere.
 
 ### Exit code
 
