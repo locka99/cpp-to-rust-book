@@ -29,4 +29,4 @@ cd myproject/
 cargo build
 ```
 
-Most of the code samples are going to be abbreviated in some fashion. e.g. they assume the code is running from within some function or they omit preambles. They may also assume a namespace / module to reduce the amount of noise.
+Most of the code samples are abbreviated in some fashion. e.g. they assume the code is running from within a main() function or they omit preamble noise such as #includes, namespace definitions and so forth.
