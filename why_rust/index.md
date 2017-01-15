@@ -1,6 +1,10 @@
-# Rust background
+# Rust Background
 
-Rust 
+Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation and progressed until the release of version 1.0 in 2015.
+
+Rust aims to be a safe-by-default alternative to C without compromising on speed.
+
+The project is hosted by [](https://github.com/rust-lang/rust)
 
 ## Problems with C/C++
 

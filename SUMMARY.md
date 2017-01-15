@@ -7,7 +7,7 @@
 * [Notation used through this book](notation.md)
 * [Setting Up Rust](setting_up_rust/index.md)
 * [C and C++ Background](c_and_cpp_background/index.md)
-* [Why Rust?](why_rust/index.md)
+* [Rust Background](why_rust/index.md)
 * [Let's Start Simple](start_simple/index.md)
 * [Compiling and Linking in More Detail](compiling_and_linking/index.md)
 * [Source Layout and Other General Points](source_layout/index.md)
@@ -60,3 +60,4 @@
 * [Memory Management](memory_management/index.md)
 * [Rust's std:: library](std_library/index.md)
 * [Rust Cookbook](rust_cookbook/index.md)
+
