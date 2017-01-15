@@ -1,18 +1,18 @@
 # Rust Background
 
-Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation and progressed until the release of version 1.0 in 2015. Activity on the project is very strong and has only picked up since 1.0.
-
-The catalyst for the language was the Mozilla Firefox web browser. Firefox is not special amongst browsers - virtually almost all of them are:
+The catalyst for Rust was the Mozilla Firefox web browser. Firefox is not special amongst browsers in that they all suffer these issues:
 
 * Written in C++.
 * Complex with millions of lines of code.
 * Numerous bugs and security vulnerabilities that were directly attributable to the unsafe nature of the language.
 * Mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc. 
-* Adding multi-threading to the existing engine would doubtless cause even more potential vulnerabilities than being single threaded.
+* Implementing multi-threading to the existing engine would doubtless cause even more vulnerabilities than being single threaded.
 
-Therefore, Rust was conceived as a way to obtain C or C++ levels of performance but also feature up-front safety enforcement. Code that passed the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
+Rust was conceived as a way to obtain C or C++ levels of performance but also feature up-front safety enforcement and memory guarantees. Code that passed the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
 
-The project is hosted by [](https://github.com/rust-lang/rust)
+So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve these issues. It progressed until the release of version 1.0 in 2015. 
+
+The project is hosted on [GitHub](https://github.com/rust-lang/rust). The language has been *self-hosting* for quite some time - that is to say the Rust compiler is written in Rust, so compiling Rust happens from a compiler written in Rust. Get your head around that! But it's the same way that C and C++ compilers are these days too.
 
 ## Problems with C/C++
 
@@ -21,7 +21,6 @@ It is trivial \(by accident\) to write code that is in error such as causing a m
 At best, bugs are a costly burden for developers to find and fix, not just in time and dollars but also their reputation. At worst, the bug could causes catastrophic failure but more ordinarily leaves code unstable or vulnerable to hacking.
 
 Rust is a language that produces machine code that is comparable in performance as C\/C++ but enforces a safe-by-design philosophy. Simply put, the language and the compiler try to stop errors from happening in the first place. For example the compiler rigorously enforces lifetime tracking on objects and generates errors on violations. Most of these checks and guards are done at compile time so there is a zero-cost at runtime.
-
 
 ## Active Development
 
