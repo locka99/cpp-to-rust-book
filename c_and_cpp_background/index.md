@@ -4,10 +4,9 @@ This section talks about C and C++. It describes its history, standards and prov
 
 ## History of C
 
-
 ### Early Days
 
-The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Up until that point most development was expressed in assembly language which was error prone and obviously non portable.
+The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version of Unix ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Most of the code up to that point was expressed in assembly language which was error prone and obviously non portable.
 
 Ritchie developed C so that he could write code in terms of variables, expressions, loops, functions etc. and use a _compiler_ to translate C code into machine code. The generated code ran almost as fast as hand written assembly and was more portable since only the compiler had to be changed in order to support a new architecture. C itself was influenced by B (hence why it was called C), which itself was influenced by BCPL.
 
@@ -19,14 +18,15 @@ Over time the use of C became more widespread and compilers such as Turbo C, Lat
 
 ### International Standards 
 
-C later became an ANSI & international standard, C89. A further standard followed with C99 and C is still under review and development.
+C later became an ANSI standard, C89. A further standard followed with C99 and C is still under review and development.
 
 Some functionality that was introduced in C++ has also found its way back into C standards. For example, single-line comments and variable declaration rules in blocks.
 
 ## History of C++
-C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like features. Simula was a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. It was considered too slow for systems use.
 
-C++ added these concepts as extensions to the C language and used a precompiler called cfront to transform the C++ extensions into C code that could then be compiled into machine code. So a C++ program could have the high level object oriented concepts but without the overhead that came with Simula.
+C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like features. Simula was a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. It was considered too slow for systems use and so something that shared C's speed was obviously desirable.
+
+C++ added these concepts as extensions to the C language and used a precompiler called `cfront` to transform the C++ extensions into C code that could then be compiled into machine code. So a C++ program could have the high level object oriented concepts but without the overhead that came with Simula.
 
 C++ became popular in its own right and outgrew the limitations of cfront preprocessor to become supported by compilers in its own right. Thus toolchains such as Microsoft Visual C++, GCC, Clang etc. support both languages. Some toolchains have also been given to favouring C++ over C, for example Microsoft's compiler has been very slow to implement C99.
 
