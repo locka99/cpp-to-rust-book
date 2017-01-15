@@ -33,3 +33,11 @@ This is a "zero-cost" approach. The compiler enforces the rules so that there is
 In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C using foreign function interfaces. You can choose to rewrite a critical section of your codebase leave the remainder alone. 
 
 For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable. 
+
+## Why Rust?
+
+Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason" you should consider porting. 
+
+However if you have code that *doesn't* work or *isn't* reliable, or *hasn't* been written yet or is due a major rewrite then perhaps you have answered your own question. 
+
+You could write the code or fixes in C/C++ in which case you have to deal with all the unsafe issues that the language does not protect you from. Or you might consider that choosing a safe-by-design language is a good way to protect you from suffering bugs in the field when the code is supposed to be ready for production.
