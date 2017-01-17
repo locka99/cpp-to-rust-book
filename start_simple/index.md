@@ -1,6 +1,6 @@
 # Let's Start Simple
 
-The usual introduction to any language is "Hello, World!".  A simple program that prints that message out to the console.
+The usual introduction to any language is "Hello, World!". A simple program that prints that message out to the console.
 
 Here is how we might write it for C:
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-We could write it the same way for C++, or we could use the C++ stream classes if we preferred:
+C++ could write it the same way, or we could use the C++ stream classes if we preferred:
 
 ```c++
 #include <iostream>
