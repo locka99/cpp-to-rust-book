@@ -2,13 +2,13 @@
 
 ## Your main\(\) entry point
 
-Rust has a main function just like C\/C++ which is usually called `main()`. [^1]
+Rust has a main function just like C/C++ which is usually called `main()`. [^1]
 
-It doesn’t take any arguments and it doesn’t return anything unlike C\/C++. Let's see how we might do those things.
+It doesn’t take any arguments and it doesn’t return anything unlike C/C++. Let's see how we might do those things.
 
 ### Processing command-line arguments
 
-In C\/C++, the entry point takes argc, and argv arguments. Argc is the number of arguments and argv is an array of char \* pointers that specify those arguments.
+In C/C++, the entry point takes argc, and argv arguments. Argc is the number of arguments and argv is an array of char \* pointers that specify those arguments.
 
 ```c++
 int main(int arcg, char **argv) {
@@ -18,7 +18,7 @@ int main(int arcg, char **argv) {
 
 Processing arguments can become inordinately complex \(and buggy\) so most software will use a function like `getopt()` or `getopt_long()` to simplify the process.
 
-Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C\/C++ forces us to solve.
+Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C/C++ forces us to solve.
 
 Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args()` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line. 
 
@@ -54,7 +54,7 @@ When main\(\) drops out, the runtime cleans up and returns the code to the envir
 
 ## Optimized compilation
 
-In a typical edit \/ compile \/ debug cycle there is no need to optimize code and so Rust doesn't optimize unless you ask it to.
+In a typical edit / compile / debug cycle there is no need to optimize code and so Rust doesn't optimize unless you ask it to.
 
 Optimization takes longer to happen and can reorder the code so that backtraces and debugging may not point at the proper lines of code in the source.
 
@@ -68,11 +68,11 @@ The act of optimization will cause Rust to invoke the LLVM optimizer prior to li
 
 ## Incremental compilation
 
-Incremental compilation is also important for edit \/ compile \/ debug cycles. Incremental compilation only rebuilds those parts of the code which have changed through modification to minimize the amount of time it takes to rebuild the product.
+Incremental compilation is also important for edit / compile / debug cycles. Incremental compilation only rebuilds those parts of the code which have changed through modification to minimize the amount of time it takes to rebuild the product.
 
 Rust has a different incremental compilation model to C++.
 
-* C++ doesn't support incremental compilation per se. That function is left to the make \/ project \/ solution tool. Most builders will track a list of project files and which file depends on other files. So if file foo.h changes then the builder knows what other files depend on it and ensures they are rebuilt before relinking the target executable.
+* C++ doesn't support incremental compilation per se. That function is left to the make / project / solution tool. Most builders will track a list of project files and which file depends on other files. So if file foo.h changes then the builder knows what other files depend on it and ensures they are rebuilt before relinking the target executable.
 * In Rust incremental compilation is at the crate level - that if any file in a crate changes then the crate as a whole has to be rebuilt. Thus larger code bases tend to be split up into crates to reduce the incremental build time.
 
 There is a recognition in the Rust community that the crate-level model can suck for large crates so the Rust compiler is getting [incremental per-file compilation support](https://blog.rust-lang.org/2016/09/08/incremental.html) in addition to per-crate.
@@ -114,7 +114,7 @@ fn main() {
 }
 ```
 
-If we save this file and type "rustc main.rs" the compiler will notice the reference to "mod pacman" and will search for a pacman.rs \(or pacman\/mod.rs\) and compile that too. It will continue doing this with any other modules referenced along the way.
+If we save this file and type "rustc main.rs" the compiler will notice the reference to "mod pacman" and will search for a pacman.rs \(or pacman/mod.rs\) and compile that too. It will continue doing this with any other modules referenced along the way.
 
 In other words you could have a project with 1000 files and compile it as simply as "rustc main.rs". Anything referenced is automatically compiled and linked.
 
@@ -196,7 +196,7 @@ So the change to the Cargo.toml and a reference in the source is sufficient to:
 2. Build the crate \(and any dependencies\)
 3. Compile and link to the crate and dependencies
 
-All that happened with a line in Cargo.toml and a line in our code to reference the crate. We didn't have to mess around figuring how to build the other library, or maintain multiple makefiles, or getting our compiler \/ linker flags right. It just happened.
+All that happened with a line in Cargo.toml and a line in our code to reference the crate. We didn't have to mess around figuring how to build the other library, or maintain multiple makefiles, or getting our compiler / linker flags right. It just happened.
 
 #### Cargo.lock
 

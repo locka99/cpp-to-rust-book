@@ -11,7 +11,7 @@ The easiest way to get started is to download and run rustup-init which you can 
 The instructions differ for Windows and Unix-like systems:
 
 * On Windows, rustup-init is an exe installer.
-* On Unix \/ OS X \/ Linux rust-init is a shell script.
+* On Unix / OS X / Linux rust-init is a shell script.
 
 Either way, when you follow the instructions rustup-init will download.
 
@@ -20,15 +20,15 @@ The installer will download and install put rustc, cargo, and rustup in your bin
 Once rustup is installed you can use the tool to:
 
 * Install additional Rust toolchains \(e.g. if you are cross-compiling or supporting multiple targets you may have more than one toolchain\)
-* Change the default toolchain that is invoked when you type "rustc" or "cargo". Rustup will create symbolic links \/ scripts that invoke the appropriate toolchain
+* Change the default toolchain that is invoked when you type "rustc" or "cargo". Rustup will create symbolic links / scripts that invoke the appropriate toolchain
 * Updates the toolchain when a new version is released
 * Fetches sources and documentation
 
-### Unix \/ Linux
+### Unix / Linux
 
 The process for running rustup-init.sh is as follows:
-1. Open a terminal \/ console
-2. Type "curl [https:\/\/sh.rust.rs](https://sh.rust.rs) -sSf \| sh"
+1. Open a terminal / console
+2. Type "curl [https://sh.rust.rs](https://sh.rust.rs) -sSf \| sh"
 3. This will execute a script which will examine your environment, recommend the toolchain to download, and offer to modify your PATH.
 4. Choose the option 1 to proceed. Or customize if you want to modify something
 5. Wait for download to complete
@@ -36,8 +36,8 @@ The process for running rustup-init.sh is as follows:
 
 If you don't have curl, then you must install it first to proceed. In Linux you would invoke a command like this to install it.
 
-* Debian \/ Ubuntu - sudo apt get curl
-* Fedora \/ Redhat - sudo dnf install curl
+* Debian / Ubuntu - sudo apt get curl
+* Fedora / Redhat - sudo dnf install curl
 
 ### Windows
 
@@ -49,12 +49,12 @@ If you don't have curl, then you must install it first to proceed. In Linux you 
 
 If you prefer not to go with the defaults, here are some choices you should decide upon:
 
-1. 32\/64 bit version. Most Windows installations are going to be 64-bits these days but you may have a reason to choose 32-bit.
+1. 32/64 bit version. Most Windows installations are going to be 64-bits these days but you may have a reason to choose 32-bit.
 2. GNU or MSVC ABI. This depends on what toolchain and runtimes you wish to be compatible with.
 
 The second choice concerns the application binary interface \(ABI\) you want Rust to be compatible with.
 
-* If you don't care about linking to anything then choose the GNU ABI. Also choose it if you have DLLs produced by MingW \/ MSYS. The advantage of this ABI is that it is more mature.
+* If you don't care about linking to anything then choose the GNU ABI. Also choose it if you have DLLs produced by MingW / MSYS. The advantage of this ABI is that it is more mature.
 * If you have Visual Studio installed or intend to use Rust against DLLs created with Visual Studio, that's the ABI you need. One advantage of this option is that you can debug Rust inside of Visual Studio- the compiler will produce .pdb files that allow you to step debug Rust.
 
 ### Keeping Rust up to date
@@ -71,17 +71,26 @@ Sometimes rustup will get an update of its own in which case you type:
 rustup self update
 ```
 
+### Adding Rust source
+
+Rustup installs a rust toolchain but if you're writing code or debugging you probably
+should also get the Rust source code so you can step into it or look at the implementation:
+
+```
+rustup component add rust-src
+```
+
 ## Manual installation
 
 If you prefer manual installation of Rust then there are packages and instructions on the [Rust site](https://www.rust-lang.org/en-US/downloads.html).
 
-Just be aware that Rust has a fairly rapid release cycle so you probably only want to do this if you have a reason to choose a specific version of Rust and stick with it. 
+Just be aware that Rust has a fairly rapid release cycle so you probably only want to do this if you have a reason to choose a specific version of Rust and stick with it.
 
 Otherwise you may find yourself uninstalling and reinstalling a new version 6 weeks later all over again.
 
 ## Setting up a debugger
 
-### Unix \/ Linux
+### Unix / Linux
 
 Debugging Rust is little different from debugging C or C++.
 
@@ -111,7 +120,7 @@ Rust is still behind some other languages when it comes to IDE integration but t
 
 Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work to varying degrees of integration with Rust.
 
-* [Rust plugin for IntelliJ IDEA](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development. 
+* [Rust plugin for IntelliJ IDEA](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development.
 * [Visual Rust plugin for Microsoft Studio](https://github.com/PistonDevelopers/VisualRust) . Offers syntax highlighting, autocompletion, interactive debugging.
 * [RustDT for Eclipse](https://github.com/RustDT/RustDT) is also under active development. It adds syntax highlighting, autocomplete \(via racer\), cargo builds and rustfmt functionality to Eclipse.
 * Atom is a popular editor with heaps of plugins. These plugins are very useful for Rust:
@@ -122,7 +131,7 @@ Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work
 
 For other editors and IDEs refer to the [Rust and IDEs](https://forge.rust-lang.org/ides.html) page on the Rust website.
 
-## Racer \/ Rustfmt
+## Racer / Rustfmt
 
 Some of the plugins above make use of Racer and Rustfmt.
 

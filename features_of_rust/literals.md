@@ -24,7 +24,7 @@ In C++ an [integer literal](http://en.cppreference.com/w/cpp/language/integer_li
 0b111111110010000 // or 0B
 ```
 
-The `u`, `l`, and `ll` suffixes on integers denotes if it is `unsigned`, `long` or a `long long` type. The `u` and `l`\/`ll` can be upper or lowercase. Ordinarily the `u` must precede the size but C++14 allows the reverse order.
+The `u`, `l`, and `ll` suffixes on integers denotes if it is `unsigned`, `long` or a `long long` type. The `u` and `l`/`ll` can be upper or lowercase. Ordinarily the `u` must precede the size but C++14 allows the reverse order.
 
 C++14 also allows single quotes to be inserted into the number as separators - these quotes can appear anywhere and are ignored.
 
@@ -34,11 +34,11 @@ Floating point numbers may represent whole or fractional numbers.
 
 ### Boolean values
 
-C\/C++ `bool` literals are `true` or `false`.
+C/C++ `bool` literals are `true` or `false`.
 
 ### Strings
 
-Strings in C\/C++ have grown \(in complexity\) as they have tried to accomodate code pages, multi-byte character sets and finally Unicode. Therefore there are prefixes to declare strings in a variety of widths and compliance \/ assumptions with Unicode.
+Strings in C/C++ have grown \(in complexity\) as they have tried to accomodate code pages, multi-byte character sets and finally Unicode. Therefore there are prefixes to declare strings in a variety of widths and compliance / assumptions with Unicode.
 
 ```c++
 "Hello"

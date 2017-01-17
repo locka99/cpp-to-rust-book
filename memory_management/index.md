@@ -28,7 +28,7 @@ The main worry from using the stack is the possibility of a stack overflow, i.e 
 This can occur in two common ways in isolation or combination:
 
 * Deeply nested function calls, e.g. a recursive function that traverses a binary tree, or a recursive function that never stops
-* Exhausting stack by using excessive and\/or large local variables in functions, e.g. lots of 64KB byte arrays.
+* Exhausting stack by using excessive and/or large local variables in functions, e.g. lots of 64KB byte arrays.
 
 ### C++
 
@@ -80,7 +80,7 @@ Many structs in std:: and elsewhere will have a stack based portion and also use
 
 ## Heap fragmentation
 
-Heap fragmentation happens when contiguous space in the heap is limited by the pattern of memory allocations that it already contains. When this happens a memory allocation can fail and the heap must be grown to make it succeed. In systems which do not have virtual memory \/ paging, memory exhaustion caused by fragmentation can cause the program or even the operating system to fail completely.
+Heap fragmentation happens when contiguous space in the heap is limited by the pattern of memory allocations that it already contains. When this happens a memory allocation can fail and the heap must be grown to make it succeed. In systems which do not have virtual memory / paging, memory exhaustion caused by fragmentation can cause the program or even the operating system to fail completely.
 
 The easiest way to see fragmentation is with a simple example. We'll pretend there is no housekeeping structures, guard blocks or other things to get in the way. Imagine a 10 byte heap, where every byte is initially free.
 
@@ -110,7 +110,7 @@ This is also an exagerated example, but it demonstrates how heap can have space,
 
 Software running in embedded devices are particularly vulnerable to fragmentation because they do not have virtual memory, have low physical memory and normally have to run for days, weeks or years at a time.
 
-One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string \/ collection grows then it may have to reallocate more memory.
+One major problem for C++ is that heap fragmentation is almost impossible to avoid. The standard template library allocates memory for virtually all string and collection work, and if a string / collection grows then it may have to reallocate more memory.
 
 The only way to mitigate the issue is to choose the best collection, and to reserve capacity wherever possible.
 
@@ -122,7 +122,7 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-Rust also has this issue and strings \/ collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
+Rust also has this issue and strings / collections have methods to reserve capacity. But as a consequence of its design it prefers the stack over the heap. Unless you explicitly allocate memory by putting it into a Box, Cell or RefCell you do not allocate it on the heap.
 
 ## RAII
 

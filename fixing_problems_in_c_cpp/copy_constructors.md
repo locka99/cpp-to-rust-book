@@ -1,4 +1,4 @@
-# Copy Constructor \/ Assignment Operators
+# Copy Constructor / Assignment Operators
 
 In C++ you can construct one instance from another via a constructor and also by an assignment operator. In some cases a constructor will be used instead of an assignment:
 
@@ -75,7 +75,7 @@ What a mess!
 
 We've added a copy constructor and an assignment operator to the class to handle copying safely. The code even had to check if it was being assigned to itself in case someone wrote `x = x`. Without that test, the receiving instance would clear itself in preparation to adding elements from itself which would of course wipe out all its contents.
 
-Alternatively we might disable copy \/ assignments by creating private constructors that prevents them being called by external code:
+Alternatively we might disable copy / assignments by creating private constructors that prevents them being called by external code:
 
 ```c++
 class PersonList {
@@ -187,7 +187,7 @@ Rust has stopped the problem that we saw in C++. Not only stopped it but told us
 
 ### Implementing a Copy / Clone
 
-Sometimes we DO want to copy \/ duplicate an object and for that we must implement a trait to tell the compiler that we want that.
+Sometimes we DO want to copy / duplicate an object and for that we must implement a trait to tell the compiler that we want that.
 
 The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it and you can only derive it if all the members of the struct also derive it:
 
@@ -242,6 +242,6 @@ x.persons.push(Person{ name: "Fred".to_string(), age: 30} );
 y.persons.push(Person{ name: "Mary".to_string(), age: 24} );
 ```
 
-In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone \/ copy we can make our intent explicit and do that too.
+In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone / copy we can make our intent explicit and do that too.
 
 C++ just lets us dig a hole and fills the dirt in on top of us.

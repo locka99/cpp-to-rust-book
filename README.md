@@ -1,4 +1,4 @@
-# A Guide to Porting C\/C++ to Rust
+# A Guide to Porting C/C++ to Rust
 
 This book is for people familiar with C or C++ who are thinking of using Rust.
 
@@ -16,7 +16,7 @@ All this code must run as efficiently and reliably as possible. It must run on d
 Normally such software would be written in C or C++, but consider these _every day_ programming issues that afflict these languages:
 
 * Dangling pointers. A program calls an invalid pointer causing a crash.
-* Buffer overruns \/ underruns. Code writes beyond an allocated buffer causing memory corruption or a page exception.
+* Buffer overruns / underruns. Code writes beyond an allocated buffer causing memory corruption or a page exception.
 * Memory leaks. Code does not free allocated memory causing the program to consume memory over time until it or the system fails.
 * Data races. Multiple threads write to data at the same time causing corruption or other destabilizing behavior.
 
@@ -26,18 +26,18 @@ Rust stops these bad things happening **by design**. And it does so without impa
 * The length of arrays and collections is enforced.
 * Data race conditions are prevented by strict enforcement of mutex / guards and object ownership.
 
-Code that passes the compiler's checks is transformed into machine code with similar performance and speed as the equivalent C or C++. 
+Code that passes the compiler's checks is transformed into machine code with similar performance and speed as the equivalent C or C++.
 
-This is a "zero-cost" approach. The compiler enforces the rules so that there is zero runtime cost over the equivalent and correctly written program in C or C++. Safety does not compromise performance. 
+This is a "zero-cost" approach. The compiler enforces the rules so that there is zero runtime cost over the equivalent and correctly written program in C or C++. Safety does not compromise performance.
 
-In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C using foreign function interfaces. You can choose to rewrite a critical section of your codebase leave the remainder alone. 
+In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C using foreign function interfaces. You can choose to rewrite a critical section of your codebase leave the remainder alone.
 
-For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable. 
+For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable.
 
 ## Why Rust?
 
-Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason" you should consider porting. 
+Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason" you should consider porting.
 
-However if you have code that *doesn't* work or *isn't* reliable, or *hasn't* been written yet or is due a major rewrite then perhaps you have answered your own question. 
+However if you have code that *doesn't* work or *isn't* reliable, or *hasn't* been written yet or is due a major rewrite then perhaps you have answered your own question.
 
 You could write the code or fixes in C/C++ in which case you have to deal with all the unsafe issues that the language does not protect you from. Or you might consider that choosing a safe-by-design language is a good way to protect you from suffering bugs in the field when the code is supposed to be ready for production.
