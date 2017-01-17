@@ -69,7 +69,7 @@ println!("The value of x is {}", x);
 ```
 A C++ compiler might issue a warning or catch the error with strict flags, but by default it doesn't care.
 
-Rust will also warn you if you declare a variable and end up not using it.
+Rust will throw an error. It will also warn you if you declare a variable and end up not using it.
 
 ## References and Borrowing
 
