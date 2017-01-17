@@ -27,7 +27,8 @@ Macros in Rust are quite a complex topic but they are more powerful and safer th
 * Rust macros are either declarative and rule based with each rule having a left hand side pattern "matcher" and a right hand side "substitution". Or they're procedural and actualy rust code turns an input into an output (see section below).
 * Macros must produce syntactically correct code.
 * Declarative macros can be exported by crates and used in other code providing the other code elects to enable macro support from the crate. This is a little messy since it must be signalled with a #[macro_export] directive.
-* With all that said, macros in Rust are very complex to read - too complex to read, and generally speaking should be used as sparingly as possible.
+
+With all that said, macros in Rust *are* complex - perhaps too complex - and generally speaking should be used as sparingly as possible.
 
 Here is a simple declarative macro demonstrating repetition called hello_x!(). It will take a comma separated list of expressions and say hello to each one of them.
 
