@@ -4,7 +4,7 @@ The core functionality in Rust is provided by a module called `std`. This is the
 
 As with its C++ namesake, everything can be referenced through a `std::` namespace prefix or via a `use std::{foo}` import.
 
-Some of std` is implicitly available by a special [`std::prelude`](https://doc.rust-lang.org/beta/std/prelude/) that is automatically used (along with a reference to the std crate) without declaration. The prelude contains functionality that virtually all code is likely to use and therefore Rust spares code from having to import it:
+Some of std is implicitly available by a special [`std::prelude`](https://doc.rust-lang.org/beta/std/prelude/) that is automatically used (along with a reference to the std crate) without declaration. The prelude contains functionality that virtually all code is likely to use and therefore Rust spares code from having to import it:
 
 * String and ToString trait
 * Iterators traits of various kinds - Iterator, Exten, IntoIterator etc.
@@ -15,7 +15,7 @@ Some of std` is implicitly available by a special [`std::prelude`](https://doc.r
 * Macros such as println!, format!, assert! etc.
 
 ```rust
-// You don't need these 
+// You don't need these
 extern crate std;
 use std::prelude::*;
 ```

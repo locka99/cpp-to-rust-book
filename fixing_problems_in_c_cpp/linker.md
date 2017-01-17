@@ -9,3 +9,11 @@ If you omit a file by accident you will get undefined or missing references. Mai
 Rust includes everything in your library / executable that is directly or indirectly referenced by mod commands, starting from your toplevel lib.rs or main.rs and working all the way down.
 
 Providing you reference a module, it will be automatically built and linked into your binary.
+
+If you use the `cargo` command, then the above also applies for external crates that you link with. The cargo command will
+also check for version conflicts between external libraries. If you find your cargo generating errors about compatibility
+conflicts between crates you may be able to resolve them by updating the Cargo.lock file like so:
+
+```
+cargo update
+```

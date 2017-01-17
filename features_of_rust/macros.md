@@ -22,11 +22,12 @@ This macro would expand to printf before compilation but it would fail to compil
 
 Macros in Rust are quite a complex topic but they are more powerful and safer than the ones in C++.
 
-* Rust macros are hygenic. That is to say if a macro contains variables, their names do not conflict with, hide, otherwise interfere with named variables from the scope they're used from.
+* Rust macros are hygenic. That is to say if a macro contains variables, their names do not conflict with, hide, or otherwise interfere with named variables from the scope they're used from.
 * The pattern supplied in between the brackets of the macro are tokenized and designated as parts of the Rust language. identifiers, expressions etc. In C / C++ you can #define a macro to be anything you like whether it is garbage or syntactically correct. Furthermore you can call it from anywhere you like because it is preprocessed even before the compiler sees the macro.
 * Rust macros are either declarative and rule based with each rule having a left hand side pattern "matcher" and a right hand side "substitution". Or they're procedural and actualy rust code turns an input into an output (see section below).
 * Macros must produce syntactically correct code.
 * Declarative macros can be exported by crates and used in other code providing the other code elects to enable macro support from the crate. This is a little messy since it must be signalled with a #[macro_export] directive.
+* With all that said, macros in Rust are very complex to read - too complex to read, and generally speaking should be used as sparingly as possible.
 
 Here is a simple declarative macro demonstrating repetition called hello_x!(). It will take a comma separated list of expressions and say hello to each one of them.
 
