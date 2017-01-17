@@ -90,7 +90,9 @@ Rust requires most heap allocated memory to be contained by one or more of the s
 
 ### Box<T>
 
-A `Box` is a managed pointer. It holds a reference to some data but there can only be one valid reference to the box itself. Essentially, that means you can pass the box around from one place to another and whoever binds to it last can open it. Everyone else’s binding is invalid will generate a compile error.
+A `Box` is something managed on the heap. If I create something created in a box, it's allocated by the heap. 
+
+Whoever owns the box can access it. Essentially, that means you can pass the box around from one place to another and whatever binds to it last can open it. Everyone else’s binding becomes invalid and will generate a compile error.
 
 A box can be useful for abstraction since it can refer to a struct by a trait it implements allowing decoupling between types.
 
