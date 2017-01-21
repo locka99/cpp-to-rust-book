@@ -110,9 +110,54 @@ Rust comes with a few scripts that wrap gdb and lldb to provide pretty-printing 
 
 ### Windows
 
-If you have chosen Rust with the MSVC ABI then you can debug through Visual Studio. When you create a debug build of your code, the compile will also create a .pdb file to go with it. You may open your executable in Visual Studio and step debug it.
+If you have chosen Rust with the MSVC ABI then you can debug through Visual Studio with some limitations. When you create a debug build of your code, the compile will also create a .pdb file to go with it. You may open your executable in Visual Studio and step debug it, inspect variables and so on. 
 
-If you have chosen Rust with the GNU ABI, then you must debug with GDB. GDB on Windows is somewhat tricky to get going. The best advice is to find a prebuilt version of MSYS / MingW with the same 32-bit or 64-bit configuration as Rust and install gdb via that.
+#### GDB
+
+GDB on Windows is available through MSYS / MingW distributions.
+
+For example downloads of the TDM-GCC distribution of MSYS can be found [here](http://tdm-gcc.tdragon.net/download). At the time of writing this, there is a standalone gdb-7.9.1-tdm64-2.zip containing the Choose the 32 or 64-bit version according to your Rust environment.
+
+Extract the zip file to a directory, e.g. `C:\tools\gdb-7.9.1-tdm64-2` and add a value to your `PATH` environment variable:
+
+```
+set PATH=%PATH%;C:\tools\gdb-7.9.1-tdm64-2\bin\
+```
+
+You can invoke `gdb` from the command line but more normally you'd prefer a front end.
+
+At the time of writing, perhaps the best option is Visual Studio Code which has plugins for debugging with GDB and for Rust development. So you can edit and debug from the same IDE.
+
+##### Pretty printer
+
+Rust supplies a pretty printer for variable inspection that you can add to the GDB.   The pretty printer is a script written in Python that GDB will invoke to display variables. 
+
+First ensure you have Python 2.7 installed in your path.
+
+The script is bundled with the Rust source code so you need to have installed that first.
+
+If you installed it with `rustup` then it can be found in your `%USERPROFILE%\.rustup` directory:
+
+e.g.
+
+```
+c:\users\MyName\.rustup\toolchains\stable-x86_64-pc-windows-gnu\lib\rustlib\src\rust\src\etc
+```
+
+Otherwise it can be found wherever you unzipped your Rust source code under `src\rust\src\etc`.
+
+Note the fully qualified path its under and edit `C:\tools\gdb-7.9.1-tdm64-2\bin\gdbinit` to insert the path using *forward* slashes.
+
+```
+python
+print "---- Loading Rust pretty-printers ----"
+ 
+sys.path.insert(0, "C:/users/MyName/.rustup\toolchains/stable-x86_64-pc-windows-gnu/lib/rustlib/src/rust/src/etc")
+import gdb_rust_pretty_printing
+gdb_rust_pretty_printing.register_printers(gdb)
+ 
+end
+```
 
 ## Setting up an IDE
 
@@ -120,6 +165,7 @@ Rust is still behind some other languages when it comes to IDE integration but t
 
 Popular IDEs such as Eclipse, IntelliJ, Visual Studio all have plugins that work to varying degrees of integration with Rust.
 
+* [Visual Studio Code](https://code.visualstudio.com/) (not to be confused with Visual Studio) is a cross-platform programming editor and has a lot of plugins. It can be set up into a complete Rust development environment by following this [tutorial](https://sherryummen.in/2016/09/02/debugging-rust-on-windows-using-visual-studio-code/).
 * [Rust plugin for IntelliJ IDEA](https://intellij-rust.github.io/) is under active development. This plugin has a lot of traction and is turning around new versions on a nearly weekly basis.  Offers syntax highlighting, autocomplete \(via built-in parser\), cargo builts and eventually other functionality. [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows) is a commercial product but it comes in a community edition which is sufficient for development.
 * [Visual Rust plugin for Microsoft Studio](https://github.com/PistonDevelopers/VisualRust) . Offers syntax highlighting, autocompletion, interactive debugging.
 * [RustDT for Eclipse](https://github.com/RustDT/RustDT) is also under active development. It adds syntax highlighting, autocomplete \(via racer\), cargo builds and rustfmt functionality to Eclipse.
