@@ -12,7 +12,7 @@ Rust was conceived as a way to obtain C or C++ levels of performance but also fe
 
 So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve these issues. It progressed until the release of version 1.0 in 2015.
 
-The project is hosted on [GitHub](https://github.com/rust-lang/rust). The language has been *self-hosting* for quite some time - that is to say the Rust compiler is written in Rust, so compiling Rust happens from a compiler written in Rust. Get your head around that! But it's the same way that C and C++ compilers are these days too.
+The project is hosted on [GitHub](https://github.com/rust-lang/rust). The language has been _self-hosting_ for quite some time - that is to say the Rust compiler is written in Rust, so compiling Rust happens from a compiler written in Rust. Get your head around that! But it's the same way that C and C++ compilers are these days too.
 
 ## Problems with C/C++
 
@@ -32,9 +32,9 @@ Most releases focus on marking APIs as stable, improving code optimization and c
 
 Rust is dual licensed under the Apache 2.0 and MIT open source licenses. The full copyright message is viewable [online](https://github.com/rust-lang/rust/blob/master/COPYRIGHT).
 
-Essentially the license covers your right to modify and distribute the Rust source code. Note that Rust generates code for LLVM so LLVM also has its own software license (TODO link).
+Essentially the license covers your right to modify and distribute the Rust source code. Note that Rust generates code for LLVM so LLVM also has its own software license \(TODO link\).
 
-What you compile with Rust (or LLVM) is not affected by the open source license. So you may compile, execute and distribute proprietary code without obligation to these licenses.
+What you compile with Rust \(or LLVM\) is not affected by the open source license. So you may compile, execute and distribute proprietary code without obligation to these licenses.
 
 ## Is Rust for everybody?
 
@@ -43,7 +43,7 @@ No of course not. Performance and safety are only two things to consider when wr
 * Sometimes it's okay for a program to crash every so often
 * If you have code that's written and works then why throw that away?
 * Writing new code will always take effort and will still cause application level bugs of one sort or another.
-* Performance may not be a big deal especially for network bound code and a higher level language like Java, C#, Go may suit better.
+* Performance may not be a big deal especially for network bound code and a higher level language like Java, C\#, Go may suit better.
 
 But you may still find there is benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
 
@@ -68,8 +68,8 @@ And perhaps if you program the right subset of features and diligently work to a
 
 But what is the _right_ subset?
 
-* if you use someone else's library - are they using the right subset?
-* if one subset is right then why does C++ still contain all the stuff that is wrong?
+* If you use someone else's library - are they using the right subset?
+* If one subset is right then why does C++ still contain all the stuff that is outside of that?
 * Why are all the things which are patently unsafe / dangerous still allowed?
 * Why are certain dangerous default behaviors such as default copy constructors not flipped to improve code safety?
 
@@ -79,6 +79,7 @@ We could argue that C++ doesn't want to break existing code by introducing chang
 
 Rust recognizes you may need to call an external libraries, e.g. in a C library or a system API.
 
-Therefore it provides an unsafe keyword that throws some of the safety switches when it is necessary to talk to the outside world.
+Therefore it provides an `unsafe` keyword that throws some of the safety switches when it is necessary to talk to the outside world.
 
 This allows you consider the possibility of porting code partially to Rust while still allowing some of it to remain as C.
+
