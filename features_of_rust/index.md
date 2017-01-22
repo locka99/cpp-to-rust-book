@@ -1,8 +1,8 @@
 # Features of Rust compared with C++
 
-Rust and C++ have roughly analogous functionality. The focus of course is different in Rust - to provide safe-by-default programming functionality.
+Rust and C++ have roughly analogous functionality although they often go about it in different ways.
 
-Rust also benefits from starting from a clean slate so it simplifies things that C++ has had no choice but to adapt to over the years such as making itself Unicode compliant.
+Rust benefits from learning what works in C / C++ and what doesn't and indeed has cherry-picked features from a variety of languages. It also enjoys a cleaner API in part because things like Unicode dictate the design.
 
 This section will cover such topics as types, strings, variables, literals, collections, structs, loops and so on. In each case it will draw comparison between how things are in C/C++ and how they are in Rust.
 
