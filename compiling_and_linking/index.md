@@ -20,7 +20,7 @@ Processing arguments can become inordinately complex \(and buggy\) so most softw
 
 Note that `getopt()` is not a standard C function and is not portable, e.g. to Windows. So immediately we see an example of problem that C/C++ forces us to solve.
 
-Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args()` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line. 
+Rust doesn't process arguments this way. Instead you access the command-line parameters from `std::env::args()` from anywhere in the code. That is to say, there is a function called `args()` under the namespace `std::env` that returns the strings on the command-line.
 
 The function `args()` returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
 
@@ -122,9 +122,7 @@ Okay, so we can call rustc, but what happens if our code has dependencies on oth
 
 ### Cargo
 
-Rust recognizes that very few pieces of code have zero dependencies so it provides a package manager and dependency management tool for you called Cargo.
-
-Cargo can fetch dependencies, build them, build and link your code, run unit tests, install binaries, produce documentation and upload versions of your project to a repository.
+Cargo is a package manager build tool rolled into one. Cargo can fetch dependencies, build them, build and link your code, run unit tests, install binaries, produce documentation and upload versions of your project to a repository.
 
 The easiest way to create a new project in Rust is to use the "cargo" command to do it
 
@@ -202,6 +200,7 @@ All that happened with a line in Cargo.toml and a line in our code to reference 
 
 Also note that once we build, cargo creates a Cargo.lock file in our root directory.
 
-This file is made so that if `cargo build` is invoked again it has an exact list of what packages need to be pulled and compiled. It stops situations where the code under our feet (so to speak) moves and suddenly our project no longer builds. So if the lock file exists, the same dependency configuration can be reproduced even from a clean. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
+This file is made so that if `cargo build` is invoked again it has an exact list of what packages need to be pulled and compiled. It stops situations where the code under our feet \(so to speak\) moves and suddenly our project no longer builds. So if the lock file exists, the same dependency configuration can be reproduced even from a clean. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
 
 [^1]: You can change the main entry point using a special  `#[start]` directive if you want on another function but the default is main\(\)
+
