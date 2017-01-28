@@ -12,7 +12,7 @@ Rust comes with a gdb wrapper script called `rust-gdb` that loads macros which p
 
 ## Enabling backtrace
 
-If your code is crashing because of a panic!() you can get a backtrace on the console by setting the `RUST_BACKTRACE` environment variable.
+If your code is crashing because of a panic!\(\) you can get a backtrace on the console by setting the `RUST_BACKTRACE` environment variable.
 
 ```
 # Windows
@@ -21,7 +21,7 @@ set RUST_BACKTRACE=1
 export RUST_BACKTRACE=1
 ```
 
-## Find our your target binary format
+## Find out your target binary format
 
 If you are in doubt what you are targeting, you may use `rustup` to show you.
 
@@ -47,12 +47,12 @@ The information will tell you which debugger you can use to debug your code.
 
 ### Microsoft Visual Studio
 
-If you have the MSVC toolchain (32 or 64-bit) or the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.
+If you have the MSVC toolchain \(32 or 64-bit\) or the LLVM backend will generate a .pdb file and binaries will be compatible with the standard MSVC runtime.
 
 To debug your code:
 
 1. Open Visual Studio
-2. Choose File | Open | Project/Solution...
+2. Choose File \| Open \| Project/Solution...
 3. Select the compiled executable
 4. Open a source file to debug and set a breakpoint
 5. Click the "Start" button
@@ -65,4 +65,5 @@ TODO
 
 ### LLDB
 
-TODO| Project/Soludtion...3. Select the compiled executable4. Open a source file to debug and set a breakpoint5. Click the "Start" button## GDBGDB can be invoked directly from the command line or through a plugin / IDE. From the command line it's aTODO## LLDBTODO 
+TODO\| Project/Soludtion...3. Select the compiled executable4. Open a source file to debug and set a breakpoint5. Click the "Start" button\#\# GDBGDB can be invoked directly from the command line or through a plugin / IDE. From the command line it's aTODO\#\# LLDBTODO
+
