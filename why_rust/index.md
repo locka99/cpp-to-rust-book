@@ -79,7 +79,7 @@ We could argue that C++ doesn't want to break existing code by introducing chang
 
 Rust recognizes you may need to call an external libraries, e.g. in a C library or a system API.
 
-Therefore it provides an unsafe keyword that throws some of the safety switches when it is necessary to talk to the outside world.
+Therefore it provides an `unsafe` keyword that throws some of the safety switches when it is necessary to talk to the outside world.
 
 This allows you consider the possibility of porting code partially to Rust while still allowing some of it to remain as C.
 
