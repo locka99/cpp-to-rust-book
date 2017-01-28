@@ -4,12 +4,14 @@
 
 ### C/ C++
 
-C and C++ code tends to split itself over two general kinds of file:
+C and C++ code tends to be split over two general kinds of file:
 
-* The Header file \(.h, .hpp, .inl\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like QT may sometimes omit the extension.
+* The Header file \(.h, .hpp\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like QT may sometimes omit the extension.
 * The Source file \(.c, .cc, .cpp\) contains the implementation of classes and anything private.  Sometimes C++ will use tricks such as forward class references and Pimpl patterns to keep complex or dependent code out of the header file.  
 
-Compilers are only interested in source files so what's really happening in most C/C++ code is that a preprocessor concatenates various header files to the front of the source file according to the \# directives within it and the resulting file is fed to a compiler. 
+Occasionally you may also see files with a .inl, or .ipp extension which are headers with a lot of inline templates or functions. 
+
+Compilers are only interested in source files and what they `#include` so what's really happening in most C/C++ code is that a preprocessor concatenates various header files to the front of the source file according to the `#` directives within it and the resulting file is fed to a compiler.
 
 Splitting definition and implementation across multiple files can be a nuisance since it means that changes to a single class can require modifications to multiple files.
 
@@ -17,13 +19,17 @@ Splitting definition and implementation across multiple files can be a nuisance 
 
 Rust does not have header files. Every struct, implementation and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
 
-Rust files reference non-dependent modules with the "use" keyword and pull-in dependent modules with the `mod` keyword.
+Ordering is less important too. It is possible to forward reference structs or functions, or even `use` the very same module that a piece of code is a part of. The only time that ordering matters is for macro definitions. A macro must be defined before a module that uses it. 
+
+Rust files reference non-dependent modules with the `use` keyword and pull-in dependent modules with the `mod` keyword.
 
 ## Namespaces
 
 ## C / C++
 
-C does not use namespaces. Libraries tend to prefix their functions and structs with a qualifying name of some sort. C++ does have namespaces but their use is optional and varies from one piece of code to the next.
+C does not use namespaces. Libraries tend to prefix their functions and structs with a qualifying name of some sort. 
+
+C++ _does_ have namespaces but their use is optional and varies from one piece of code to the next.
 
 ### Rust
 
@@ -83,4 +89,6 @@ for c in hello.chars() { /* iterate chars */
   //...
 }
 ```
+
+
 
