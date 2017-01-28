@@ -65,5 +65,5 @@ TODO
 
 ### LLDB
 
-TODO\| Project/Soludtion...3. Select the compiled executable4. Open a source file to debug and set a breakpoint5. Click the "Start" button\#\# GDBGDB can be invoked directly from the command line or through a plugin / IDE. From the command line it's aTODO\#\# LLDBTODO
+TODO
 
