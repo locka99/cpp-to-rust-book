@@ -1,6 +1,6 @@
 # Notation used through this book
 
-Code samples are given throughout this book are for C, C++, Rust and general configuration / console output.
+Code samples are given throughout this book are for C, C++, Rust and general configuration / console output.  
 In order to distinguish each kind they are styled as follows:
 
 C / C++ samples are given in this style:
@@ -29,4 +29,5 @@ cd myproject/
 cargo build
 ```
 
-Most of the code samples are abbreviated in some fashion. e.g. they assume the code is running from within a main() function or they omit preamble noise such as #includes, namespace definitions and so forth.
+Most of the code samples are abbreviated in some fashion. e.g. they assume the code is running from within a main\(\) function or they omit noise such as \#includes, namespace definitions and so forth.
+
