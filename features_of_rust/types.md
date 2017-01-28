@@ -285,16 +285,18 @@ And in Rust:
 
 ```rust
 // Stack
-let mut values: [f64; 100] = [0f64; 100];
+let mut values = [0f64; 100];
 // Heap
-let mut values: Box<[f64; 100]> = Box::new([0f64; 100]);
+let mut values = Box::new([0f64; 100]);
 ```
 
-Note how Rust provides a shorthand to initialise the array with zeroes or any other value.
+Note how Rust provides a shorthand to initialise the array with zeroes or any other value. The C++ code above would be pointing at garbage unless the code explicitly set it to something. 
+
+Rust actually *forces* you to initialise an array to something. Attemping to declare an array without assigning it a value is a compiler error.
 
 ## Slices
 
-A slice is a partial or full view of an array or a string. A slices is not a copy of the array, rather that it is a pointer to a portion of the array and a length.
+A slice is a partial or full view of an array or a string. A slice is not a copy of the array, rather that it is a pointer and length that represent a segment of the array.
 
 ```rust
 let array = ["Mary", "Sue", "Bob", "Michael"];
