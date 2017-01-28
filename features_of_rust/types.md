@@ -238,9 +238,9 @@ This link describes the [gory details](https://github.com/rust-lang/rfcs/blob/ma
 
 ## Tuples
 
-A tuple is a collection of values of the same or different type returned or passed to a function as a single value.
+A tuple is a collection of values of the same or different type returned or passed to a function as if it were a single value.
 
-C/C++ has no concept of a tuple primitive type, however C++ can construct a tuple using a template:
+C/C++ has no concept of a tuple primitive type, however C++11 can construct a tuple using a template:
 
 ```c++
 std::tuple<std::string, int> v1 = std::make_tuple("Sally", 25);
@@ -252,9 +252,20 @@ std::cout << "Name = " << std::get<0>(v1)
 Rust supports tuples as part of its language:
 
 ```rust
-TODO
+let v1 = ("Sally", 25);
+println!("Name = {}, age = {}", v1.0, v1.1);
 ```
 
+As you can see this is more terse and more useful. Note that the way a tuple is indexed is different from an array though, values are indexed via .0, .1 etc.
+
+Values may also be split out of a tuple easily too.
+
+```rust
+let (x, y, _) = (11, 200, -33);
+println!("x = {}, y = {}", x, y);
+```
+
+In this example, we can directly assign the values from some tuple directly to `x` and `y`. The underscore `_` indicates we're not interested in the 3rd value.
 
 ## Arrays
 
