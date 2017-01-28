@@ -8,10 +8,13 @@ Rust has mostly analogous primitive types with C/C++.
 | `unsigned char` | `u8` |
 | `short int` | `i16` |
 | `unsigned short int` | `u16` |
-| `int` | `i32` or `i16` | Data model dependent.
-| `unsigned int` | `u32` or `u16` | Data model dependent.
-| `long int` | `i32` or `i64` | Data model dependent.
-| `unsigned long int` | `u32` or `u64` | Data model dependent.
+| `int` | `i32` or `i16` | In C/C++ this is data model dependent [^datamodel]
+| `unsigned int` | `u32` or `u16` | In C/C++ this is data model dependent [^datamodel]
+
+| `long int` | `i32` or `i64` | In C/C++ this is data model dependent [^datamodel]
+
+| `unsigned long int` | `u32` or `u64` | In C/C++ this is data model dependent [^datamodel]
+
 | `long long int` | `i64` |
 | `unsigned long long int` | `u64` |
 | `size_t` | `usize` | usize holds numbers as large as the address space [^usize] |
@@ -23,7 +26,24 @@ Rust has mostly analogous primitive types with C/C++.
 
 [^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
 
+[^datamodel] See the next section to for a discussion on data models.
+
 [^usize] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
+
+## Data model
+
+C/C++ compilers implement a *data model* that affects what width the standard types are.
+
+The four data models in C++ are:
+
+* LP32 - `int` is 16-bit, `long` and pointers are 32-bit. This is an uncommon model, a throw-back to DOS / Windows 3.1
+* ILP32 - `int`, `long` and pointers are 32-bit. Used by Win32, Linux, OS X
+* LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
+* LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
+
+C ships with a special  `<stdint.h>` header (which is called `<cstdint.h>` in C++) that provides explicit length typedefs, e.g. `uint32_t`.
+
+## C/C++ types compared to Rust
 
 C/C++ and Rust will share the same machine types for each corresponding language type and the same compiler / backend technology, i.e.:
 
@@ -54,15 +74,6 @@ Integer types (`char`, `short`, `int`, `long`) come in `signed` and `unsigned` v
 A `char` is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an `int` is ordinarily 32-bits but the standard only say it should be at *least as large* as a `short`, so potentially it could be 16-bits!
 
 More recent versions of C and C++ provide a [`<cstdint.h>`](http://www.cplusplus.com/reference/cstdint/) (or `<stdint.h>` for C) with typedefs that are unambiguous about their precision.
-
-C/C++ compilers implement a *data model* that affects what width the standard types are.
-
-The four data models in C++ are:
-
-* LP32 - `int` is 16-bit, `long` and pointers are 32-bit. This is an uncommon model, a throw-back to DOS / Windows 3.1
-* ILP32 - `int`, `long` and pointers are 32-bit. Used by Win32, Linux, OS X
-* LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
-* LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
 
 Even though `<stdint.h>` can clear up the ambiguities, code frequently sacrifices correctness for terseness. It is not unusual to see an `int` used as a temporary incremental value in a loop:
 
