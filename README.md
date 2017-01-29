@@ -17,7 +17,7 @@ Normally such software would be written in C or C++, but consider these _every d
 
 * Dangling pointers. A program calls an invalid pointer causing a crash.
 * Buffer overruns / underruns. Code writes beyond an allocated buffer causing memory corruption or a page exception.
-* Memory leaks. Code does not free allocated memory causing the program to consume memory over time until it or the system fails.
+* Memory leaks. Code that allocates memory without the corresponding free causing the program to consume memory over time until it or the system fails.
 * Data races. Multiple threads write to data at the same time causing corruption or other destabilizing behavior.
 
 Rust stops these bad things happening **by design**. And it does so without impacting on runtime performance because all of these things are checked at compile time:
