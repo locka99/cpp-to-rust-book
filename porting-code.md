@@ -16,6 +16,10 @@ It works by parsing the C code into an abstract syntax tree and then generating 
 
 Interestingly Corrode is written in Haskell and more interestingly is written as a [literate Haskell source](https://github.com/jameysharp/corrode/blob/master/src/Language/Rust/Corrode/C.md) - the code is a markdown document interspersed with Haskell.
 
+### C++?
+
+At present there are no tools for converting to Rust. Given the complexities
+
 ## Experiences
 
 A number of websites offer insights of the porting process from C to Rust
