@@ -10,11 +10,8 @@ Rust has mostly analogous primitive types with C/C++.
 | `unsigned short int` | `u16` |
 | `int` | `i32` or `i16` | In C/C++ this is data model dependent [^datamodel]
 | `unsigned int` | `u32` or `u16` | In C/C++ this is data model dependent [^datamodel]
-
 | `long int` | `i32` or `i64` | In C/C++ this is data model dependent [^datamodel]
-
 | `unsigned long int` | `u32` or `u64` | In C/C++ this is data model dependent [^datamodel]
-
 | `long long int` | `i64` |
 | `unsigned long long int` | `u64` |
 | `size_t` | `usize` | usize holds numbers as large as the address space [^usize] |
