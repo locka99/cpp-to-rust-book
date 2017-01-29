@@ -67,6 +67,8 @@ TODO attribute no_mangle
 
 TODO Rust provides a crate with bindings for C library functions. If you find yourself receiving a pointer allocated with malloc you could free it with the corresponding call to free() via the bindings.
 
+TODO add the following to your Cargo.toml
+
 ```
 [dependencies]
 libc = "*"
