@@ -14,10 +14,11 @@ Corrode will take a C file, e.g. `somefile.c` plus any arguments from `gcc` and 
 
 It works by parsing the C code into an abstract syntax tree and then generating Rust from that.
 
-Interestingly Corrode is written in Haskell, so perhaps a future project will allow Haskell code to be converted to Rust!
+Interestingly Corrode is written in Haskell and more interestingly is written as a [literate Haskell source](https://github.com/jameysharp/corrode/blob/master/src/Language/Rust/Corrode/C.md) - the code is a markdown document interspersed with Haskell.
 
 ## Experiences
 
 A number of websites offer insights of the porting process from C to Rust
 
 1. [Porting Zopfli from C to Rust](https://github.com/carols10cents/rust-out-your-c-talk). Zopfli is a library that performs good but slow deflate algorithm. It produces smaller compressed files than zlib while still remaining compatible with it. 
+2. TODO
