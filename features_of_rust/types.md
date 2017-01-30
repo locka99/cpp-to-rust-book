@@ -4,28 +4,28 @@ Rust has mostly analogous primitive types with C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
-| `char` | `i8` | A Rust `char` is not the same as a C/C++ `char` [^notechars]
+| `char` | `i8` | A Rust `char` is not the same as a C/C++ `char` [^1]
 | `unsigned char` | `u8` |
 | `short int` | `i16` |
 | `unsigned short int` | `u16` |
-| `int` | `i32` or `i16` | In C/C++ this is data model dependent [^datamodel]
-| `unsigned int` | `u32` or `u16` | In C/C++ this is data model dependent [^datamodel]
-| `long int` | `i32` or `i64` | In C/C++ this is data model dependent [^datamodel]
-| `unsigned long int` | `u32` or `u64` | In C/C++ this is data model dependent [^datamodel]
+| `int` | `i32` or `i16` | In C/C++ this is data model dependent [^2]
+| `unsigned int` | `u32` or `u16` | In C/C++ this is data model dependent [^2]
+| `long int` | `i32` or `i64` | In C/C++ this is data model dependent [^2]
+| `unsigned long int` | `u32` or `u64` | In C/C++ this is data model dependent [^2]
 | `long long int` | `i64` |
 | `unsigned long long int` | `u64` |
-| `size_t` | `usize` | usize holds numbers as large as the address space [^usize] |
+| `size_t` | `usize` | usize holds numbers as large as the address space [^3] |
 | `float` | `f32` |
 | `double` | `f64` |
 | `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
 | `bool` | `bool` |
 | `void` | `()` | The unit type (see below)
 
-[^notechars] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
+[^1] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
 
-[^datamodel] See the next section to for a discussion on data models.
+[^2] See the next section to for a discussion on data models.
 
-[^usize] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
+[^3] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
 
 ## Data model
 
