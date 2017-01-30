@@ -53,4 +53,5 @@ Unlike a C++ capture however, the closure is directly referencing the outer vari
 TODO closure example
 
 If need be, ownership of variables can be moved to the closure. This may be necessary if the closure lives longer than the code around it does.
+
 TODO move semantics
