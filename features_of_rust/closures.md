@@ -46,7 +46,7 @@ Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures ref
 
 ## Closures in Rust
 
-Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can make reference to any variable that is in the function it was declared in. So a closure is basically a lambda that captures everything around it.
+Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can make reference to any variable that is in the function it was declared within. So a closure is basically a lambda that captures everything around it.
 
 Unlike a C++ capture however, the closure is directly referencing the outer variables and is subject to the same lifetime & borrowing rules that any other code is.
 
