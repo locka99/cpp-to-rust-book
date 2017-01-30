@@ -235,7 +235,7 @@ This link describes the [gory details](https://github.com/rust-lang/rfcs/blob/ma
 
 ## Tuples
 
-A tuple is a collection of values of the same or different type returned or passed to a function as if it were a single value.
+A tuple is a collection of values of the same or different type passed to a function or returned by one as if it were a single value.
 
 C/C++ has no concept of a tuple primitive type, however C++11 can construct a tuple using a template:
 
@@ -263,6 +263,22 @@ println!("x = {}, y = {}", x, y);
 ```
 
 In this example, we can directly assign the values from some tuple directly to `x` and `y`. The underscore `_` indicates we're not interested in the 3rd value.
+
+Tuples can be particularly useful with code blocks. For example, lets say we want to get some values from a 
+
+```rust
+let protected_service: Arc<Mutex<ProtectedService>> = Arc::new(Mutex::new(ProtectedService::new()));
+//...
+let (host, port, url) = {
+  // Lock and acquire access to ProtectedService
+  let protected_service = protected_service.lock().unwrap();
+  let host = protected_service.host();
+  let port = protected_service.port();
+  let url = protected_service.url();
+  (host, port, url)
+}
+
+```
 
 ## Arrays
 
