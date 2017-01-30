@@ -18,7 +18,7 @@ Obviously this was rapidly becoming a mess. Each code page interpretted the same
 
 ### Unicode to the rescue
 
-The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane \(BMP\). 
+The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane \(BMP\).
 
 China has mandated all software must support all 32-bits. We'll see how this has become a major headache for C and C++
 
@@ -203,7 +203,9 @@ Strings also have all the methods of str thanks to implementing `Deref` trait.
 
 ### Formatting strings
 
-In C or C++ it's common to see code invoke `sprintf` or one of its related functions. These days,
+Strings can be formatted in C with `printf` or `sprintf` or in C++ composed with stream operators, e.g. to a `std::stringstream`.
+
+Rust uses `format!` and `println!` macros that more resemble the `sprintf` model. 
 
 | C++ | Rust formatting trait | Purpose |
 | :--- | :--- | :--- |
