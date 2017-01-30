@@ -86,8 +86,11 @@ mod tests
 pub use helpers::Helper;
 ```
 
-In this example, the module pulls in submodules helpers and gui. It also references tests if the unit tests are being built. It also calls "pub use helpers::Helper" which exposes that struct to the outside world as myapp::Helper.
+In this example, the module pulls in submodules `helpers` and `gui`. They are nor marked as `pub mod` so they are private to the module and nobody outside of this module will see them. 
 
+However the module also says `pub use helpers::Helper` which allows the outside to reference `myapp::Helper`. Thus a module can act as a gatekeeper to the things it references, exposing them in turn, or changing how they are referenced.
+
+Note one other module here `tests`. The attribute `#[cfg(test)]` indicates it is only pulled in when a unit test executable is being built. The `cfg` attribute is used for [conditional compliation](https://doc.rust-lang.org/book/conditional-compilation.html).
 
 ## Using a module
 
