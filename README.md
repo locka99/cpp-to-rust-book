@@ -17,7 +17,7 @@ Normally such software would be written in C or C++, but consider these _every d
 
 * Dangling pointers. A program calls an invalid pointer causing a crash.
 * Buffer overruns / underruns. Code writes beyond an allocated buffer causing memory corruption or a page exception.
-* Memory leaks. Code that allocates memory without calling the corresponding free action. 
+* Memory leaks. Code that allocates memory without calling the corresponding free action.
 * Data races. Multiple threads write to data at the same time causing corruption or other destabilizing behavior.
 
 Rust stops these bad things happening **by design**. And it does so without impacting on runtime performance because all of these things are checked at compile time:
@@ -41,3 +41,13 @@ Let's start by saying if what you have works and is reliable, then the answer to
 However if you have code that *doesn't* work or *isn't* reliable, or *hasn't* been written yet or is due a major rewrite then perhaps you have answered your own question.
 
 You could write the code or fixes in C/C++ in which case you have to deal with all the unsafe issues that the language does not protect you from. Or you might consider that choosing a safe-by-design language is a good way to protect you from suffering bugs in the field when the code is supposed to be ready for production.
+
+## Rust is not a magic wand
+
+Despite the things the language can protect you against, it cannot protect you against the following:
+
+* General race conditions such as deadlocks between threads
+* Unbounded growth, e.g. a loop that pushes values onto a vector until memory is exhausted.
+* Application logic errors, i.e. errors that have nothing to do with the underlying language, e.g. missing out the line that should say "if door_open { sound_alarm(); }"
+* Explicit unsafe sections doing unsafe and erroneous things
+* Errors in LLVM or something outside of Rust's control.

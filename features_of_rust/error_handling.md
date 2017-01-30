@@ -23,13 +23,13 @@ They also really don't cross library boundaries, and it is easy for code to use 
 
 Most coding guidelines would say to use exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures. The problem is that C++ has no simple way to confer error information.
 
-Rust does not support exceptions. Rust programs are expected to use a type such as Option or Result to propagate errors to their caller. In other words, the code is expected to anticipate errors and have code to deal with them.
+Rust does not support exceptions. Rust programs are expected to use a type such as `Option` or `Result` to propagate errors to their caller. In other words, the code is expected to anticipate errors and have code to deal with them.
 
-The Option enum either returns something or none. It's a generic enum that specifies the type of what it may contain:
+The `Option` enum either returns something or none. It's a generic enum that specifies the type of what it may contain:
 
 TODO Option examples
 
-A Result either returns something or an error. It's a generic enum that specifies the success and error types.
+A `Result` either returns something or an error. It's a generic enum that specifies the success and error types.
 
 TODO Result
 
