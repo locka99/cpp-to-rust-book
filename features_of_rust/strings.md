@@ -211,7 +211,7 @@ Rust uses `format!` and `println!` macros that more resemble the `sprintf` model
 | :--- | :--- | :--- |
 | `%s`, `%u`, `%d`, `%i`, `%f`, `%c` | `{}` | C/C++ require the type of the parameter to be specified. In Rust the type is inferred and `{}` will invoked the type's Display trait regardless of what it is. So a String outputs its text, numeric types return their value, boolean as returns true or false, and so on. |
 | `%lld`, `%llu` | `{}` | C/C++ has extensions to deal with different size ints and floats, e.g. ll for long long due to the way arguments are passed to the function. In Rust, there is no need for that. |
-|  | `{:?}` | In Rust `{:?}` returns whatever is implemented by a type's Debug trait. Supplying `{#?}` instead would pretty-print the output. |
+|  | `{:?}`, `{:#?}` | In Rust `{:?}` returns whatever is implemented by a type's Debug trait. The `{:#?}` variant can be used to pretty-print the output for types that derive the Debug trait. |
 | `%-10s` | `{:<10}` | Format left aligned string padded to minimum of 10 spaces |
 | `%04` | `{:04}` | Pad a number with zero's to a width of 4 |
 | `%.3` | `{:.3}` | Pad a number's precision to 3 decimal places. May also be zero-padded, e.g. {:.03} |
@@ -238,7 +238,7 @@ Rust allows types to be formatted as strings based upon the formatting traits th
 The two main implementation traits are:
 
 * `Display` - this is for standard textual representation of a type.
-* `Debug` - this is for the debugging textual representation of a type. It might present additional information or be formatted separately to the Display trait. It is possible to \#\[derive\(Debug\)\] this trait which is usually enough for the purpose of debugging.
+* `Debug` - this is for the debugging textual representation of a type. It might present additional information or be formatted separately to the Display trait. It is possible to `#[derive(Debug)]` this trait which is usually enough for the purpose of debugging.
 
 If we look at the traits we can see they're identical
 
