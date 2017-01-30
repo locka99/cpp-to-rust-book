@@ -32,7 +32,7 @@ Except we're not lucky, we just got slimed. The default byte copy takes the poin
 
 ## The Rule of Three
 
-This is such a terrible bug enabling problem in C++ that it has given rise to the so-called the rule of three.
+This is such a terrible bug enabling problem in C++ that it has given rise to the so-called the Rule of Three[^1].
 
 The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction. In other words the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
 
@@ -99,6 +99,8 @@ public:
 Another alternative would be to use noncopyable types within the class itself. For example, the copy would fail if the pointer were managed with a C++11 `std::unique_ptr` \(or Boost's `boost::scoped_ptr`\).
 
 Boost also provides a `boost::noncopyable` class which provides yet another option. Classes may inherit from noncopyable which implements a private copy constructor and assignment operator so any code that tries to copy will generate a compile error.
+
+[^1] The Rule of Three has become the Rule of Five(!) in C++11 because of the introduction of move semantics.
 
 ## How Rust helps
 
