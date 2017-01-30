@@ -6,7 +6,7 @@
 
 C and C++ code tends to be split over two general kinds of file:
 
-* The Header file \(.h, .hpp\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like QT may sometimes omit the extension.
+* The Header file \(.h, .hpp\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like Qt may sometimes omit the extension.
 * The Source file \(.c, .cc, .cpp\) contains the implementation of classes and anything private.  Sometimes C++ will use tricks such as forward class references and Pimpl patterns to keep complex or dependent code out of the header file.  
 
 Occasionally you may also see files with a .inl, or .ipp extension which are headers with a lot of inline templates or functions. 
@@ -66,12 +66,12 @@ Here are some general guidelines for Unicode in C / C++:
 * A "wide" wchar\_t is NOT UTF-32. It might be, or it might be UTF-16 on some platforms \(e.g Windows\). This messed up definition makes operations such as slicing strings dangerous due to the risk of cutting through a control point.
 * What if I want to read Unicode arguments from the command-line such as file paths - what encoding are they in? The main\(\) method passes them as char_. Windows has a wmain\(\) that takes wchar\_t_. What am I supposed to do?
 * Windows favours wide \(UTF-16\) character strings for its APIs although it has ASCII versions too. The ASCII versions are not UTF-8. Compiled code has \#define UNICODE to support multiple languages.
-* Linux tends to favour UTF-8 encoded char strings. Most languages, toolkits and tools assume UTF-8. The exception is QT which has chosen to use UTF-16 internally.
+* Linux tends to favour UTF-8 encoded char strings. Most languages, toolkits and tools assume UTF-8. The exception is Qt which has chosen to use UTF-16 internally.
 * C-lib has acquired various wide versions of its strdup, strcmp, strcpy etc. It also acquired wide versions of functions for opening files on disk and so forth.
 * C++ lib has acquired std::string / std::wstring classes. C++ has acquired explicit UTF-16 and UTF-32 versions of these classes.
 * C11 and C++11 introduce explicit string literals for various UTF widths.
 * Limited conversion capabilities between wide / narrow in C++. Some operating systems have incomplete conversion capabilities.
-* 3rd party conversion libraries like ICU4C are commonly used. Libraries like boost, QT use libicu for converting between encodings
+* 3rd party conversion libraries like ICU4C are commonly used. Libraries like boost, Qt use libicu for converting between encodings
 * Embedding Unicode into C source involves using escape codes or hex values
 
 Rust simplifies things a lot by benefit of hindsight.
