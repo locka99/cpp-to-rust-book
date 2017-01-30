@@ -12,15 +12,15 @@ It didn't help the rest of the world who use different character sets. And even 
 
 What about the upper values from 128-255? Some operating systems came up with a concept called a "code page". According to what "code page" was in effect, the symbol that the user would see for a character in the 128-255 range would change.
 
-But even this is not enough. Some languages like Chinese, Japanese, Korean, Thai, Arabic etc. have thousands of symbols that must be encoded with more than one byte. So the first byte might be a modifier that combines with further bytes to render as a symbol. For example Microsoft's code page 932 implemented Shift JIS \(Japanese\) where some symbols are two bytes.
+But even this is not enough. Some languages like Chinese, Japanese, Korean, Thai, Arabic etc. have thousands of symbols that must be encoded with more than one byte. So the first byte might be a modifier that combines with further bytes to render as a symbol. For example Microsoft's code page 932 use an encoding called Shift JIS \(Japanese\) where some symbols are two bytes.
 
 Obviously this was rapidly becoming a mess. Each code page interpretted the same byte array differently according to some external setting. So you could not send a file written in Chinese to someone with a different code page and expect it to render properly.
 
 ### Unicode to the rescue
 
-The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane \(BMP\).
+The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane \(BMP\). 
 
-But some Chinese characters do not so China has mandated all software must support all 32-bits. We'll see how this has become a major headache for C and C++
+China has mandated all software must support all 32-bits. We'll see how this has become a major headache for C and C++
 
 ## C / C++
 
@@ -35,7 +35,7 @@ char *my_string = "This is as close to a string primitive as you can get;
 
 In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. It's very easy to accidentally copy a string into a buffer too large to hold it.
 
-In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled in just like every other class.
+In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled and linked to the executable just like every other class.
 
 ### Unicode support
 
