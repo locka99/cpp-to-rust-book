@@ -14,7 +14,7 @@ So Rust began life as a research project by Graydon Hoare in 2009 for the Mozill
 
 The project is hosted on [GitHub](https://github.com/rust-lang/rust). The language has been _self-hosting_ for quite some time - that is to say the Rust compiler is written in Rust, so compiling Rust happens from a compiler written in Rust. Get your head around that! But it's the same way that C and C++ compilers are these days too.
 
-[^1] Read this [Mozilla internal string guide](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Guide/Internal_strings) to get a flavor of the sort of problems the browser had to overcome. STL strings were too inefficient / flakey from one compiler to the next and so the browser sprouted an entire tree of string related classes to solve this issue. Similar tales are told in QT and other large libraries.
+[^1] Read this [Mozilla internal string guide](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Guide/Internal_strings) to get a flavor of the sort of problems the browser had to overcome. A browser obviously uses a lot of temporary strings. STL strings were too inefficient / flakey from one compiler to the next and so the browser sprouted an entire tree of string related classes to solve this issue. Similar tales are told in Qt and other large libraries.
 
 ## Problems with C/C++
 
