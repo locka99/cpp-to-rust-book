@@ -1,8 +1,6 @@
 # Namespacing With Modules
 
-In C++ namespaces allow you to group your functions, variables and classes into logical blocks and allow the compiler to disambiguate them from other functions, variables and classes that might otherwise have the same name.
-
-Namespacing in C++ is completely optional which means some code doesn’t do it at all while other code does. e.g.
+C++ namespaces allow you to group your functions, variables and classes into logical blocks and allow the compiler to disambiguate them from other functions, variables and classes that might otherwise have the same name.
 
 ```c++
 // Namespacing is usually a good idea
@@ -15,25 +13,27 @@ namespace myapp {
     //...
   }
 }
+//... somewhere else in the code
+myapp::doSomething(100);
 ```
 
-The equivalent in Rust is a module and serves a similar purpose.  Unlike C++ though you get namespacing automatically from the structure of your files. Each file is a module in its own right.
+Namespacing in C++ is completely optional which means some code may use nest namespaces while other code may be content to cover its entire codebase with a single namespace. Some code might even put its code into the global namespace. Other code might control the use of namespaces with macros.
 
-If a function bar() is in a file called foo.rs, the function can be referenced foo::bar(). That means modules implicit and you don't have to do anything except name your file something meaningful.
+The equivalent to a namespace in Rust is a module and serves a similar purpose.  Unlike C++ though you get namespacing automatically from the structure of your files. Each file is a module in its own right. 
 
-But if you want an explicit module you may also write it like so in the file it is being used from:
+So if we may have a file myapp.rs
 
 ```rust
-mod myapp {
-  pub fn error() { /* ... */ }
-  pub const SOME_VALUE = 20;
-  pub fn doSomething(value: i32) { /* ... */ }
-}
+// myapp.rs
+pub fn error() { /* ... */ }
+pub const SOME_VALUE = 20;
+pub fn doSomething(value: i32) { /* ... */ }
 ```
 
-And to call a module we just apply the mod as a qualifier, much how its done in C++.
+Everything in myapp.rs is automatically a module called myapp. That means modules are implicit and you don't have to do anything except name your file something meaningful.
 
 ```rust
+use myapp;
 myapp::doSomething(myapp::SOME_VALUE);
 ```
 
@@ -53,7 +53,18 @@ doSomething(SOME_VALUE);
 myapp::error();
 ```
 
-Modules can be nested too, e.g. myapp.rs might declare a mod "helpers" within itself which can be referenced by fully qualifying it myapp::helpers::.
+But if you want an explicit module you may also write it in the code. So perhaps myapp doesn't justify being a separate file.
+
+```
+// main.rs
+mod myapp {
+  pub fn error() { /* ... */ }
+  pub const SOME_VALUE = 20;
+  pub fn doSomething(value: i32) { /* ... */ }
+}
+```
+
+Modules can be nested so a combination of implicit modules (from file names) and explicit modules can be used together.
 
 ## Splitting modules across files
 
