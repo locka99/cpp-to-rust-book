@@ -6,38 +6,41 @@ Getting started is incredibly easy but some details vary upon your target platfo
 
 ## Use Rustup
 
-The easiest way to get started is to download and run rustup-init which you can do by visiting the [Rustup site](https://www.rustup.rs/).
+The easiest way to get started is to download and run `rustup-init` which you can do by visiting the [Rustup site](https://www.rustup.rs/).
 
 The instructions differ for Windows and Unix-like systems:
 
 * On Windows, rustup-init is an exe installer.
 * On Unix / OS X / Linux rust-init is a shell script.
 
-Either way, when you follow the instructions rustup-init will download.
+Either way, when you follow the instructions the installer will download and install put rustc, cargo, and rustup in your bin directory which is `~/.cargo/bin` on Unix and `%USERPROFILE%.cargo.\bin` on Windows. 
 
-The installer will download and install put rustc, cargo, and rustup in your bin directory which is `~/.cargo/bin` on Unix and `%USERPROFILE%.cargo.\bin` on Windows. It will also set your `PATH` environment variable so that you can open a terminal and type rustc, cargo, rustup etc.
+It will also set your `PATH` environment variable so that you can open a terminal and type rustc, cargo, rustup etc.
 
-Once rustup is installed you can use the tool to:
+Once `rustup` is installed you can also use the tool for maintenance:
 
 * Install additional Rust toolchains \(e.g. if you are cross-compiling or supporting multiple targets you may have more than one toolchain\)
-* Change the default toolchain that is invoked when you type "rustc" or "cargo". Rustup will create symbolic links / scripts that invoke the appropriate toolchain
-* Updates the toolchain when a new version is released
-* Fetches sources and documentation
+* Change the default toolchain that is invoked when you type `rustc` or `cargo`. Rustup will create symbolic links / scripts that invoke the appropriate toolchain
+* Update the toolchain when a new version of Rust is released
+* Fetch source and documentation
 
 ### Unix / Linux
 
-The process for running rustup-init.sh is as follows:
+The process for running `rustup-init.sh` is as follows:
+
 1. Open a terminal / console
-2. Type "curl [https://sh.rust.rs](https://sh.rust.rs) -sSf \| sh"
-3. This will execute a script which will examine your environment, recommend the toolchain to download, and offer to modify your PATH.
+2. Type "curl https://sh.rustup.rs -sSf | sh"
+3. This will download and execute a script which will examine your environment, recommend the toolchain to download, and offer to modify your `PATH` environment variable.
 4. Choose the option 1 to proceed. Or customize if you want to modify something
 5. Wait for download to complete
 6. You're done.
 
-If you don't have curl, then you must install it first to proceed. In Linux you would invoke a command like this to install it.
+If you don't have curl, then you must install it first to proceed, or save the [shell script](https://sh.rustup.rs) from a browser to disk and execute that. 
 
-* Debian / Ubuntu - sudo apt get curl
-* Fedora / Redhat - sudo dnf install curl
+To install `curl` in Linux you would invoke a command like this to install it.
+
+* Debian / Ubuntu - `sudo apt get curl`
+* Fedora / Redhat - `sudo dnf install curl`
 
 ### Windows
 
