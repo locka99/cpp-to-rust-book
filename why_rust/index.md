@@ -46,6 +46,8 @@ No of course not. Performance and safety are only two things to consider when wr
 * If you have code that's written and works then why throw that away?
 * Writing new code will always take effort and will still cause application level bugs of one sort or another.
 * Performance may not be a big deal especially for network bound code and a higher level language like Java, C\#, Go may suit better.
+* Some people will find the learning curve extremely steep. 
+* Rust is still relatively immature as a language and still has some rough edges - compilation times, optimization, complex macros.
 
 But you may still find there is benefit to moving some of your code to Rust. For example, your C++ software might work great but it has to deal with a lot of user-generated data so perhaps you want to reimplement that code path in Rust for extra safety.
 
