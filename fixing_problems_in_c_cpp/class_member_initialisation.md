@@ -50,3 +50,24 @@ error[E0063]: missing field `b` in initializer of `main::Alphabet`
 9 |     let a = Alphabet { a: -10, c: true };
   |             ^^^^^^^^ missing `b`
 ```
+
+Forcing you to initialise the members of the struct ensures the struct is always in a consistent predictable state.
+
+Structs often have a `new()` function implementation which encapsulates this initialisation and acts like a constructor in C++, e.g.
+
+```rust
+struct Coord {
+  pub x: f64,
+  pub y: f64,
+  pub z: f64,
+}
+
+impl Coord {
+  pub fn new(x: f64, y:f64) {
+    Coord { x: x, y: y, z: 0f64 }
+  }
+}
+///
+
+let coord1 = Coord::new(100f64, 200f64);
+```
