@@ -30,7 +30,7 @@ C and C++ does not have a string primitive type, instead it has `char` type, tha
 
 ```c++
 // The array that my_string points at ends with a hidden \0
-char *my_string = "This is as close to a string primitive as you can get;
+char *my_string = "This is as close to a string primitive as you can get";
 ```
 
 In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. It's very easy to accidentally copy a string into a buffer too large to hold it.
