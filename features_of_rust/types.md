@@ -81,7 +81,7 @@ for (int i = 0; i < s.size(); ++i) {
 }
 ```
 
-This loop only uses positive integer values and is comparing to the value coming from std::string::size() which is an opaque integer type called `size_type`.
+This loop only uses positive integer values and is comparing to the value coming from `std::string::size()` which is an opaque integer type called `size_type`.
 
 While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
