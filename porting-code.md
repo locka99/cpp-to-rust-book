@@ -22,7 +22,7 @@ Interestingly Corrode is written in Haskell and more interestingly is written as
 
 [Bindgen](https://github.com/servo/rust-bindgen) is a tool for generating FFI interfaces for Rust from existing C and C++ header files. You might find this beneficial if you're porting code from C / C++, or writing a new component that must work with an existing code base.
 
-Bindgen requires that you preinstall the clang C++ compiler in order to parse code into a structure it can digest. 
+Bindgen requires that you preinstall the Clang C++ compiler in order to parse code into a structure it can digest. 
 
 The readme documentation on the site link provides more information on installing and using the tool.
 
