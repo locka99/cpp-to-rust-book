@@ -302,24 +302,30 @@ double values[100];
 // Heap
 double *values = new double[100];
 delete []values;
+// C99 style brace enclosed lists
+double values[100] = {0}; // Set all to 0
+double values[100] = {1, 2, 3}; // 1,2,3,0,0,0,0...
+// C99 with designator
+double values[100] = {1, 2, 3, [99] 99}; // 1,2,3,0,0,0,...,0,99
 ```
 
 And in Rust:
 
 ```rust
 // Stack
-let mut values = [0f64; 100];
+let mut values = [0f64; 100]; // 100 elements 
+let mut values = [1f64, 2f64, 3f64]; // 3 elements 1,2,3
 // Heap
 let mut values = Box::new([0f64; 100]);
 ```
 
-Note how Rust provides a shorthand to initialise the array with zeroes or any other value. The C++ code above would be pointing at garbage unless the code explicitly set it to something. 
+Note how Rust provides a shorthand to initialise the array with the same value or assigns the array with every value. Initialisation in C and C++ is optional however it is more expressive in that portions of the array can be set or not set using enclosed list syntax.
 
 Rust actually *forces* you to initialise an array to something. Attempting to declare an array without assigning it a value is a compiler error.
 
 ## Slices
 
-A slice is a partial or full view of an array or a string. A slice is not a copy of the array, rather that it is a pointer and length that represent a segment of the array.
+A slice is a runtime view of a part of an array or string. A slice is not a copy of the array / string rather that it is a reference to a portion of it. The reference holds a pointer to the starting element and the number of elements in the slice. 
 
 ```rust
 let array = ["Mary", "Sue", "Bob", "Michael"];
@@ -335,9 +341,20 @@ This slice represents the portion of array starting from index 2.
 ["Bob", "Michael"]
 ```
 
-## Functions of an array
+### Manipulating arrays
 
-One serious disadvantage of C++ arrays is there is no `.len()` method so the length has to be passed in to any function that wishes to manipulate it.
+### Size of the array 
+
+C and C++ basically give no easy way to know the length of the array unless you happen to remember it from the code that declares it.
+
+C++11 provides `std::array` to encapsulate an array and provide some functions that return the length and allow the array to be filled:
+
+```c++
+std::array<Element, 100> elements;
+std::cout << "Size of array = " << elements.size() << std::endl;
+```
+
+Alternatively you might see code like this:
 
 ```c++
 const size_t num_elements = 1024;
@@ -347,7 +364,7 @@ char buffer[num_elements];
 fill_buffer(buffer, num_elements);
 ```
 
-You might also see code like this:
+Or like this
 
 ```c++
 Element elements[100];
@@ -355,11 +372,13 @@ Element elements[100];
 int num_elements = sizeof(elements) / sizeof(Element);
 ```
 
-In addition we can pass a slice of the array which might be the whole array or only a portion of it:
+In Rust, the array has a function bound to it called `len()`. This always provides the length of the array. In addition if we take a slice of the array, that also has a `len()`.
 
 ```rust
 let buffer: [u8; 1024]
-fill_buffer(&buffer);
+println!("Buffer length = {}", buffer.len());
+
+fill_buffer(&buffer[0..10]);
 //...
 fn fill_buffer(elements: &[Element]) {
   println!("Number of elements = {}", elements.len());
