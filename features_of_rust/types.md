@@ -251,8 +251,6 @@ enum Void {}
 
 Essentially this enum has no values at all so anything that assigns or matches this nothing-ness is unreachable and the compiler can issue warnings or errors. If the code had used `()` the compiler might not be able to determine this.
 
-This link describes the [gory details](https://github.com/rust-lang/rfcs/blob/master/text/1216-bang-type.md) of this pattern and proposes compiler support for a special `!` notation. Until this lands as a feature you are better off to say `()`.
-
 ## Tuples
 
 A tuple is a collection of values of the same or different type passed to a function or returned by one as if it were a single value.
