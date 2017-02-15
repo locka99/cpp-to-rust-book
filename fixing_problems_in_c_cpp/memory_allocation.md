@@ -2,12 +2,16 @@
 
 Allocated memory is memory that is requested from a portion of memory called a heap, used for some purpose and returned to the free space when it is no longer required.
 
-There are 3 ways to heap allocate memory in C++:
+In C memory is allocated and freed through a relatively simple API:
 
-* Through C functions like `malloc`, `calloc` and `free` for buffers, arrays.
-* Through `new` / `delete` for C++ class instances
-* Through `new[]` and `delete[]` for buffers, arrays of C++ classes
-* Through scoped / shared pointer classes that take ownership of the pointer and free it when they go out of scope.
+* `malloc` and `calloc` allocate memory and `free` destroys it.
+
+However C++ also needs allocates that call the appropriate constructors and destructors so in addition to C's memory allocation functions, there are keywords for allocation / free.
+
+* `new` / `delete` for C++ class instances
+* `new[]` and `delete[]` for arrays of classes
+* The above but through scoped / shared pointer classes that take ownership of the pointer and free it when appropriate.
+
 
 If we fail to free / delete memory that we've allocated, the program will leak memory. If we free / delete memory we've already deallocated, the program may crash. If we free a C++ class with a C `free()` the program may leak memory because any member variables will not be destroyed properly. If we fail to call the correct constructor and destructor pair the program may leak / crash.
 
