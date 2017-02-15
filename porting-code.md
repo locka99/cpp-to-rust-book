@@ -8,6 +8,8 @@ TODO this section is still to do
 
 ## Automation tools
 
+### Corrode
+
 [Corrode](https://github.com/jameysharp/corrode) is a command-line tool that can partially convert C into Rust. At the very least it may spare you some drudgery ensuring the functionality is as close to the original as possible.
 
 Corrode will take a C file, e.g. `somefile.c` plus any arguments from `gcc` and produces a `somefile.rs` which is the equivalent code in Rust. 
@@ -16,9 +18,12 @@ It works by parsing the C code into an abstract syntax tree and then generating 
 
 Interestingly Corrode is written in Haskell and more interestingly is written as a [literate Haskell source](https://github.com/jameysharp/corrode/blob/master/src/Language/Rust/Corrode/C.md) - the code is a markdown document interspersed with Haskell.
 
-### C++?
+### Bindgen
 
-At present there are no tools for converting to Rust. 
+[Bindgen](https://github.com/servo/rust-bindgen) is a tool for generating FFI interfaces for Rust from existing C and C++ header files. You might find this beneficial if you're porting code from C / C++, or writing a new component that must work with an existing code base.
+
+Bindgen requires clang to parse code into a structure it can digest. The readme documentation on the link provides more information on installing and using the tool.
+
 
 ## Experiences
 
