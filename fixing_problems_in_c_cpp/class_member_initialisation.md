@@ -8,9 +8,22 @@ C++ does not require that you initialise all variables in every constructor.
 * Primitive types, including pointers do not have to be initialised
 * Members do not have to be initialised in the order they are declared
 
-Some compilers may issue warnings if you forget to initialise members or botch their ordering, but they will still compile the code.
+Some compilers may issue warnings if you forget to initialise members or their ordering, but they will still compile the code.
 
-TODO C++11 allows initialisation of variables in-place but this depends on every variable being initialised the same way for each overloaded constructor.
+C++11 allows classes to have default member initializers which are used in the absence of a constructor setting the value to something else:
+
+```
+class Coords {
+public:
+  double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
+
+  // 2D initializer, x and y are set with the inputs, z is set to 0
+  Coords(x, y) : x(x), y(y) {} {
+  }
+};
+```
 
 ## How Rust helps
 
