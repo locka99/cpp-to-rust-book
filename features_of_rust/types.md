@@ -341,18 +341,17 @@ This slice represents the portion of array starting from index 2.
 ["Bob", "Michael"]
 ```
 
-### Manipulating arrays
-
 ### Size of the array 
 
-C and C++ basically give no easy way to know the length of the array unless you happen to remember it from the code that declares it.
-
-C++11 provides `std::array` to encapsulate an array and provide some functions that return the length and allow the array to be filled:
+C and C++ basically give no easy way to know the length of the array unless you encapsulate the array with a `std::array` or happen to remember it from the code that declares it.
 
 ```c++
+// C++11
 std::array<Element, 100> elements;
 std::cout << "Size of array = " << elements.size() << std::endl;
 ```
+
+The `std::array` wrapper is of limited use because you cannot pass arrays of an unknown size to a function. Therefore even with this template you may pass the array into a function as one argument and its size as another.
 
 Alternatively you might see code like this:
 
@@ -385,4 +384,4 @@ fn fill_buffer(elements: &[Element]) {
 }
 ```
 
-A slice is the pointer to a part of the array and the length of the slice. It means we provide all the information it needs
+### Array slices
