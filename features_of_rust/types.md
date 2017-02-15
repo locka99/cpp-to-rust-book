@@ -315,7 +315,7 @@ let mut values = Box::new([0f64; 100]);
 
 Note how Rust provides a shorthand to initialise the array with zeroes or any other value. The C++ code above would be pointing at garbage unless the code explicitly set it to something. 
 
-Rust actually *forces* you to initialise an array to something. Attemping to declare an array without assigning it a value is a compiler error.
+Rust actually *forces* you to initialise an array to something. Attempting to declare an array without assigning it a value is a compiler error.
 
 ## Slices
 
