@@ -9,7 +9,7 @@ PersonList z;
 z = x; // Assignment operator
 ```
 
-By default C++ generates the code to copy and assign the bytes in one class to another without any effort. Lucky us! 
+By default C++ generates all the code to copy and assign the bytes in one class to another without any effort. Lucky us! 
 
 So our class PersonList might look like this:
 
@@ -29,6 +29,8 @@ public:
 ```
 
 Except we're not lucky, we just got slimed. The default byte copy takes the pointer in `personList_` and makes a copy of it. Now if we copy `x` to `y`, or assign `x` to `z` we have three classes pointing to the same private data! On top of that, `z` allocated its own `personList_` during its default constructor but the byte copy assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
+
+Of course we might be able to use a `std::unique_ptr` to hold our pointer. In which case the compiler would generate an error. But it might not always be that simple. `personList_` may have been opaquely allocated by an external library so have no choice but to manage its lifetime through the constructor and destructor.
 
 ## The Rule of Three
 
