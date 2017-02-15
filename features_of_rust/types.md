@@ -298,6 +298,8 @@ let (host, port, url) = {
 
 ```
 
+This code is really neat - the lock allows us to obtain the values, the lock goes out of scope and the values are returned in one go.
+
 ## Arrays
 
 An array is a fixed size list of elements allocated either on the stack or the heap.
@@ -391,5 +393,3 @@ fn fill_buffer(elements: &[Element]) {
   println!("Number of elements = {}", elements.len());
 }
 ```
-
-### Array slices
