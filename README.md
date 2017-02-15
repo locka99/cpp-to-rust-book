@@ -13,11 +13,11 @@ Before we go into what Rust is or why it might be preferable to C/C++ _in some c
 
 All this code must run as efficiently and reliably as possible. It must run on devices for days, weeks, months or preferably years without failure. It cannot suffer intermittent freezes, erratic performance, memory leaks, crashes or other issues without impacting on its purpose.
 
-Normally such software would be written in C or C++, but consider these _every day_ programming issues that afflict these languages:
+Normally such software would be written in C or C++, but consider these _every day_ programming issues that can afflict these languages:
 
 * Dangling pointers. A program calls an invalid pointer causing a crash.
 * Buffer overruns / underruns. Code writes beyond an allocated buffer causing memory corruption or a page exception.
-* Memory leaks. Code that allocates memory without calling the corresponding free action.
+* Memory leaks. Code that allocates memory *or resources* without calling the corresponding free action. C++ provides classes such as smart pointers and techniques like RAII to mitigate these issues but still occur.
 * Data races. Multiple threads write to data at the same time causing corruption or other destabilizing behavior.
 
 Rust stops these bad things happening **by design**. And it does so without impacting on runtime performance because all of these things are checked at compile time:
