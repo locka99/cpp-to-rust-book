@@ -67,7 +67,6 @@ impl Coord {
     Coord { x: x, y: y, z: 0f64 }
   }
 }
-///
-
+///...
 let coord1 = Coord::new(100f64, 200f64);
 ```
