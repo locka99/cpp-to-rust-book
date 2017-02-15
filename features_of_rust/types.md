@@ -83,7 +83,9 @@ for (int i = 0; i < s.size(); ++i) {
 
 While `int` is unlikely to fail for most loops in a modern compiler supporting ILP32 or greater, it is still technically wrong. In a LP32 data model incrementing 32767 by one would become -32768 so this loop would never terminate if `s.size()` was a value greater than that.
 
-This loop should be using the same type returned from `string::size()` which is an opaque unsigned integer type called `size_type`. This is usually a typedef for `std::size_t` but not necessarily. Thus we have a type mismatch. A `string` has an iterator which could be used instead but if you need the index for some reason, but it can messy:
+But look again at this snippet. What if the file read by `read_file()` is outside of our control. What if someone deliberately or accidentally feeds us a file so large that our loop will fail trying to iterate over it? In doing so our code is hopelessly broken.
+
+This loop should be using the same type returned from `string::size()` which is an opaque unsigned integer type called `size_type`. This is usually a typedef for `std::size_t` but not necessarily. Thus we have a type mismatch. A `string` has an iterator which could be used instead but perhaps you need the index for some reason, but it can messy:
 
 ```c++
 string s = read_file();
@@ -95,7 +97,7 @@ for (string::iterator i = s.begin(); i != s.end(); ++i) {
 
 Now we've swapped from one opaque type `size_type` to another called `difference_type`. Ugh.
 
-C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to make bad assumptions, use a less wordy type, or bloat the code with typedefs. The best action is of course to use `<cstdint.h>` / `<stdint.h>` if it is available.
+C/C++ types can also be needlessly wordy such as `unsigned long long int`. Again, this sort of puffery encourages code to make bad assumptions, use a less wordy type, or bloat the code with typedefs.
 
 ## Rust
 
@@ -109,10 +111,11 @@ Types may be inferred or explicitly prefixed to the value:
 let v1 = 1000;
 let v2 : u32 = 25;
 let v3 = 126i8;
-let v4 = 99.3333f64;
-let v5 = v4 as f32;
-let f1 = true;
 ```
+
+Rust also has two types called `usize` and `isize` respectively. These are equivalent to `size_t` in that they are as large enough to hold as many elements as there is addressable memory. So in a 32-bit operating system they will be 32-bits in size, in a 64-bit operating system they will be 64-bits in size.
+
+Rust will not implicitly coerce an integer 
 
 ## Real types
 
