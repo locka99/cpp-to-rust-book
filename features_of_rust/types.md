@@ -115,7 +115,12 @@ let v3 = 126i8;
 
 Rust also has two types called `usize` and `isize` respectively. These are equivalent to `size_t` in that they are as large enough to hold as many elements as there is addressable memory. So in a 32-bit operating system they will be 32-bits in size, in a 64-bit operating system they will be 64-bits in size.
 
-Rust will not implicitly coerce an integer 
+Rust will not implicitly coerce an integer from one size to another without explicit use of the `as` keyword.
+
+```
+let v1 = 1000u32;
+let v2: u16 = v1 as u16;
+```
 
 ## Real types
 
@@ -180,7 +185,9 @@ let degrees = 45.0f64;
 let result2 = angle.to_radians().cos();
 ```
 
-A f128 did exist for a period of time but was removed to portability complexity and maintenance issues. Note how `long double` is treated (or not) according to the compiler and target platform. At some point Rust might get a f128 or f80 but at this time does not have such a type.
+Rust does not have a 128-bit double. A `f128` did exist for a period of time but was removed to portability, complexity and maintenance issues. Note how `long double` is treated (or not) according to the compiler and target platform. 
+
+At some point Rust might get a f128 or f80 but at this time does not have such a type.
 
 ## Booleans
 
