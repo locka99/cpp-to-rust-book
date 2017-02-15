@@ -367,5 +367,3 @@ fn fill_buffer(elements: &[Element]) {
 ```
 
 A slice is the pointer to a part of the array and the length of the slice. It means we provide all the information it needs
-
-TODO - lots of mess below
