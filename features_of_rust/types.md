@@ -282,7 +282,7 @@ println!("x = {}, y = {}", x, y);
 
 In this example, we can directly assign the values from some tuple directly to `x` and `y`. The underscore `_` indicates we're not interested in the 3rd value.
 
-Tuples can be particularly useful with code blocks. For example, lets say we want to get some values from a 
+Tuples can be particularly useful with code blocks. For example, let's say we want to get some values from a piece of code that uses a guard lock on a reference counted service. We can lock the service in the block and return all the values as a tuple to the recipients outside of the block:
 
 ```rust
 let protected_service: Arc<Mutex<ProtectedService>> = Arc::new(Mutex::new(ProtectedService::new()));
