@@ -1,10 +1,79 @@
 # Macros
 
-Macros in C++ are very prone to error and so have been deprecated in favour of constants and inline functions.
+## C / C++ Preprocessor
 
-Even so, they are frequently used in these roles:
+C languages are little unusual in that they are compiled in two phases. The first phase is called the preprocess. In this phase, the preprocessor looks for directives starting with a # symbol and runs string substitution and conditional inclusion / exclusion based on those directives. Only after the file has been preprocessed does the compiler attempt to compile it.
 
-* To set a command-line flag or directive, e.g. the compiler might define WIN32 so code can conditionally compile one way or another according to its presence.
+Preprocessor directives start with a `#` symbol. For example the `#define` directive creates a macro with an optional value:
+
+```c++
+#define IS_WINDOWS
+#define SHAREWARE_VERSION 1
+```
+
+We'll explore macros more in a moment. Another directive is the `#if\#else\#endif` or `#ifdef\#else\#endif` which can be used to include code from one branch or the other of a test according to what matches.
+
+```c++
+#if SHAREWARE_VERSION == 1
+showNagwarePopup();
+#endif
+//...
+#ifdef IS_WINDOWS
+writePrefsToRegistry();
+#else
+writePrefsToCfg();
+#endif
+```
+
+Another directive is `#include`. In C and C++, public functions and structures are typically defined and implemented in separate files. The `#include` directive allows a header to be pulled in to the front of any file that makes use of those definitions.
+
+```c++
+// System / external headers tend to use angle style
+#include <string>
+#include <stdio.h>
+
+// Local headers tend to use double quotes
+#include "MyClass.h"
+```
+
+The important thing to remember in all of this is ALL of these things happen before the compiler even starts! Your `main.c` might only be 10 lines of code but if you `#include` some headers the preprocessor may be feeding many thousands of lines of types, functions into the compiler, all of which are evaluated before they get to your code.
+
+## C / C++ Macros
+
+Macros are string substitution patterns performed by the preprocessor before the source is compiled. As such they can be very prone to error and so have been deprecated in favour of constants and inline functions.
+
+Here is a simple macro that would behave in an unexpected manner:
+
+```c++
+#define MULTIPLY(x, y) x * y
+//
+int x = 10, y = 20;
+int result = MULTIPLY(x + 1, x + y);
+// Value is NOT 330 (11 * 30), it's 41 because macro becomes x + 1 * x + y
+```
+
+The macro is very simple - multiply x by y. But it fails if either argument is an expression. Judicious use of parentheses might avoid the error in this case, but we could break it again using some pre or post increments.
+
+Macros in C++ are also unhygenic, i.e. the macro can inadvertently conflict with or capture values from outside of itself causing errors in the code.
+
+```c++
+#define SWAP(x, y) int tmp = y; y = x; x = y;
+//
+int tmp = 10;
+int a = 20, b = 30;
+SWAP(a, b); // ERROR
+```
+
+Here our SWAP macro uses a temporary value called `tmp` that already existed in the scope and so the compiler complains. A macro might avoid this by using shadow variables enclosed
+within a `do / while(0)` block to avoid conflicts but it is less than ideal.
+
+```c++
+#define SWAP(x, y) do { int tmp = y; y = x; x = y } while(0);
+```
+
+Consequently inline functions are used wherever possible. Even so macros are still frequently used in these roles:
+
+* To conditionally include for a command-line flag or directive, e.g. the compiler might `#define WIN32` so code can conditionally compile one way or another according to its presence.
 * For adding guard blocks around headers to prevent them being #include'd more than once. Most compilers implement a "#pragma once directive" which is an increasingly common alternative
 * For generating snippets of boiler plate code (e.g. namespace wrappers), or things that might be compiled away depending on #defines like DEBUG being set or not.
 * For making strings of values and other esoteric edge cases
@@ -23,7 +92,7 @@ This macro would expand to printf before compilation but it would fail to compil
 Macros in Rust are quite a complex topic but they are more powerful and safer than the ones in C++.
 
 * Rust macros are hygenic. That is to say if a macro contains variables, their names do not conflict with, hide, or otherwise interfere with named variables from the scope they're used from.
-* The pattern supplied in between the brackets of the macro are tokenized and designated as parts of the Rust language. identifiers, expressions etc. In C / C++ you can #define a macro to be anything you like whether it is garbage or syntactically correct. Furthermore you can call it from anywhere you like because it is preprocessed even before the compiler sees the macro.
+* The pattern supplied in between the brackets of the macro are tokenized and designated as parts of the Rust language. identifiers, expressions etc. In C / C++ you can #define a macro to be anything you like whether it is garbage or syntactically correct. Furthermore you can call it from anywhere you like because it is preprocessed even before the compiler sees the code.
 * Rust macros are either declarative and rule based with each rule having a left hand side pattern "matcher" and a right hand side "substitution". Or they're procedural and actualy rust code turns an input into an output (see section below).
 * Macros must produce syntactically correct code.
 * Declarative macros can be exported by crates and used in other code providing the other code elects to enable macro support from the crate. This is a little messy since it must be signalled with a #[macro_export] directive.
@@ -180,3 +249,7 @@ A procedural macro can therefore be thought of as a code generator but one that 
 * New lint and derive rules
 
 For more information look at this section on [compiler plugins](https://doc.rust-lang.org/book/compiler-plugins.html) in the Rust book.
+
+## Other forms of conditional compilation
+
+We saw that the C / C++ preprocessor can be used for conditional compilation. The equivalent in Rust is attributes. See the attributes section to see how they may be used.

@@ -33,6 +33,10 @@ Attributes are enclosed in a #[ ] block and provide compiler directives that all
 
 Attributes can be expressed as #![foo] which affects the thing they're contained by rather the thing that follows them. Attributes can also have name=value pairs as part of the directive.
 
+## Conditional compilation
+
+TODO
+
 ## Linking to native libraries
 
 In C/C++ code is first compiled and then it is linked. The linking phase takes a list of object files and a list of static libs to be used to resolve functions.
