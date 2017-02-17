@@ -52,19 +52,34 @@ let a2 = ["Mary", "Fred", "Sue"];
 
 ## Scope rules
 
-TODO
+Scope rules in C, C++ and Rust are fairly similar - the scope that you declare the item determines its lifetime.
+
+Note that Rust allows variables to be shadowed, i.e. you can declare the same variable more than once in a block and the second declaration masks the first.  
 
 ## Pointers
 
 ### In C++
 
-A pointer is a variable that points to an address in memory. The pointer may be assigned to point somewhere else, and it might be assigned NULL. Since a pointer may be NULL, or set to point to garbage, as well as suffering dangling pointer issues, it is only used when a reference is not possible.
+A pointer is a variable that points to an address somewhere in memory. The pointer's *type* indicates to the compiler what to expect at the address but there is no enforcement to ensure
+that the address actually holds that type. A pointer might might be assigned NULL (or nullptr in C++11) or may even be garbage if nothing was assigned to it.
+
+```c++
+char *name = "David Jones";
+
+int position = -1;
+find_last_index("find the letter l", 'l', &position);
+
+```
+
+Generally pointers are used in situations where references cannot be used, e.g. functions returning allocated memory or parent / child collection relationships where circular dependencies would prevent the use of references.
+
+C++11 attempts to deprecate `NULL` in favour of new keyword `nullptr` to make its intent more explicit and allow the compiler to recognize it.
 
 ### In Rust:
 
-The use of raw pointers tend to be reserved for unsafe programming and interaction with external libraries where pointers may be necessary.
+Rust supports pointers but only for interacting with external libraries or the operating system. As such if you wish to use them, they are available from an `unsafe` code programming block, and  [documented](https://doc.rust-lang.org/std/primitive.pointer.html).
 
-TODO std::ptr
+In safe programming you would not use pointers. Instead you would use references and / or optional reference counted objects.
 
 ## References
 

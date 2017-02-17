@@ -78,7 +78,7 @@ Memory allocation can even be overwritten and replaced in some circumstances. In
 
 As you can guess by now Rust tends to be a lot more strict about allocation that C/C++. Lifetimes of objects are tracked and enforced by the compiler and that includes memory allocated objects.
 
-In normal safe programming there is no explicit new / delete so there is no way to forget to free an object. There are no pointers either so code cannot call a dangling pointer or inadvertently call a NULL pointer.
+In normal safe programming there is no explicit new / delete so there is no way to forget to free an object. There are no pointers either so code cannot call a dangling pointer or inadvertently call a null pointer.
 
 1. A `Box` is a managed pointer that holds a heap allocated object. A box cannot be cloned, so there is only one owner at any time.
 2. A `Cell` is a mutable memory location - it can hold any kind of copyable type and the value within it can be changed.
@@ -90,7 +90,7 @@ Rust requires most heap allocated memory to be contained by one or more of the s
 
 ### Box<T>
 
-A `Box` is something managed on the heap. If I create something created in a box, it's allocated by the heap. 
+A `Box` is something managed on the heap. If I create something created in a box, it's allocated by the heap.
 
 Whoever owns the box can access it. Essentially, that means you can pass the box around from one place to another and whatever binds to it last can open it. Everyone else’s binding becomes invalid and will generate a compile error.
 
