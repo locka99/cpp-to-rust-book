@@ -20,11 +20,11 @@ Over time the use of C became more widespread and compilers such as Turbo C, Lat
 
 C later became an ANSI standard, C89. A further standard followed with C99 and C is still under review and development.
 
-Some functionality that was introduced in C++ has also found its way back into C standards. For example, single-line comments and variable declaration rules in blocks.
+Some functionality that was introduced in C++ has also found its way back into C standards. For example, the // style single-line comment and variable declaration rules in blocks.
 
 ## History of C++
 
-C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like features. Simula was a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. It was considered too slow for systems use and so something that shared C's speed was obviously desirable.
+C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like features. Simula is a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. However it was considered too slow for systems programming and so something that combined speed of C with object oriented concepts was highly desirable.
 
 C++ added these concepts as extensions to the C language and used a precompiler called `cfront` to transform the C++ extensions into C code that could then be compiled into machine code. So a C++ program could have the high level object oriented concepts but without the overhead that came with Simula.
 
