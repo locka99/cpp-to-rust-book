@@ -7,7 +7,7 @@ Before we go into what Rust is or why it might be preferable to C/C++ _in some c
 * Operating system services and daemons
 * Internet of things devices
 * Industrial control software
-* Medical devices, imagery etc.
+* Medical devices - MRI, ultrasound, X-ray, ventilators etc.
 * High availability servers / databases / cloud storage etc.
 * Avionics, telemetry, rocketry, drones etc.
 
