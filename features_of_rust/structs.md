@@ -2,11 +2,27 @@
 
 ## C++
 
-A `class` and a `struct` in C++ are largely the same thing from an implementation standpoint. They both hold fields and they both can have methods attached to the class (static) or instance level. It is only the default access level (`public` for struct, `private` for class) which is different and some rules about templates that only apply to classes.
+A `class` and a `struct` in C++ are largely the same thing from an implementation standpoint. They both hold fields and they both can have methods attached to the class (`static`) or instance level. 
 
-But from a psychological perspect a `struct` tends to be used to hold public data with few or no methods that is passed around. A `class` tends to be something more self contained with methods that are called to access or manage private fields.
+```c++
+class Foo {
+public:
+   // Methods and members here are publicly visible
+   double calculateResult();
+protected:
+   // Elements here are only visible to ourselves and subclasses
+   virtual double doOperation(double lhs, double rhs);
+private:
+   // Elements here are only visible to ourselves
+   bool debug_;
+};
+```
 
-These are equivalents:
+The default access level is `public` for struct and `private` for class. Some rules about templates only apply to classes.
+
+From a psychological perspect a `struct` tends to be used to hold public data that is largely static and/or passed around. A `class` tends to be something more self contained with methods that are called to access or manage private fields.
+
+So these are equivalents:
 
 ```c++
 struct Foo { // as a struct
@@ -26,7 +42,7 @@ public:
 };
 ```
 
-Classes can also use an access specifier to inherit from a base class. So a class may specify `public` or `private` when deriving from another class depending on whether it wants those methods to be visible to callers, or subclasses.
+Classes can also use an access specifier to inherit from a base class. So a class may specify `public`, `protected` or `private` when deriving from another class depending on whether it wants those methods to be visible to callers, or subclasses.
 
 Classes and structs may have special constructor and destructor methods which are described in sections below.
 
