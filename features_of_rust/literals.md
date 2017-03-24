@@ -36,9 +36,22 @@ Floating point numbers may represent whole or fractional numbers.
 
 C/C++ `bool` literals are `true` or `false`.
 
-### Strings
+### Characters and Strings
 
-Strings in C/C++ have grown \(in complexity\) as they have tried to accomodate code pages, multi-byte character sets and finally Unicode. Therefore there are prefixes to declare strings in a variety of widths and compliance / assumptions with Unicode.
+A character literal is enclosed by single quotes and an optional width prefix. The prefix `L` indicates a wide character, `u` for UTF-16 and `U` for UTF-32.
+
+```c++
+'a'
+L'a' // wchar_t
+u'\u20AC' // char16_t
+U'\U0001D11E' // char32_t
+```
+
+One oddity of a `char` literal is that `sizeof('a')` yields `sizeof(int)` in C but `sizeof(char)` in C++. It isn't a good idea to test the size of a character literal.
+
+A `char16_t` and `char32_t` are sufficient to hold any UTF-16 and UTF-32 code unit respectively.
+
+A string is a sequence of characters enclosed by double quotes. A zero value terminator is always appended to the end. Prefixes work the same as for character literals with an additional `u8` type to indicate a UTF-8 encoded string.
 
 ```c++
 "Hello"
@@ -100,7 +113,9 @@ false
 
 ## Characters and Strings
 
-A character in Rust is 4-bytes and can be any Unicode character. A single byte character can be specified by use of a prefix.  A literal is expressed using single quote characters.:
+A character in Rust is any UTF-32 code point enclosed by single quotes. This value may be escaped or not since .rs files are UTF-8 encoded. 
+
+A special prefix `b` may be used to denote a byte string, i.e. a string where each character is a single byte.
 
 ```rust
 'x'
@@ -108,13 +123,14 @@ A character in Rust is 4-bytes and can be any Unicode character. A single byte c
 b'&' # byte character is a u8
 ```
 
-Strings are the string text enclosed by double quotation marks:
+Strings are the string text enclosed by double quotes:
 
 ```rust
 "This is a string"
+b"This is a byte string"
 ```
 
-Rust allows newlines, space, double quotes and backslashes to be escaped using backslash notation similar to C++.
+The prefix `b` denotes a byte string, i.e. single byte characters. Rust allows newlines, space, double quotes and backslashes to be escaped using backslash notation similar to C++.
 
 ```rust
 "This is a \
@@ -127,7 +143,5 @@ Strings can also be 'raw' to avoid escaping. In this case, the string is prefixe
 
 ```rust
 r##"This is a raw string that can contain \n, \ and other stuff without escaping"##
-b"A byte string"
 br##"A raw byte string with "stuff" like \n \, \u and other things"##
 ```
-
