@@ -52,9 +52,9 @@ Objective-C is another C derived language that added objects and classes. Unlike
 
 The language was developed in the 1980s and was popularized in the NeXTSTEP operating system and later in Apple's OS X and iOS. It hasn't gained much popularity outside of those platforms but the success of the iPhone has ensured it has a sizeable developer base of its own. It is also well supported by the GCC and Clang toolchains. Apple has begun to deprecate Objective-C in favour of Swift which is a modern high level language similar in some respects to Rust but more application focussed. 
 
-Objective-C is strongly influenced by Smalltalk (as opposed to Simula in C++) and so instead of code calling or implementing methods, code sends messages.
+Objective-C is strongly influenced by Smalltalk (as opposed to Simula in C++) and so code works somewhat differently than C++. 
 
-An object in Objective-C is something that defines an interface specifying the message signatures it can receive and an implementation that binds those messages to code. Other code sends a message to call a method. Objects can also receive dynamic messages, i.e. ones not defined by their interfaces, so they can do certain tasks such as intercepting and forwarding messages. In addition an object can ignore a message or not implement it and it is not a program error.
+Notionally code calls objects by sending them a message. An object defines an interface specifying what messages it accepts and an implementation that binds those messages to code. The caller code sends a message to call a method. Objects can also receive dynamic messages, i.e. ones not defined by their interfaces, so they can do certain tasks such as intercepting and forwarding messages. In addition an object can ignore a message or not implement it without it being considered an error. In a broad sense, an ObjC message and a C++ method are or more or less analogous in functionality.
 
 ## C/C++ Timeline
 
