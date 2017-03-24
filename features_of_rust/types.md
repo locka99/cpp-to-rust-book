@@ -4,7 +4,7 @@ Rust has mostly analogous primitive types with C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
-| `char` | `i8` | A Rust `char` is not the same as a C/C++ `char` [^1]
+| `char` | `i8` (or `u8`) | The signedness of a C++ char can be signed or unsigned - the assumption here is signed but it varies by target system.<br>A Rust `char` is not the same as a C/C++ `char` [^1].
 | `unsigned char` | `u8` |
 | `short int` | `i16` |
 | `unsigned short int` | `u16` |
@@ -29,7 +29,9 @@ Rust has mostly analogous primitive types with C/C++.
 
 ## Data model
 
-C/C++ compilers implement a *data model* that affects what width the standard types are.
+C/C++ compilers implement a *data model* that affects what width the standard types are. The general rule is that:
+
+`1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
 
 The four data models in C++ are:
 
@@ -38,7 +40,7 @@ The four data models in C++ are:
 * LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
 * LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
 
-C ships with a special  `<stdint.h>` header (which is called `<cstdint.h>` in C++) that provides explicit length typedefs, e.g. `uint32_t`.
+C ships with a special  `<stdint.h>` header (which is called `<cstdint>` in C++) that provides explicit length typedefs, e.g. `uint32_t`.
 
 ## C/C++ types compared to Rust
 
@@ -47,7 +49,7 @@ C/C++ and Rust will share the same machine types for each corresponding language
 1. Signed types are two's complement
 2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
 
-The `<stdint.h>` / `<cstdint.h>` typedefs are also directly analogous.
+The `<stdint.h>` / `<cstdint>` typedefs are also directly analogous.
 
 | C/C++ | Rust
 | --- | ----
@@ -70,7 +72,7 @@ Integer types (`char`, `short`, `int`, `long`) come in `signed` and `unsigned` v
 
 A `char` is always 8-bits, but for historical reasons, the standards only guarantee the other types are "at least" a certain number of bits. So an `int` is ordinarily 32-bits but the standard only say it should be at *least as large* as a `short`, so potentially it could be 16-bits!
 
-More recent versions of C and C++ provide a [`<cstdint.h>`](http://www.cplusplus.com/reference/cstdint/) (or `<stdint.h>` for C) with typedefs that are unambiguous about their precision.
+More recent versions of C and C++ provide a [`<cstdint>`](http://www.cplusplus.com/reference/cstdint/) (or `<stdint.h>` for C) with typedefs that are unambiguous about their precision.
 
 Even though `<stdint.h>` can clear up the ambiguities, code frequently sacrifices correctness for terseness. It is not unusual to see an `int` used as a temporary incremental value in a loop:
 
@@ -273,14 +275,18 @@ println!("Name = {}, age = {}", v1.0, v1.1);
 
 As you can see this is more terse and more useful. Note that the way a tuple is indexed is different from an array though, values are indexed via .0, .1 etc.
 
-Values may also be split out of a tuple easily too.
+Tuples can also be returned by functions and assignment operators can ignore tuple members we're not interested in.
 
 ```rust
-let (x, y, _) = (11, 200, -33);
+let (x, y, _) = calculate_coords();
 println!("x = {}, y = {}", x, y);
+//...
+pub fn calculate_coords() -> (i16, i16, i16) {
+  (11, 200, -33)
+}
 ```
 
-In this example, we can directly assign the values from some tuple directly to `x` and `y`. The underscore `_` indicates we're not interested in the 3rd value.
+In this example, the calculate_coords() function returns a tuple containing three `i16` values. We assign the first two values to `x` and `y` respectively and ignore the third by passing an underscore. The underscore tells the compiler we're aware of the 3rd value but we just don't care about it.
 
 Tuples can be particularly useful with code blocks. For example, let's say we want to get some values from a piece of code that uses a guard lock on a reference counted service. We can lock the service in the block and return all the values as a tuple to the recipients outside of the block:
 
