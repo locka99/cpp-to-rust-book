@@ -50,7 +50,7 @@ C still tends to be more popular in low level systems programming. Components su
 
 Objective-C is another C derived language that added objects and classes. Unlike C++, Objective-C behaves as a strict superset of C.
 
-The language was developed in the 1980s and was popularized in the NeXTSTEP operating system and later in Apple's OS X and iOS. It hasn't gained much popularity outside of those platforms but the success of the iPhone has ensured it has a sizeable developer base of its own. It is also well supported by the GCC and Clang toolchains. Apple has begun deprecating Objective-C in favour of Swift which is a modern high level language similar in some respects to Rust but more application focussed.
+The language was developed in the 1980s and was popularized in the NeXTSTEP operating system and later in Apple's OS X and iOS. It hasn't gained much popularity outside of those platforms but the success of the iPhone has ensured it has a sizeable developer base of its own. It is also well supported by the GCC and Clang toolchains. Apple has begun to deprecate Objective-C in favour of Swift which is a modern high level language similar in some respects to Rust but more application focussed. 
 
 Objective-C is strongly influenced by Smalltalk (as opposed to Simula in C++) and so instead of code calling or implementing methods, code sends messages.
 
