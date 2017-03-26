@@ -53,7 +53,7 @@ C++ functions can take a variable number of arguments with the ... ellipsis patt
 void printf_like(const char *pattern, ...);
 ```
 
-Rust does not support variadic functions. However you could pass additional arguments in an array slice if the values are the same, or as a dictionary or a number of other ways.  
+Rust does not support variadic functions (the fancy name for this ability). However you could pass additional arguments in an array slice if the values are the same, or as a dictionary or a number of other ways.  
 
 TODO Rust example of array slice
 
