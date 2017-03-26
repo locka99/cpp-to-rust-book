@@ -1,18 +1,25 @@
 # Types
 
-Rust has mostly analogous primitive types with C/C++.
+C/C++ compilers implement a *data model* that affects what width the standard types are. The general rule is that:
+
+`1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
+
+As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice however, data models come in four common types which will be covered in the next section.
+
+For this section, we'll cover the _most likely_ analogous types between Rust and C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
 | `char` | `i8` (or `u8`) | The signedness of a C++ char can be signed or unsigned - the assumption here is signed but it varies by target system.<br>A Rust `char` is not the same as a C/C++ `char` [^1].
 | `unsigned char` | `u8` |
+| `signed char` | `i8` |
 | `short int` | `i16` |
 | `unsigned short int` | `u16` |
-| `int` | `i32` or `i16` | In C/C++ this is data model dependent [^2]
+| `(signed) int` | `i32` or `i16` | In C/C++ this is data model dependent [^2]
 | `unsigned int` | `u32` or `u16` | In C/C++ this is data model dependent [^2]
-| `long int` | `i32` or `i64` | In C/C++ this is data model dependent [^2]
+| `(signed) long int` | `i32` or `i64` | In C/C++ this is data model dependent [^2]
 | `unsigned long int` | `u32` or `u64` | In C/C++ this is data model dependent [^2]
-| `long long int` | `i64` |
+| `(signed) long long int` | `i64` |
 | `unsigned long long int` | `u64` |
 | `size_t` | `usize` | usize holds numbers as large as the address space [^3] |
 | `float` | `f32` |
@@ -29,18 +36,12 @@ Rust has mostly analogous primitive types with C/C++.
 
 ## Data model
 
-C/C++ compilers implement a *data model* that affects what width the standard types are. The general rule is that:
-
-`1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
-
-The four data models in C++ are:
+The four common data models in C++ are:
 
 * LP32 - `int` is 16-bit, `long` and pointers are 32-bit. This is an uncommon model, a throw-back to DOS / Windows 3.1
 * ILP32 - `int`, `long` and pointers are 32-bit. Used by Win32, Linux, OS X
 * LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
 * LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
-
-C ships with a special  `<stdint.h>` header (which is called `<cstdint>` in C++) that provides explicit length typedefs, e.g. `uint32_t`.
 
 ## C/C++ types compared to Rust
 
@@ -49,7 +50,11 @@ C/C++ and Rust will share the same machine types for each corresponding language
 1. Signed types are two's complement
 2. IEE 754-2008 binary32 and binary64 floating points for float and double precision types.
 
-The `<stdint.h>` / `<cstdint>` typedefs are also directly analogous.
+## stdint.h / cstdint
+
+C ships with a special  `<stdint.h>` header (which is called `<cstdint>` in C++) that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. 
+
+The types defined in this header file are directly analogous between C/C++ and Rust.
 
 | C/C++ | Rust
 | --- | ----
