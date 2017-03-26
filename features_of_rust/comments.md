@@ -1,6 +1,6 @@
 # Comments
 
-Rust comments are similar to C++ except they may contain Unicode since .rs files are UTF-8 encoded:
+Rust comments are similar to C++ except they may contain Unicode because .rs files are UTF-8 encoded:
 
 ```rust
 /*
@@ -19,7 +19,7 @@ pub fn do_thing() {}
 pub const NOT_FOUND = 404;
 ```
 
-Documentation beyond a triple-slash comment is in Markdown format, just like this guide. That means you have a human readable language for writing rich-text documentation and if it's not enough you can resort to HTML via tags. 
+Documentation beyond a triple-slash comment is in Markdown format, just like this guide. That means you have a human readable language for writing rich-text documentation and if it's not enough you can resort to HTML via tags.
 
 TODO markdown example.
 
