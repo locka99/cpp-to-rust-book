@@ -19,14 +19,14 @@ myapp::doSomething(100);
 
 Namespacing in C++ is completely optional which means some code may use nest namespaces while other code may be content to cover its entire codebase with a single namespace. Some code might even put its code into the global namespace. Other code might control the use of namespaces with macros.
 
-The equivalent to a namespace in Rust is a module and serves a similar purpose.  Unlike C++ though you get namespacing automatically from the structure of your files. Each file is a module in its own right. 
+The equivalent to a namespace in Rust is a module and serves a similar purpose.  Unlike C++ though you get namespacing automatically from the structure of your files. Each file is a module in its own right.
 
 So if we may have a file myapp.rs
 
 ```rust
 // myapp.rs
 pub fn error() { /* ... */ }
-pub const SOME_VALUE = 20;
+pub const SOME_VALUE: i32 = 20;
 pub fn doSomething(value: i32) { /* ... */ }
 ```
 
@@ -64,7 +64,7 @@ mod myapp {
 }
 ```
 
-Modules can be nested so a combination of implicit modules (from file names) and explicit modules can be used together.
+Modules can be nested so a combination of implicit modules \(from file names\) and explicit modules can be used together.
 
 ## Splitting modules across files
 
@@ -86,15 +86,15 @@ mod tests
 pub use helpers::Helper;
 ```
 
-In this example, the module pulls in submodules `helpers` and `gui`. Neither is marked as `pub mod` so they are private to the module. 
+In this example, the module pulls in submodules `helpers` and `gui`. Neither is marked as `pub mod` so they are private to the module.
 
 However the module also says `pub use helpers::Helper` which allows the outside to reference `myapp::Helper`. Thus a module can act as a gatekeeper to the things it references, keeping them private or selectively making parts public.
 
-We haven't mentioned the other module here `tests`. The attribute `#[cfg(test)]` indicates it is only pulled in when a unit test executable is being built. The `cfg` attribute is used for [conditional compliation](https://doc.rust-lang.org/book/conditional-compilation.html). 
+We haven't mentioned the other module here `tests`. The attribute `#[cfg(test)]` indicates it is only pulled in when a unit test executable is being built. The `cfg` attribute is used for [conditional compliation](https://doc.rust-lang.org/book/conditional-compilation.html).
 
 ## Using a module
 
-Modules can be used once they are defined. 
+Modules can be used once they are defined.
 
 ```rust
 use helpers::*;
@@ -111,3 +111,4 @@ TODO
 ## External crates
 
 TODO
+

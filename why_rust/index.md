@@ -1,14 +1,13 @@
 # Rust Background
 
-The catalyst for Rust was the Mozilla Firefox web browser. Firefox is not special amongst browsers in that they all suffer these issues:
+The catalyst for Rust was the Mozilla Firefox web browser. Firefox like most web browsers is:
 
 * Written in C++. [^1]
 * Complex with millions of lines of code.
-* Numerous bugs and security vulnerabilities that were directly attributable to the unsafe nature of the language.
-* Mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc.
-* Implementing multi-threading to the existing engine would doubtless cause even more vulnerabilities than being single threaded.
+* Vulnerable to bugs, vulnerabilities and exploits, many of which are attributable to the language the software is written in.
+* Mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc. Implementing multi-threading to the existing engine would doubtless cause even more bugs and vulnerabilities than being single threaded.
 
-Rust was conceived as a way to obtain C or C++ levels of performance but also feature up-front safety enforcement and memory guarantees. Code that passed the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
+Rust was conceived as a way to obtain C or C++ levels of performance but also remove entire classes of software problem that destabilize software and could be exploited. Code that passes the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
 
 So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve these issues. It progressed until the release of version 1.0 in 2015.
 
