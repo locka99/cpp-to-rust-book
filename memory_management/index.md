@@ -1,6 +1,6 @@
 # Memory Management
 
-Structures that you declare in C++ or Rust reside on the stack or they reside in the heap.
+The memory model of Rust is quite close to C++. Structures that you declare in Rust reside on the stack or they reside in the heap.
 
 ## Stack
 
@@ -48,7 +48,11 @@ Rust reduces the risk stack overflows in some indirect ways. It's easy in C++ th
 
 ## Heap
 
-Heap is a memory that the language runtime requests from the operating system and makes available to your code through memory allocation calls:
+Heap is a memory that the language runtime requests from the operating system and makes available to your code through memory allocation calls
+
+
+
+C++
 
 ```c++
 char * v = (char *) malloc(128);
@@ -68,9 +72,9 @@ Allocation simply means a portion of the heap is marked as in-use and the code i
 
 A heap can grow and code might create multiple heaps and might even be compelled to in order control problems such as heap fragmentation.
 
-## Boxing objects
+## Rust
 
-To allocate memory on the heap in Rust you must put a struct in a box. For example to create a 1k block of bytes:
+To allocate memory on the heap in Rust you declare data inside of a a box. For example to create a 1k block of bytes:
 
 ```rust
 let x: Box<[u8]> = Box::new([0; 1024]);
@@ -104,7 +108,7 @@ Now allocate 5 slots for object of type A - Oops we can't! The heap has 7 bytes 
 
 ![](/assets/cc---baaaaa---.png)
 
-The above assumes the heap is a contiguous, or that memory paging makes it seem so. On some systems, it might be that the heap is a linked list of chunks, in which case the allocated space for A would have to reside be in a single chunk, the newly allocated portion above. 
+The above assumes the heap is a contiguous, or that memory paging makes it seem so. On some systems, it might be that the heap is a linked list of chunks, in which case the allocated space for A would have to reside be in a single chunk, the newly allocated portion above.
 
 This is also an exagerated example, but it demonstrates how heap can have space, but not enough to fufilly allocations without growing.
 
