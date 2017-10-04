@@ -8,15 +8,15 @@ This section talks about C and C++. It describes its history, standards and prov
 
 The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version of Unix ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Most of the code up to that point was expressed in assembly language which was error prone and obviously non portable.
 
-Ritchie developed C so that he could write code in terms of variables, expressions, loops, functions etc. and use a _compiler_ to translate C code into machine code. The generated code ran almost as fast as hand written assembly and was more portable since only the compiler had to be changed in order to support a new architecture. C itself was influenced by B (hence why it was called C), which itself was influenced by BCPL.
+Ritchie developed C so that he could write code in terms of variables, expressions, loops, functions etc. and use a _compiler_ to translate C code into machine code. The generated code ran almost as fast as hand written assembly and was more portable since only the compiler had to be changed in order to support a new architecture. C itself was influenced by B \(hence why it was called C\), which itself was influenced by BCPL.
 
 ### Defacto standard and emerging popularity
 
-In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book. 
+In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book.
 
 Over time the use of C became more widespread and compilers such as Turbo C, Lattice C, Microsoft C popularized C on other operating systems including personal computers.
 
-### International Standards 
+### International Standards
 
 C later became an ANSI standard, C89. A further standard followed with C99 and C is still under review and development.
 
@@ -34,6 +34,19 @@ Object oriented programming has mostly been used in higher level software - appl
 
 C++ has also become formalised standards with C++98, C++03, C++11 and so on.
 
+#### Modern C++
+
+C++11 onwards is a distinctly different beast from earlier iterations and strives to add functionality that if used correctly can eliminate a lot of issues that will be discussed later on:
+
+* Scoped and shared pointers
+* auto keyword
+* move semantics \(i.e. moving data ownership of data from one variable to another\)
+* rvalue references
+* perfect forwarding
+* nullptr explicit type
+
+However it is worth noting that since many of these things are late additions to C++. Things like move semantics must be explicitly used and have implications that are not an issue for Rust where they have been part of the language since early on.
+
 ### The relationship between C and C++
 
 While C++ grew out of C and has developed alongside it, it is not true to say C++ is a superset of C. Rather it is _mostly_ a superset. There are differences such as keywords and headers that C recognizes that C++ does not.
@@ -50,9 +63,9 @@ C still tends to be more popular in low level systems programming. Components su
 
 Objective-C is another C derived language that added objects and classes. Unlike C++, Objective-C behaves as a strict superset of C.
 
-The language was developed in the 1980s and was popularized in the NeXTSTEP operating system and later in Apple's OS X and iOS. It hasn't gained much popularity outside of those platforms but the success of the iPhone has ensured it has a sizeable developer base of its own. It is also well supported by the GCC and Clang toolchains. Apple has begun to deprecate Objective-C in favour of Swift which is a modern high level language similar in some respects to Rust but more application focussed. 
+The language was developed in the 1980s and was popularized in the NeXTSTEP operating system and later in Apple's OS X and iOS. It hasn't gained much popularity outside of those platforms but the success of the iPhone has ensured it has a sizeable developer base of its own. It is also well supported by the GCC and Clang toolchains. Apple has begun to deprecate Objective-C in favour of Swift which is a modern high level language similar in some respects to Rust but more application focussed.
 
-Objective-C is strongly influenced by Smalltalk (as opposed to Simula in C++) and so code works somewhat differently than C++. 
+Objective-C is strongly influenced by Smalltalk \(as opposed to Simula in C++\) and so code works somewhat differently than C++.
 
 Notionally code calls objects by sending them a message. An object defines an interface specifying what messages it accepts and an implementation that binds those messages to code. The caller code sends a message to call a method. Objects can also receive dynamic messages, i.e. ones not defined by their interfaces, so they can do certain tasks such as intercepting and forwarding messages. In addition an object can ignore a message or not implement it without it being considered an error. In a broad sense, an ObjC message and a C++ method are or more or less analogous in functionality.
 
@@ -60,16 +73,19 @@ Notionally code calls objects by sending them a message. An object defines an in
 
 These are the major revisions of C and C++
 
-Year | Event | Description
------| ----- | ----
-1972 | C | C for PDP-11, other Unix systems
-1978 | K&R C | C as defined in "The C Programming Language" book by Kernighan & Ritchie
-1989 | C89 (ANSI X3.159-1989) | C is standardized as ANSI C, or C89. C90 (ISO/IEC 9899:1990) is the ISO ratified version of this same standard.
-1979 | C with classes -> C++ | Bjarne Stroustrops
-1995 | C95 (ISO/IEC 9899/AMD1:1995) | Wide character support, digraphs, new macros, and some other minor changes.
-1998 | C++98 (ISO/IEC 14882:1998) | C++ is standardized for the first time.
-1999 | C99 (ISO/IEC 9899:1999) | Single line (//) comments, mixing declarations with code, new intrinsic types, inlining, new headers, variable length arrays
-2003 | C++03 (ISO/IEC 14882:2003) | Primarily a defect revision, addressing various defects in the specification.
-2011 | C++11 (ISO/IEC 14882:2011) | A major revision that introduces type inference (auto), range based loops, lambdas, strongly typed enums, a nullptr constant, struct initialization. Improved unicode char16_t, char32_t, u, U and u8 string literals.
-2011 | C11 (ISO/IEC 9899:2011) | Multi-threading support. Improved unicode char16_t, char32_t, u, U and u8 string literals. Other minor changes
-2014 | C++14 (ISO/IEC 14882:2014) | Another major revision that introduces auto return types, variable templates, digit separators (1'000'000), generic lambdas, lambda capture expressions, deprecated attribute.
+| Year | Event | Description |
+| --- | --- | --- |
+| 1972 | C | C for PDP-11, other Unix systems |
+| 1978 | K&R C | C as defined in "The C Programming Language" book by Kernighan & Ritchie |
+| 1989 | C89 \(ANSI X3.159-1989\) | C is standardized as ANSI C, or C89. C90 \(ISO/IEC 9899:1990\) is the ISO ratified version of this same standard. |
+| 1979 | C with classes -&gt; C++ | Bjarne Stroustrops |
+| 1995 | C95 \(ISO/IEC 9899/AMD1:1995\) | Wide character support, digraphs, new macros, and some other minor changes. |
+| 1998 | C++98 \(ISO/IEC 14882:1998\) | C++ is standardized for the first time. |
+| 1999 | C99 \(ISO/IEC 9899:1999\) | Single line \(//\) comments, mixing declarations with code, new intrinsic types, inlining, new headers, variable length arrays |
+| 2003 | C++03 \(ISO/IEC 14882:2003\) | Primarily a defect revision, addressing various defects in the specification. |
+| 2011 | C++11 \(ISO/IEC 14882:2011\) | A major revision that introduces type inference \(auto\), range based loops, lambdas, strongly typed enums, a nullptr constant, struct initialization. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. |
+| 2011 | C11 \(ISO/IEC 9899:2011\) | Multi-threading support. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. Other minor changes |
+| 2014 | C++14 \(ISO/IEC 14882:2014\) | Another major revision that introduces auto return types, variable templates, digit separators \(1'000'000\), generic lambdas, lambda capture expressions, deprecated attribute. |
+
+
+
