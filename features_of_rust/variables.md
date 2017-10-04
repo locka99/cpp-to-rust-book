@@ -14,7 +14,7 @@ auto y = 42;   // int
 auto z = 100.; // double
 ```
 
-Where C++ gets really messy is for arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++.
+Where C++ gets really messy is for arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++ so auto requires they be explicitly defined or the type will be wrong.
 
 ```c++
 auto s = std::string("Now is the window of our discontent"); // char string
@@ -54,21 +54,20 @@ let a2 = ["Mary", "Fred", "Sue"];
 
 Scope rules in C, C++ and Rust are fairly similar - the scope that you declare the item determines its lifetime.
 
-Note that Rust allows variables to be shadowed, i.e. you can declare the same variable more than once in a block and the second declaration masks the first.  
+Note that Rust allows variables to be shadowed, i.e. you can declare the same variable more than once in a block and the second declaration masks the first.
 
 ## Pointers
 
 ### In C++
 
-A pointer is a variable that points to an address somewhere in memory. The pointer's *type* indicates to the compiler what to expect at the address but there is no enforcement to ensure
-that the address actually holds that type. A pointer might might be assigned NULL (or nullptr in C++11) or may even be garbage if nothing was assigned to it.
+A pointer is a variable that points to an address somewhere in memory. The pointer's _type_ indicates to the compiler what to expect at the address but there is no enforcement to ensure  
+that the address actually holds that type. A pointer might might be assigned NULL \(or nullptr in C++11\) or may even be garbage if nothing was assigned to it.
 
 ```c++
 char *name = "David Jones";
 
 int position = -1;
 find_last_index("find the letter l", 'l', &position);
-
 ```
 
 Generally pointers are used in situations where references cannot be used, e.g. functions returning allocated memory or parent / child collection relationships where circular dependencies would prevent the use of references.
@@ -84,9 +83,11 @@ In safe programming you would not use pointers. Instead you would use references
 ## References
 
 ### In C++
+
 A reference is also a variable that points to an address but unlike a pointer, it cannot be reassigned and it cannot be `NULL`. Therefore a reference is generally assumed to be safer than a pointer. It is still possible for the a reference to become dangling, assuming the address it referenced is no longer valid.
 
 ### In Rust
+
 A reference is also lifetime tracked by the compiler.
 
 ## Tuples
@@ -99,3 +100,6 @@ fn get_last_mouse_click() -> (i32, i32) {
 }
 let (x, y) = get_last_mouse_click();
 ```
+
+
+
