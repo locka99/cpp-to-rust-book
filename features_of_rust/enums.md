@@ -2,7 +2,7 @@
 
 In C++ an `enum` is a bunch of labels assigned an `int` value.
 
-```c++
+```cpp
 enum HttpResponse {
   okay = 200,
   not_found = 404,
@@ -12,26 +12,23 @@ enum HttpResponse {
 
 C++11 extends this concept a little, allowing you to declare an `enum` that uses another integral type, e.g. a `char` to hold the values.
 
-`enum LibraryCode : char {  
-   checked_in = 'I',`
-
-`  checked_out = 'O',`
-
-`  checked_out_late = 'L'`
-
-`};`
-
-In Rust an [`enum`](https://doc.rust-lang.org/book/enums.html) can be a scalar value like in C++.
-
-enum HttpResponse {
-
-  Ok= 200,
-
-  NotFound= 404,
-
-  InternalError = 500
-
+```cpp
+enum LibraryCode : char {
+  checked_in = 'I',
+  checked_out = 'O',
+  checked_out_late = 'L'
 };
+```
+
+In Rust an [`enum`](https://doc.rust-lang.org/book/enums.html) can be a scalar value just like in C++.
+
+```rust
+enum HttpResponse {
+  Ok= 200,
+  NotFound= 404,
+  InternalError = 500
+};
+```
 
 Or you can hold actual data so you can convey far more information than a static value could by itself.
 
@@ -45,29 +42,30 @@ enum HttpResponse {
 
 You can also bind functions to the enum:
 
+```
 impl HttpResponse {
-
-  fn code\(&self\) =&gt; {
-
-    match \*self {
-
-      HttpResponse::Ok=&gt; 200,  
-      HttpResponse::NotFound\(\_\) =&gt; 404,  
-      HttpResponse::InternalError\(
-
+  fn code(&self) => {
+    match *self {
+      HttpResponse::Ok => 200,
+      HttpResponse::NotFound(_) => 404,
+      HttpResponse::InternalError(_, _, _) => 500,
     }
-
   }
+}
+```
 
 So we might have a function that makes an http request and returns a response:
 
 ```rust
 fn do_request(url: &str) -> HttpResponse {
   if url == "/invalid" {
-    return HttpResponse::NotFound(url.to_string());
+    HttpResponse::NotFound(url.to_string())
   }
-   HttpResponse::Ok
+  else {
+    HttpResponse::Ok
+  }
 }
+//...
 let result = do_request("/invalid");
 if let HttpResponse::NotFound(url) = result {
   println!("The url {} could not be found", url);

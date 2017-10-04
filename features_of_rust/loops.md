@@ -8,13 +8,13 @@ A `for` loop in C/C++ consists of 3 expression sections housed in the `for()` se
 
 The three segments of a for statement allow:
 
-* Zero or more variables to be initialized (can be empty)
-* Zero or more conditions to be true for the loop to continue (can be empty)
-* Zero or more actions to perform on each iteration (can be empty).
+* Zero or more variables to be initialized \(can be empty\)
+* Zero or more conditions to be true for the loop to continue \(can be empty\)
+* Zero or more actions to perform on each iteration \(can be empty\).
 
 So this is a valid for loop:
 
-```c++
+```cpp
 // Infinite
 for (;;) {
 }
@@ -22,7 +22,7 @@ for (;;) {
 
 So is this:
 
-```c++
+```cpp
 for (int i = 10, j = 0; (j = i * i) <= 100; i--) {
   //...
 }
@@ -34,7 +34,7 @@ This is clearly a convoluted and somewhat confusing loop because it mixes assign
 
 A C++ loop consists of an initialising expression, a condition expression and a a loop expression separated by semicolons. So a loop that iterates from 0 to 100 looks like this:
 
-```c++
+```cpp
 for (int i = 0; i < 100; i++ ) {
   cout << "Number " << i << endl;
 }
@@ -46,7 +46,7 @@ C++ introduces the concept of iterators to its collection classes. An `iterator`
 
 So to iterate a collection from one end to the other, an iterator is assigned with the collection's `begin()` iterator and incremented until it matches the `end()` iterator.
 
-```c++
+```cpp
 for (std::vector<string>::const_iterator i = my_list.begin(); i != my_list.end(); ++i ) {
   cout << "Value = " << *i << end;
 }
@@ -54,7 +54,7 @@ for (std::vector<string>::const_iterator i = my_list.begin(); i != my_list.end()
 
 C++11 introduces a range based loop which simplifies the syntax when iterating over arrays and collections:
 
-```c++
+```cpp
 std::vector values;
 ...
 for (const auto & v: values) {
@@ -71,7 +71,7 @@ for (int y : x) {
 
 An infinite loop is one that never ends. The typical way to do this in C++ is to test against an expression that always evaluates to true or an empty for loop:
 
-```c++
+```cpp
 while (true) {
   poll();
   do_work();
@@ -87,7 +87,7 @@ for (;;) {
 
 C++ has conditional `while() {}` and `do { } while()` forms. The former tests the expression before it even runs while the latter runs at least once before testing the expression.
 
-```c++
+```cpp
 while (!end) {
   std::string next = getLine();
   end = next == "END";
@@ -96,7 +96,7 @@ while (!end) {
 
 The do-while form in C++ will execute the loop body at least once because the condition is only tested after each iteration instead of before.
 
-```c++
+```cpp
 int i = 0;
 do {
   i = rand();
@@ -105,9 +105,24 @@ do {
 
 ### Break and Continue
 
-If you need to exit a loop or start the next iteration early then you use the `break` and `continue` keywords.
+If you need to exit a loop or start the next iteration early then you use the `break` and `continue` keywords. The break keyword terminates the loop, the continue, causes the loop to proceed to the next iteration.
 
-TODO C++ example
+```cpp
+bool foundAdministrator = false;
+for (int i = 0; i < loginCredentials; ++i) {
+   const LoginCredentials credentials = fetchLoginAt(i);
+   if (credentials.disabled) {
+     // This user login is disabled so skip it
+     continue;
+   }
+   if (credentials .isAdmin) {
+     // This user is an administrator so no need to search rest of list
+     foundAdministrator = true;
+     break;
+   }
+   // ...   
+}
+```
 
 ## Rust
 
@@ -195,3 +210,4 @@ while let Some(value) = iterator.next() {
 ```
 
 This loop will break when the iterator returns `None`.
+
