@@ -3,24 +3,24 @@
 In C++ the standard form of a function is this:
 
 ```c++
-int do_something(bool parameter1, const std::string &parameter2);
+int function_name(bool parameter1, const std::string &parameter2);
 ```
 
-A function is either void (returns nothing), or it returns something. The parameters to a C++ function and the return type can be the standard mix of values, pointers, references.  A function can be declared and implemented in one block, however if it is called from an external file, or before its implementation then it must be forward declared in a header.
+A function returns _something _ or it is marked void (returns nothing). The parameters to a C++ function and the return type can be the standard mix of values, pointers, references.  A function can be declared and implemented in a head as an inline function, or it may be defined in the header and implemented in the source file.
 
 In Rust a function is like this:
 
 ```rust
-fn do_something(parameter1: bool, parameter2: &str) -> i32 {
+fn function_name(parameter1: bool, parameter2: &str) -> i32 {
   // implementation
 }
 ```
 
-This Rust function is equivalent to the one we wrote in C++. The parameter types and the return type must be specified.
+This Rust function is equivalent to the one we wrote in C++. The parameter types and the return type must be specified. Note how the return type is after the function, not before it.
 
-The declaration and the implementation are the same thing. There is no need for forward declaration since Rust only resolves function calls after the file has been completely parsed.
+The declaration and the implementation are one and the same thing. So unlike in C or C++ the function is defined and implemented simultaneously. 
 
-This function adds two values together and returns them:
+Here is a function that adds two values together and returns them:
 
 ```rust
 fn add(x: i32, y: i32) -> i32 {
@@ -30,7 +30,7 @@ fn add(x: i32, y: i32) -> i32 {
 
 Why is there no return call? As we saw in the section on Expressions, a block can have a return value if we omit the semi-colon from the end so x + y is the result of evaluating the function block and becomes what we return.
 
-There are occasions were you explicitly need the return keyword. Typically you do that if you want to exit the function before you get to the end
+There are occasions were you explicitly need the return keyword. Typically you do that if you want to exit the function before you get to the end of the function block:
 
 ```rust
 fn process_data(number_of_times: ui32) -> ui32 {
@@ -53,7 +53,7 @@ C++ functions can take a variable number of arguments with the ... ellipsis patt
 void printf_like(const char *pattern, ...);
 ```
 
-Rust does not support variadic functions. However you could pass additional arguments in an array slice if the values are the same, or as a dictionary or a number of other ways.  
+Rust does not support variadic functions (the fancy name for this ability). However you could pass additional arguments in an array slice if the values are the same, or as a dictionary or a number of other ways.  
 
 TODO Rust example of array slice
 
