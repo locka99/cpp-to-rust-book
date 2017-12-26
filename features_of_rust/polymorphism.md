@@ -1,12 +1,25 @@
 # Polymorphismtion
 
+## C++
+
+C++ has 4 types of polymorphism:
+
+1. Function name overloading - multiple definitions of the same function taking different arguments. 
+2. Coercion - implicit type conversion, e.g. assigning a double to an int or a bool.
+3. Parametric - compile type substitution of parameters in templates
+4. Inclusion - subtyping a class with virtual methods overloads their functionality. Your code can use the pointer to a base class, yet when you call the method you are calling the function implemented by the subtype.
+
 C++ allows functions and methods including constructors to be polymorphic.
 
 That is to say, the same named function can be overloaded with different parameters. 
 
+## Function name overloading
+
+
 ```c++
 class Variant {
 public:
+  void set(); // Null variant
   void set(bool value);
   void set(int value);
   void set(float value);
@@ -14,7 +27,7 @@ public:
 };
 ```
 
-One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also coerce types. 
+One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also implicitly convert types. 
 
 ```c++
 
@@ -26,9 +39,21 @@ v.set(NULL);
 
 This example will call the integer overload because `NULL` evaluates to 0. One of the changes to `C++11` was to introduce an explicit `nullptr` value and type to avoid this issues.
 
-##Ri# 
+### Default 
 
-Rust does not support polymorphism. While there are valid reasons that it doesn't, it can still be very painful, especially if you have classes or functions that you need to be called with different arguments.
+### Constructors
+
+Constructors run head on
+
+## Rust
+
+Rust has very limited support for polymorphism. 
+
+1. There is no function name overloading.
+2. 
+
+
+While there are valid reasons that it doesn't, it can still be very painful, especially if you have classes or functions that you need to be called with different arguments.
 
 The most annoying case would be for constructors, where there are different ways to construct a class. The naive workaround is to produce functions which are unique so they do not collide:
 
