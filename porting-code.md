@@ -41,7 +41,9 @@ TODO you do not need to use references on intrinstic types such as integers, boo
 
 ## Learn move semantics
 
-TODO C and C++ default to copy on assign, Rust moves on assign unless the type implements the Copy trait. This is easily one of the most mind boggling things that new Rust programmers will encounter. Code that works perfectly well in C++ will instantly fail in Rust. The way to overcome this is first use references (see previous section), and secondly don't move unless you intend for the recipient to be the new owner of an object.
+C and C++ default to copy on assign, Rust moves on assign unless the type implements the `Copy` trait. This is easily one of the most mind boggling things that new Rust programmers will encounter. Code that works perfectly well in C++ will instantly fail in Rust. 
+
+The way to overcome this is first use references and secondly don't move unless you intend for the recipient to be the new owner of an object.
 
 TODO if you intend for the recipient to own a copy of an object then implement the Clone trait on your struct. Then you may call `.clone()` and the recipient becomes the owner of the clone instead of your copy.
 
