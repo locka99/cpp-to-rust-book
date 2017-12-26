@@ -25,7 +25,7 @@ public:
 };
 ```
 
-One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also implicitly convert types. 
+One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also implicitly convert types. On top of that C++ also has default parameter values _and_ default constructors. So you might call a function using one signature and be calling something entirely different after the compiler resolves it.
 
 ```c++
 
@@ -37,13 +37,12 @@ v.set(NULL);
 
 This example will call the integer overload because `NULL` evaluates to 0. One of the changes to `C++11` was to introduce an explicit `nullptr` value and type to avoid this issues.
 
-
 ## Rust
 
-Rust has very limited support for polymorphism. 
+Rust has limited support for polymorphism. 
 
-1. Function name overloading - there is none. In so doing it avoids a lot of complexity and mess around overloading, especially in constructors. On the flip side it can make code look elegant. See section below for alternatives.
-2. Coercion. Rust allows limited, explict coercion between numeric types using the `as` keyword.
+1. Function name overloading - there is none. See section below for alternatives.
+2. Coercion. Rust allows limited, explict coercion between numeric types using the `as` keyword. Otherwise see below for use on `Into` and `From` traits.
 3. Parameteric - similar to C++ via generics
 4. Inclusion - there is no inheritance in Rust. The nearest thing to a virtual method in rust is a trait with an implemented function that an implementation overrides with its own. However this override is at compile time.
 
