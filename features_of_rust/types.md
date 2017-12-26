@@ -52,9 +52,9 @@ C/C++ and Rust will share the same machine types for each corresponding language
 
 ## stdint.h / cstdint
 
-C ships with a special  `<stdint.h>` header (which is called `<cstdint>` in C++) that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. 
+C provides a `<stdint.h>` header that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. The equivalent in C++ is `<cstdlib>`.
 
-The types defined in this header file are directly analogous between C/C++ and Rust.
+If you use the types defined in this header file the types become directly analogous and unambiguous between C/C++ and Rust.
 
 | C/C++ | Rust
 | --- | ----

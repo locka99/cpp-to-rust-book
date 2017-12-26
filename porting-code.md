@@ -1,10 +1,8 @@
 # Porting Code
 
-Before starting, the assumption at this point is you *need* to port code. If you're not sure you need to port code, then that's the question you must ask first and come to an answer. 
+Before starting, the assumption at this point is you *need* to port code. If you're not sure you need to port code, then that's the question you must ask yourself first.
 
 This section will provide a more real world C/C++ example and port it to the equivalent Rust
-
-TODO this section is still to do
 
 ## Automation tools
 
