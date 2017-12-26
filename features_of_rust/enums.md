@@ -1,6 +1,6 @@
 # Enumerations
 
-In C++ an `enum` is a bunch of labels assigned an `int` value.
+In C++ an `enum` is a bunch of labels assigned an `int` value. i.e. it is basically a bunch of constants with scalar values.
 
 ```cpp
 enum HttpResponse {
@@ -10,7 +10,7 @@ enum HttpResponse {
 };
 ```
 
-C++11 extends this concept a little, allowing you to declare an `enum` that uses another integral type, e.g. a `char` to hold the values.
+C++11 extends this concept a little, allowing you to declare an `enum` that uses another kind of integral type, e.g. a `char` to hold the values.
 
 ```cpp
 enum LibraryCode : char {
@@ -20,7 +20,7 @@ enum LibraryCode : char {
 };
 ```
 
-In Rust an [`enum`](https://doc.rust-lang.org/book/enums.html) can be a scalar value just like in C++.
+In Rust an [`enum`](https://doc.rust-lang.org/book/enums.html) can be a scalar value just like in C++. 
 
 ```rust
 enum HttpResponse {
@@ -30,7 +30,7 @@ enum HttpResponse {
 };
 ```
 
-Or you can hold actual data so you can convey far more information than a static value could by itself.
+But an enum can also hold actual data so you can convey far more information than a static value could by itself. 
 
 ```rust
 enum HttpResponse {
@@ -44,7 +44,7 @@ You can also bind functions to the enum:
 
 ```
 impl HttpResponse {
-  fn code(&self) => {
+  pub fn code(&self) => {
     match *self {
       HttpResponse::Ok => 200,
       HttpResponse::NotFound(_) => 404,
