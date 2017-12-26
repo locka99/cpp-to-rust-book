@@ -9,11 +9,9 @@ C++ has 4 types of polymorphism:
 3. Parametric - compile type substitution of parameters in templates
 4. Inclusion - subtyping a class with virtual methods overloads their functionality. Your code can use the pointer to a base class, yet when you call the method you are calling the function implemented by the subtype.
 
-C++ allows functions and methods including constructors to be polymorphic.
-
 That is to say, the same named function can be overloaded with different parameters. 
 
-## Function name overloading
+### Function name overloading
 
 
 ```c++
@@ -39,44 +37,88 @@ v.set(NULL);
 
 This example will call the integer overload because `NULL` evaluates to 0. One of the changes to `C++11` was to introduce an explicit `nullptr` value and type to avoid this issues.
 
-### Default 
-
-### Constructors
-
-Constructors run head on
 
 ## Rust
 
 Rust has very limited support for polymorphism. 
 
-1. There is no function name overloading.
-2. 
+1. Function name overloading - there is none. In so doing it avoids a lot of complexity and mess around overloading, especially in constructors. On the flip side it can make code look elegant. See section below for alternatives.
+2. Coercion. Rust allows limited, explict coercion between numeric types using the `as` keyword.
+3. Parameteric - similar to C++ via generics
+4. Inclusion - there is no inheritance in Rust. The nearest thing to a virtual method in rust is a trait with an implemented function that an implementation overrides with its own. However this override is at compile time.
 
+### Alternatives to function name overloading
 
-While there are valid reasons that it doesn't, it can still be very painful, especially if you have classes or functions that you need to be called with different arguments.
-
-The most annoying case would be for constructors, where there are different ways to construct a class. The naive workaround is to produce functions which are unique so they do not collide:
+If you have a trivial overloaded function you can just disambiguate your functions, e.g.
 
 ```rust
-fn new(name: &str);
-fn new_age(name: &str, age: u16);
+fn new(name: &str) -> Foo;
+fn new_age(name: &str, age: u16) -> Foo;
 ```
 
-Another way you can do this is with _traits_. A standard trait is called Into&lt;T&gt; where T is the type you wish to convert from. Our struct can implement the Into trait multply for set of
+Another way you can do this is with _traits_. A standard trait is called `Into<T>` where `T` is the type you wish to convert from and you implement this trait on the thing you wish to be able to convert into. 
+
+So let's say we want to write a `new` constructor function for struct `Foo`.
+
+We'll first implement the `Into` trait multiple times for different values that our struct can be made from
 
 ```rust
-impl Into<&str> for Foo {    
-    fn into(v: &str) -> Foo {    
-        //...    
+// This Into works on a string slice
+impl Into<Foo> for String
+    fn into(v: String) -> Foo {    
+        //... constructor
     }    
 }
 
-impl Into<(&str, u16)> for Foo {    
-    fn into(v: (&str, u16)) -> Foo {    
-        //...    
+// This Into works on a tuple consisting of a string slice and a u16
+impl Into<Foo> for (String, u16)> {    
+    fn into(v: (String, u16)) -> Foo {    
+        //... constructor
     }    
 }
 ```
 
-Arguably this is a pretty gnarly workaround, but it does demonstrate that sometimes Rust can achieve 
+Now we will produce a `new` function that takes anything that implements `Into<Foo>`. Calling it is So you can produce constructors such as this:
 
+```rust
+impl Foo {
+  pub fn Foo<T>(v: T) -> Foo where T: Into<Foo> {
+    v.into()
+  }
+}
+//...
+let f = Foo::new(String::from("Bob"));
+let f = Foo::new((String::from("Mary"), 16));
+```
+
+So Rust allows polymorphic-like code but it makes you think about it a little differently.
+
+### Coercion
+
+Coercion also makes use of the `Into<T>` trait. If we want to coerce one type to another we just implement the `Into` trait and invoke `into()` on it.
+
+```rust
+impl Into<SquarePeg> for RoundHole> {
+  fn into(v: RoundHole) -> SquarePeg {
+    // Impl
+  }
+}
+// Convert the type and use diamond pattern to indicate output type
+let v = RoundHole { /*..*/ }.into::<SquarePeg>()
+```
+
+We might also use the `From` trait which is reciprocal with `Into` allowing you to convert _from_ something. 
+
+```rust
+use std::convert::From;
+
+impl From<&RoundHole> for SquarePeg {
+  fn from(v: &RoundHole) -> Self {
+    // Impl
+  }
+}
+
+// Make one thing from the other, but in this case use a reference
+let rh = RoundHole { /*..*/};
+let v = SquarePeg::from(&rh);
+```
