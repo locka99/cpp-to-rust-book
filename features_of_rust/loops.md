@@ -40,7 +40,7 @@ for (int i = 0; i < 100; i++ ) {
 }
 ```
 
-#### Iterating collections
+#### Iterating C++ collections
 
 C++ introduces the concept of iterators to its collection classes. An `iterator` is something that can increment or decrement to traverse a collection.
 
@@ -52,7 +52,7 @@ for (std::vector<string>::const_iterator i = my_list.begin(); i != my_list.end()
 }
 ```
 
-C++11 introduces a range based loop which simplifies the syntax when iterating over arrays and collections:
+C++11 provides new range based for-loop with simpler syntax when iterating over arrays and collections:
 
 ```cpp
 std::vector values;
@@ -69,7 +69,7 @@ for (int y : x) {
 
 ### Infinite Loop
 
-An infinite loop is one that never ends. The typical way to do this in C++ is to test against an expression that always evaluates to true or an empty for loop:
+An infinite loop is one that never ends. The typical way to do this in C++ is to test against an expression that always evaluates to true or use an empty for loop:
 
 ```cpp
 while (true) {
