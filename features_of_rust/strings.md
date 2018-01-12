@@ -26,14 +26,14 @@ China has mandated all software must support all 32-bits. We'll see how this has
 
 ### There is no string primitive
 
-C and C++ does not have a string primitive type, instead it has `char` type, that is one byte. A string is a pointer to a char array terminated with a zero byte.
+C and C++ does not have a string primitive type, instead it has `char` type, that is one byte. A "string" is a pointer to an array of chars that are terminated with a zero byte, `'\0'`.
 
 ```c++
 // The array that my_string points at ends with a hidden \0
 char *my_string = "This is as close to a string primitive as you can get";
 ```
 
-In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. It's very easy to accidentally copy a string into a buffer too large to hold it.
+In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. So `strlen()` the number of bytes that were encountered before a `\0` was found. Sicne these functions run until they find a terminating character it is very easy to accidentally for them to overrun a buffer. 
 
 In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled and linked to the executable just like every other class. In addition, a `std::string` may or may not use heap to store the string which can have repercussions for memory usage and fragmentation.
 
