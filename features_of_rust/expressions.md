@@ -8,27 +8,27 @@ let x = 5 + 5; // expression evaluates to 10
 
 ## But blocks are expressions too
 
-Where it gets more interesting is that a block is an expression. This is legal code:
+Where it gets more interesting is that a block of code, denoted by curly braces also evaluates to an expression. This is legal code:
 
 ```rust
 let x = {};
 println!("x = {:?}", x);
 ```
 
-What does x get assigned? In this case the block was empty so x was assigned with the value of ().
+What was assigned to x? In this case the block was empty so x was assigned with the value of `()`. The value `()` is a special unitary type that essentially means neither yes or no. It just means "value".  That is the default type of any function or type. It works a little like `void` in C++ meaning the value is meaningless so don't even look at it.
 
 ```
 x = ()
 ```
 
-This block also returns a value of ().
+This block also returns a value of `()`.
 
 ```rust
 let x = { println!("Hello"); };
 println!("x = {:?}", x);
 ```
 
-Again, that's because although the block does stuff (print Hello), it doesn't evaluate to anything so the compiler returns () for us.
+Again, that's because although the block does stuff (print Hello), it doesn't evaluate to anything so the compiler returns `()` for us.
 
 So far so useless. But we can change what the block expression evaluates to:
 
