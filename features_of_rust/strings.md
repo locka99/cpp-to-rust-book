@@ -35,7 +35,9 @@ char *my_string = "This is as close to a string primitive as you can get";
 
 In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. So `strlen()` the number of bytes that were encountered before a `\0` was found. Sicne these functions run until they find a terminating character it is very easy to accidentally for them to overrun a buffer. 
 
-In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled and linked to the executable just like every other class. In addition, a `std::string` may or may not use heap to store the string which can have repercussions for memory usage and fragmentation.
+In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled and linked to the executable just like every other class. 
+
+In addition, a `std::string` will usually use heap to store the string's data which can have repercussions for memory usage and fragmentation. There is usually a hidden cost to assigning one string to another because memory must be allocated to receive a copy of the string, even if the string itself is not modified during the assignment.
 
 ### Unicode support
 
