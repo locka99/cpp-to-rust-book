@@ -10,7 +10,7 @@ For this section, we'll cover the _most likely_ analogous types between Rust and
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
-| `char` | `i8` (or `u8`) | The signedness of a C++ char can be signed or unsigned - the assumption here is signed but it varies by target system.<br>A Rust `char` is not the same as a C/C++ `char` [^1].
+| `char` | `i8` (or `u8`) | The signedness of a C++ char can be signed or unsigned - the assumption here is signed but it varies by target system.<br>A Rust `char` is not the same as a C/C++ `char` since it can hold any Unicode character. [^1]
 | `unsigned char` | `u8` |
 | `signed char` | `i8` |
 | `short int` | `i16` |
@@ -28,7 +28,7 @@ For this section, we'll cover the _most likely_ analogous types between Rust and
 | `bool` | `bool` |
 | `void` | `()` | The unit type (see below)
 
-[^1] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused `wchar_t` type which on operating systems such as Windows is only 2 bytes. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
+[^1] Rust's `char` type, is 4 bytes wide, enough to hold any Unicode character. This is equivalent to the belated `char32_t` that appears in C++11 to rectify the abused C++98 `wchar_t` type which on operating systems such as Windows is only 2 bytes wide. When you iterate strings in Rust you may do so either by character or `u8`, i.e. a byte.
 
 [^2] See the next section to for a discussion on data models.
 
