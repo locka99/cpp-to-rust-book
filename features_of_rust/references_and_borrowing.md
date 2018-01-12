@@ -11,7 +11,7 @@ When you assign an object to a variable in Rust, you are said to be binding it. 
 
 So variables are scoped and the scope is the constraint that affects their lifetime. Outside of the scope, the variable is invalid.
 
-In this example, it is important to remember the Vec is on the stack but the pointer it allocates to hold its elements is on the heap. The heap space will also be recovered when the Vec is dropped.
+In this example, it is important to remember the `Vec` is on the stack but the pointer it allocates to hold its elements is on the heap. The heap space will also be recovered when the `Vec` is dropped.
 
 If we assign v1 to another variable, then all the object ownership is moved to that other variable:
 
