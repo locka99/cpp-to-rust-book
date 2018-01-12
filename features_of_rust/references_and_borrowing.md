@@ -24,9 +24,9 @@ If we assign v1 to another variable, then all the object ownership is moved to t
 }
 ```
 
-This may seem weird but it's worth remembering a serious problem we saw in C++, that of Copy constructor errors. It is too easy to duplicate a class and inadvertantly share private date or state across multiple instances.
+This may seem weird but it's worth remembering a serious problem we saw in C++, that of copy constructor errors. It is too easy to duplicate a class and inadvertantly share private date or state across multiple instances.
 
-We don't want to objects v1 and v2 to shared internal state and in Rust they don't. So Rust copies the data from v1 to v2 and marks v1 as invalid. If you attempt to reference v1 any more in your code, it will generate a compile error. This compile error will indicates that ownership was moved to v2.
+We don't want objects v1 and v2 to share internal state and in Rust they don't. Rust moves the data from v1 to v2 and marks v1 as invalid. If you attempt to reference v1 any more in your code, it will generate a compile error. This compile error will indicates that ownership was moved to v2.
 
 Likewise, if we pass the value to a function then that also moves ownership:
 
