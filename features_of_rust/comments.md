@@ -21,8 +21,6 @@ pub const NOT_FOUND = 404;
 
 Documentation beyond a triple-slash comment is in Markdown format, just like this guide. That means you have a human readable language for writing rich-text documentation and if it's not enough you can resort to HTML via tags.
 
-TODO markdown example.
-
 The easiest way to produce documentation is to invoke `cargo doc`.
 
 See here for [full documentation](https://doc.rust-lang.org/book/documentation.html)
