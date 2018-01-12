@@ -2,7 +2,7 @@
 
 This book is for people familiar with C or C++ who are thinking of using Rust.
 
-Before we go into what Rust is or why it might be preferable to C/C++ _in some cases_ , let's think of software that is mission critical and must not or should not fail.
+Before we go into what Rust is or why it might be preferable to C/C++ _in some cases_, let's think of software that is mission critical and must not or should not fail.
 
 * Operating system services and daemons
 * Internet of things devices
