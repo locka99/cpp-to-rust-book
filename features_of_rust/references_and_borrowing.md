@@ -81,7 +81,7 @@ if (result == 0) {
 }
 ```
 
-The Rust compiler will throw an error if variables are uninitialised at any point. It will also warn you if you declare a variable and end up not using it.
+The Rust compiler will throw an error, not a warning, if variables are uninitialised. It will also warn you if you declare a variable and end up not using it.
 
 ## References and Borrowing
 
