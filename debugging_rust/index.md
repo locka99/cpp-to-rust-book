@@ -2,7 +2,7 @@
 
 Rust compiles into machine code the same as C and benefits from sharing the same ABI and compiler backend formats as C/C++.
 
-Consequently, it is possible to debug compiled Rust in the same way as C/C++. So if you built your Rust executable a gcc compatible binary format you can just invoke gdb on it:
+So you can debug Rust in the same way as C/C++. If you built your Rust executable in a gcc compatible binary format you can just invoke gdb on it:
 
 ```
 gdb my_executable
