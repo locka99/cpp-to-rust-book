@@ -61,15 +61,27 @@ These move assignments look weird but it is Rust protecting you from the kinds o
 If you truly want to copy the object from one variable to another so that both hold independent objects you must make your object implement the Copy trait.  Normally it's better to implement the Clone trait which works in a similar way but through an explicit clone() operation.
 
 ## Variables must be bound to something
+
 Another point. Variables must be bound to something. You cannot use a variable if it hasn't been initialized with a value of some kind:
 
 ```rust
 let x: i32;
 println!("The value of x is {}", x);
 ```
-A C++ compiler might issue a warning or catch the error with strict flags, but by default it doesn't care.
 
-The Rust compiler will throw an error. Uninitialised values are errors. It will also warn you if you declare a variable and end up not using it.
+It is quite valid in C++ to declare variable and do nothing with it. Or conditiionally do something to the variable which confuses the compiler so it only generates a warning.
+
+```c++
+int result;
+{
+   result = do_something();
+}
+if (result == 0) {
+  debug("result succeeded");
+}
+```
+
+The Rust compiler will throw an error if variables are uninitialised at any point. It will also warn you if you declare a variable and end up not using it.
 
 ## References and Borrowing
 
