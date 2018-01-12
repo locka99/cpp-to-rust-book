@@ -9,7 +9,7 @@ PersonList z;
 z = x; // Assignment operator
 ```
 
-By default C++ generates all the code to copy and assign the bytes in one class to another without any effort. Lucky us! 
+By default C++ generates all the code to copy and assign the bytes in one class to another without any effort. Lucky us!
 
 So our class PersonList might look like this:
 
@@ -102,15 +102,40 @@ Another alternative would be to use noncopyable types within the class itself. F
 
 Boost also provides a `boost::noncopyable` class which provides yet another option. Classes may inherit from noncopyable which implements a private copy constructor and assignment operator so any code that tries to copy will generate a compile error.
 
-[^1] The Rule of Three has become the Rule of Five(!) in C++11 because of the introduction of move semantics.
+### The Rule of Five
+
+The Rule of Three has become the Rule of Five\(!\) in C++11 because of the introduction of move semantics.
+
+If you have a class that can benefit from move semantics, the Rule of Five essentially says that the existence of the user-defined destructor, copy constructor and copy assignment operator requires you to also implement a move constructor and a move assignment operator. So in addition to the code we wrote above we must also write two more methods.
+
+```
+class PersonList {
+  // See class above for other methods, rule of three....
+  
+  PersonList(PersonList &&other) {
+    // TODO
+  }
+  
+  PersonList &operator=(PersonList &&other) {
+    if (&other != this) {
+      // TODO
+    }
+    return  *this
+  }
+```
 
 ## How Rust helps
 
-Structs cannot be copied by default. If you assign a struct from one variable to another, ownership moves with it. The old variable is invalid and the compiler will complain if you access it.
+### Move is the default
 
-If you want to copy a struct you must explicitly implement either the `Copy` and / or `Clone` trait on it.
+Rust helps by making move semantics the default. i.e. unless you need to copy data from one instance to another, you don't. If you assign a struct from one variable to another, ownership moves with it. The old variable is marked invalid by the compiler and it is an error to access it.
 
-Most primitive types such as ints, chars, bools etc. implement `Copy` so you can just assign one to another
+But if you do want to copy data from one instance to another then you have two choices.
+
+* Implement the `Clone` trait. Your struct will have an explicit `clone()` function you can call to make a copy of the data.
+* Implement the `Copy` trait. Your struct will now implicitly copy on assignment instead of move. Implementing `Copy` also implies implementing `Clone` so you can still explicitly call `clone()` if you prefer.
+
+Primitive types such as integers, chars, bools etc. implement `Copy` so you can just assign one to another
 
 ```rust
 // This is all good
@@ -120,16 +145,14 @@ y = 20;
 assert_eq!(x, 8);
 ```
 
-But a `String` cannot be copied this way. A string has an internal heap allocated pointer so the struct cannot implement Copy. If you assign a String variable to another you move ownership, i.e. the original variable is no longer able to call functions or fields on the struct. 
-
-But you can explicitly clone a `String` in which case the clone operation will make a duplicate of the allocated memory so that both strings are independent of each other:
+But a `String` cannot be copied this way. A string has an internal heap allocated pointer so copying is a more expensive operation. So `String` only implements the `Clone` trait which requires you to explicitly duplicate it:
 
 ```rust
 let copyright = "Copyright 2017 Acme Factory".to_string();
 let copyright2 = copyright.clone();
 ```
 
-If we just declare a struct it can neither be copied nor cloned by default.
+The default for any struct is that it can neither be copied nor cloned.
 
 ```rust
 struct Person {
@@ -138,7 +161,7 @@ struct Person {
 }
 ```
 
-The following code creates a `Person` object and assigns it to `person1`. When `person1` is assigned to `person2`, ownership of the data also moves:
+The following code will create a `Person` object, assigns it to `person1`. And when `person1` is assigned to `person2`, ownership of the data also moves:
 
 ```rust
 let person1 = Person { name: "Tony".to_string(), age: 38u8 };
@@ -155,24 +178,22 @@ To illustrate consider this Rust which is equivalent to the PersonList we saw in
 
 ```rust
 struct PersonList {
-    pub persons: Box<Vec<Person>>,
+    pub persons: Vec<Person>,
 }
 ```
 
-We can see that PersonList has a vector of Person objects. A `Box` is what we use in Rust to hold a heap allocated object. When the `Box` is dropped, the item inside is also dropped and the heap memory is freed.
-
-So this `Vec` of Person objects is in a `Box` and is on a heap. Clear?
+We can see that `PersonList` has a `Vec` vector of `Person` objects. Under the covers the `Vec`  will allocate space in the heap to store its data.
 
 Now let's use it.
 
 ```rust
-let mut x = PersonList { persons: Box::new(Vec::new()), };
+let mut x = PersonList { persons: Vec::new(), };
 let mut y = x;
 // x is not the owner any more...
 x.persons.push(Person{ name: "Fred".to_string(), age: 30u8} );
 ```
 
-The variable `x` is on the stack and is a PersonList but the persons member is allocated from the heap.
+The variable `x` is on the stack and is a `PersonList` but the persons member is partly allocated from the heap.
 
 The variable `x` is bound to a PersonList on the stack. The vector is created in the heap. If we assign `x` to `y` then we could have two stack objects sharing the same pointer on the heap in the same way we did in C++.
 
@@ -189,11 +210,11 @@ But Rust stops that from happening. When we assign `x` to `y`, the compiler will
 
 Rust has stopped the problem that we saw in C++. Not only stopped it but told us why it stopped it - the value moved from x to y and so we can't use x any more.
 
-### Implementing a Copy / Clone
+### Implementing the Copy trait
 
-Sometimes we DO want to copy / duplicate an object and for that we must implement a trait to tell the compiler that we want that.
+The `Copy` trait allows us to do direct assignment between variables. The trait has no functions, and acts as a marker in the code to denote data that should be duplicated on assignment.
 
-The Copy trait allows us to do direct assignment between variables. You can only implement Copy by deriving it and you can only derive it if all the members of the struct also derive it:
+You can implement the `Copy` trait by deriving it, or implementing it. But you can only do so if all the members of the struct also derive the trait:
 
 ```rust
 #[derive(Copy)]
@@ -201,9 +222,21 @@ struct PersonKey {
   id: u32,
   age: u8,
 }
+
+// Alternatively...
+
+impl Copy for PersonKey {}
+
+impl Clone for PersonKey {
+  fn clone(&self) -> PersonKey {
+     *self
+  }
+}
 ```
 
-But this will create an error because a String cannot be copied, it must be cloned.:
+So `PersonKey` is copyable because types `u32` and `u8` are also copyable and the compiler will take the `#[derive(Copy)]` directive and modify the move / copy semantics for the struct.
+
+But when a struct contains a a type that does not implement `Copy` you will get a compiler error. So this struct `Person` will cause a compiler error because `String` does not implement `Copy:`
 
 ```rust
 #[derive(Copy)]
@@ -211,9 +244,12 @@ struct Person {
   name: String,
   age: u8
 }
+// Compiler error!
 ```
 
-But we can still implement Clone. A `Clone` trait can be derived or explicitly implemented. We can derive it if every member of the struct can be cloned which in the case of Person it can:
+### Implementing the Clone trait
+
+The `Clone` trait adds a `clone()` function to your struct that produces an independent copy of it. We can derive it if every member of the struct can be cloned which in the case of `Person` it can:
 
 ```rust
 #[derive(Clone)]
@@ -246,6 +282,9 @@ x.persons.push(Person{ name: "Fred".to_string(), age: 30} );
 y.persons.push(Person{ name: "Mary".to_string(), age: 24} );
 ```
 
+## Summary
+
 In summary, Rust stops us from getting into trouble by treated assigns as moves when a non-copyable variable is assigned from one to another. But if we want to be able to clone / copy we can make our intent explicit and do that too.
 
 C++ just lets us dig a hole and fills the dirt in on top of us.
+
