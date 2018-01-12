@@ -6,7 +6,7 @@ An expression is something that evaluates to something. Just like C++ more or le
 let x = 5 + 5; // expression evaluates to 10
 ```
 
-## Blocks are expressions too
+## But blocks are expressions too
 
 Where it gets more interesting is that a block is an expression. This is legal code:
 
