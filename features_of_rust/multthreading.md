@@ -85,6 +85,8 @@ Open Multi-Processing (OpenMP) is an API for multi-threaded parallel processing.
 
 GCC, Clang and Visual C++ have support for OpenMP so it is an option.
 
+OpenMP is a complex standard but the use of directives can make for cleaner code than invoking threading APIs directly. The downside is it is also more opaque hiding what the software is doing, making it considerably more difficult to debug.
+
 OpenMP is described in detail at the OpenMP [website](http://www.openmp.org/).
 
 ### Thread local storage 
