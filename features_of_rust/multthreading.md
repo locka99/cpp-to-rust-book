@@ -1,8 +1,15 @@
 # Multithreading
 
-Multithreading allows you to run parts of your programming concurrently. Every program has a *main* thread - i.e. the one your `main()` started from. 
+Multithreading allows you to run parts of your programming concurrently, performing tasks in parallel. Every program has a *main* thread - i.e. the one your `main()` started from, in addition to which are any that you create.
 
-In addition, if you use a graphical toolkit, or timers, or 3rd party libraries they might well spawn their own threads.
+Examples of reasons to use threads:
+
+* Long running operations, e.g. zipping up a large file.
+* Activity that is blocking in nature, e.g. listening for connections on a socket
+* Processing data in parallel, e.g. physics, collision detection etc.
+* Asynchronous activities, e.g. timers, polling operations.
+
+In addition, if you use a graphical toolkit, or 3rd party libraries they may spawn their own threads that you do not know about. 
 
 ## Thread safety
 
@@ -10,12 +17,11 @@ One word you will hear a lot in multithreading is thread safety.
 
 By that we mean:
 
-* No two threads should be able to modify the same data at the same time. This is called a data race. Data races are bad news because data can be corrupted, potentially causing a crash.
-* No two threads should obtain mutually exclusive locks to each other's resources that could cause deadlock i.e. thread one obtains a lock on B and waits on A, while thread two obtains a lock on A and waits on B. When this happen both threads are locked forever and a program can freeze.
-* No race conditions. Where the order of thread execution produces unpredictable results. This can be caused by failing to manage control the inputs and outputs of threads, or failing to wait correctly for threads to complete. For example if the main thread terminates without terminating a worker thread, the worker may not clean up properly.
-* APIs that can be called by multiple threads must ensure to protect their data structures to prevent any of the problems above from arising. Sometimes APIs take the easy way out and stuff all their context into a context object and it is up to the caller to ensure the thread safety.
-
-Therefore there is a necessary discipline required for multithreading or bad things will happen.
+* Threads should not be able to modify the data at the same time. When this happens it is called a data race and can corrupt the data, causing a crash. e.g. two threads trying to append to a string at the same time.
+* Threads must not lock resources in a way that could cause deadlock i.e. thread 1 obtains a lock on resource B and blocks on resource A, while thread 2 obtains a lock on resource A and blocks on resource B. Both threads are locked forever waiting for a resource to release that never will be.
+* Race conditions are bad, i.e. the order of thread execution produces unpredictable results on the output from the same input.
+* APIs that can be called by multiple threads must either protect their data structures or make it an explicit problem of the client to sort out.
+* Open files and other resources that are accessed by multiple threads must be managed safely.
 
 ### Protecting shared data
 
@@ -24,30 +30,61 @@ Data should never be read at the same time it is written to in another thread. N
 The common way to prevent this is either:
 
 * Use a mutex to guard access to the data. A mutex is a special class that only one thread can lock at a time. Other threads that try to lock the mutex will wait until the lock held by another thread is relinquished
-
-* Use a read-write lock. Similar to a mutex, it allows one thread to lock the thread for writing data, however it permits multiple threads to have read access, providing nothing is writing to it. Therefore it's more suitable for data which is read more frequently than it is modified.
+* Use a read-write lock. Similar to a mutex, it allows one thread to lock the thread for writing data, however it permits multiple threads to have read access, providing nothing is already writing to it. For data that is read more frequently than it is modified, this is a lot more efficient than just a mutex.
 
 ### Avoiding deadlock
 
-The best way to avoid deadlock is only ever obtain a lock to one thing ever. But if you have to lock more than one thing, ensure the locking order is consistent between all your threads. So if thread 1 locks A and B, then ensure that thread 2 also locks A and B in that order.
+The best way to avoid deadlock is only ever obtain a lock to one thing ever and release it as soon as you are done. But if you have to lock more than one thing, ensure the locking order is consistent between all your threads. So if thread 1 locks A and B, then ensure that thread 2 also locks A and B in that order and not B then A. The latter is surely going to cause a deadlock.
 
 ## C / C++
 
 C and C++ predate threading to some extent so the languages have never had much built-in support for multi-threading. Instead the compiler will have code in its stdlib for threading, combined with a dependency on some operating system APIs.
 
+A consequence of this is that C and C++ have ZERO ENFORCEMENT of any the rules mentioned above. If you data race - too bad. If you forget to write a lock in one function even if you remembered all the others - too bad. You have to discipline yourself to think concurrently and apply the proper protections where it is required. 
+
+The consequence of not doing so may not even be felt until your software is in production and that one customer starts complaining that their server freezes about once a week. Good luck finding that bug!
+
+### Multithreading APIs
+
 The most common APIs would be:
 
-* POSIX threads, or pthreads. Exposed by POSIX systems such as Linux and most other Unix derivatives, e.g. OS X.
-* Win32 threads. Exposed by the Windows operating system
-* OpenMP. Supported by many C++ compilers
-* 3rd party libraries like Boost and Qt will abstract away the differences behind cross-platform thread APIs. 
+* std::thread - from C++11 onwards
+* POSIX threads, or pthreads. Exposed by POSIX systems such as Linux and most other Unix derivatives, e.g. OS X. There is also pthread-win32 support built over the top of Win32 threads.
+* Win32 threads. Exposed by the Windows operating system.
+* OpenMP. Supported by many C++ compilers.
+* 3rd party libraries like Boost and Qt provide wrappers that abstract the differences between thread APIs. 
 
 All APIs will have in common:
 
-* Thread creation, destruction and joins (waiting on threads)
-* Sychronization between threads using locks and barriers
-* Mutexes. Mutual exclusion locks to protect shared data.
-* Conditional variables - means to signal and notify of conditions becoming true
+* Thread creation, destruction, joins (waiting on threads) and detaches (freeing the thread to do what it likes).
+* Synchronization between threads using locks and barriers.
+* Mutexes - mutual exclusion locks that protect shared data.
+* Conditional variables - a means to signal and notify of conditions becoming true.
+
+### std::thread
+
+The `std::thread` represents a single thread of execution and provides an abstraction over platform dependent ways of threading.
+
+```c++
+#include <iostream>
+#include <thread>
+
+using namespace std;
+
+void DoWork(int loop_count) {
+    for (int i = 0; i < loop_count; ++i) {
+        cout << "Hello world " << i << endl;
+    }
+    pthread_exit(NULL);
+}
+
+int main() {
+    thread worker(DoWork, 100);
+    worker.join();
+}
+```
+
+The example spawns a thread which invokes the function and passes the parameter into it, printing a message 100 times.
 
 ### POSIX threads
 
@@ -109,5 +146,9 @@ thread_local int private
 ```
 
 ## Rust
+
+Rust has threading support built into its language and enforced by the compiler.
+
+We saw with C++ that you had to be disciplined to remember to protect data from race conditions. Rust doesn't give you that luxury - you MUST protect your data!
 
 TODO
