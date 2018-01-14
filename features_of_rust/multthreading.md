@@ -57,7 +57,7 @@ The pthreads API is prefixed `pthread_` and works like so:
 
 using namespace std;
 
-void DoWork(void *data) {
+void *DoWork(void *data) {
     const int loop_count = (int) data;
     for (int i = 0; i < loop_count; ++i) {
         cout << "Hello world " << i << endl;
