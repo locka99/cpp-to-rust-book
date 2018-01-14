@@ -8,9 +8,12 @@ One word you will hear a lot in multithreading is thread safety.
 
 By that we mean:
 
-* No two threads should be able to modify the same data at the same time. This is called a data race.
-* No two threads should obtain mutually exclusive locks to each other's resources that could cause deadlock i.e. thread one obtains a lock on B and waits on A, while thread two obtains a lock on A and waits on B. When this happen both threads are locked forever.
-* No race conditions. Where the order of thread execution produces unpredictable results. This can be caused by failing to manage
+* No two threads should be able to modify the same data at the same time. This is called a data race. Data races are bad news because data can be corrupted, potentially causing a crash.
+* No two threads should obtain mutually exclusive locks to each other's resources that could cause deadlock i.e. thread one obtains a lock on B and waits on A, while thread two obtains a lock on A and waits on B. When this happen both threads are locked forever and a program can freeze.
+* No race conditions. Where the order of thread execution produces unpredictable results. This can be caused by failing to manage control the inputs and outputs of threads, or failing to wait correctly for threads to complete. For example if the main thread terminates without terminating a worker thread, the worker may not clean up properly.
+* APIs that can be called by multiple threads must ensure to protect their data structures to prevent any of the problems above from arising. Sometimes APIs take the easy way out and stuff all their context into a context object and it is up to the caller to ensure the thread safety.
+
+Therefore there is a necessary discipline required for multithreading or bad things will happen.
 
 ### Protecting shared data
 
@@ -45,7 +48,7 @@ All APIs will have in common:
 
 ### POSIX threads
 
-The pthreads API 
+The pthreads API is prefixed `pthread_` and works like so:
 
 ```c++
 #include <iostream>
@@ -53,17 +56,13 @@ The pthreads API
 
 using namespace std;
 
-// pthread_create(thread, attr, start_routine, arg);
-// pthread_exit(status);
-
 void DoWork(void *data) {
     const int loop_count = (int) data;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < loop_count; ++i) {
         cout << "Hello world " << i << endl;
     }
     pthread_exit(NULL);
 }
-
 
 int main() {
     pthread_t worker_thread;
@@ -72,7 +71,11 @@ int main() {
 }
 ```
 
+This example spawns a thread, passing a value as a parameter. When the thread launches it invokes our thread with the parameter which 
+
 ### Win32 Threads
+
+Win32 threading has functions analogous to those in POSIX. They have names such as `CreateThread`, `ExitThread`, `SetThreadPriority` etc.
 
 ### OpenMP API
 
@@ -80,11 +83,24 @@ Open Multi-Processing (OpenMP) is an API for multi-threaded parallel processing.
 
 GCC, Clang and Visual C++ have support for OpenMP so it is an option.
 
-OpenMP is described in detail here [http://www.openmp.org/].
+OpenMP is described in detail at the OpenMP [website](http://www.openmp.org/).
 
 ### Thread local storage 
 
-TODO
+Thread local storage, or TLS is static or global data which is private to every thread. Each thread holds its own copy of this data so it can modify it without fear of causing a data race.
+
+Compilers also have proprietary ways to decorate types as thread local:
+
+```c++
+__thread int private; // gcc / clang
+__declspec(thread) int private; // MSVC
+```
+
+C++11 has gained a `thread_local` directive to decorate variables which should use TLS.
+
+```c++
+thread_local int private
+```
 
 ## Rust
 
