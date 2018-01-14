@@ -40,7 +40,7 @@ The most common APIs would be:
 * POSIX threads, or pthreads. Exposed by POSIX systems such as Linux and most other Unix derivatives, e.g. OS X.
 * Win32 threads. Exposed by the Windows operating system
 * OpenMP. Supported by many C++ compilers
-* 3rd party libraries like Boost and Qt will abstract away the differences behind cross-platform thread classes. 
+* 3rd party libraries like Boost and Qt will abstract away the differences behind cross-platform thread APIs. 
 
 All APIs will have in common:
 
