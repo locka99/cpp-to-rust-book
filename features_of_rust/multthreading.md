@@ -44,6 +44,7 @@ All APIs will have in common:
 
 * A way to start a thread, supplying a function and data to call from the new thread.
 * A way to terminate a thread and give it an exit status
+* A way to wait for a thread to terminate, called a join. 
 
 
 ### POSIX threads
@@ -67,6 +68,7 @@ void DoWork(void *data) {
 int main() {
     pthread_t worker_thread;
     int result = pthread_create(&worker_thread, NULL, DoWork, (void *) 100);
+    // Wait for the thread to end
     result = pthread_join(worker_thread, NULL);
 }
 ```
