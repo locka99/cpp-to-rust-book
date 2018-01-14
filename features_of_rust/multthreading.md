@@ -42,10 +42,10 @@ The most common APIs would be:
 
 All APIs will have in common:
 
-* A way to start a thread, supplying a function and data to call from the new thread.
-* A way to terminate a thread and give it an exit status
-* A way to wait for a thread to terminate, called a join. 
-
+* Thread creation, destruction and joins (waiting on threads)
+* Sychronization between threads using locks and barriers
+* Mutexes. Mutual exclusion locks to protect shared data.
+* Conditional variables - means to signal and notify of conditions becoming true
 
 ### POSIX threads
 
