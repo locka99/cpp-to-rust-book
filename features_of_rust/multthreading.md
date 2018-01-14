@@ -151,4 +151,20 @@ Rust has threading support built into its language and enforced by the compiler.
 
 We saw with C++ that you had to be disciplined to remember to protect data from race conditions. Rust doesn't give you that luxury - you MUST protect your data!
 
+### Protecting data
+
+#### Mutex
+
+TODO
+
+#### ReadWriteLock
+
+TODO
+
+### Thread pools
+
+TODO
+
+### Thread local storage
+
 TODO
