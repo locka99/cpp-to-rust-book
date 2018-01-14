@@ -1,6 +1,8 @@
 # Multithreading
 
-Multithreading allows you to run parts of your programming concurrently. Every program has a *main* thread - i.e. the one your `main()` started from. In addition, if you use a graphical toolkit, or timers, or 3rd party libraries they might well spawn their own threads.
+Multithreading allows you to run parts of your programming concurrently. Every program has a *main* thread - i.e. the one your `main()` started from. 
+
+In addition, if you use a graphical toolkit, or timers, or 3rd party libraries they might well spawn their own threads.
 
 ## Thread safety
 
