@@ -66,12 +66,12 @@ void DoWork(void *data) {
 
 int main() {
     pthread_t worker_thread;
-    pthread_create(&worker_thread, NULL, DoWork, (void *) 100);
-    pthread_exit(NULL);
+    int result = pthread_create(&worker_thread, NULL, DoWork, (void *) 100);
+    result = pthread_join(worker_thread, NULL);
 }
 ```
 
-This example spawns a thread, passing a value as a parameter. When the thread launches it invokes our thread with the parameter which 
+This example spawns a thread which invokes DoWork with the payload of 100 which causes the function to print a message 100 times.
 
 ### Win32 Threads
 
