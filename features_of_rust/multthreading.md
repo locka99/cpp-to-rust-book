@@ -147,24 +147,152 @@ thread_local int private
 
 ## Rust
 
-Rust has threading support built into its language and enforced by the compiler.
+We saw with C++ that you had to be disciplined to remember to protect data from race conditions. 
 
-We saw with C++ that you had to be disciplined to remember to protect data from race conditions. Rust doesn't give you that luxury - you MUST protect your data!
+Rust doesn't give you that luxury -
 
-### Protecting data
+1. Any data that you share must be protected in a thread safe fashion
+2. Any data that you pass between threads must be marked thread safe
 
-#### Mutex
+### Spawning a thread
 
-TODO
+Spawning a thread is easy enough by calling `spawn`, supplying the closure you want to run in the context of your new thread.
 
-#### ReadWriteLock
+```rust
+use std::thread;
 
-TODO
+thread::spawn(move || {
+  println!("Hello");
+});
+```
 
-### Thread pools
+Alternatively you can supply a function to `spawn` which is called in the same manner.
 
-TODO
+```rust
+fn my_thread() {
+  println!("Hello");
+}
+//...
+thread::spawn(my_thread);
+```
+
+If you supply a closure then it must have a lifetime of `'static` because threads can outlive the thing that created them. i.e. they are detached by default. 
+
+A closure can make use of move values that are marked `Send` so the compiler allows ownership to transfer between threads.
+
+Likewise function / closure may also return a value which is marked `Send` so the compiler can transfer ownership between the terminating thread and the thread which calls `join` to obtain the value.
+
+So the thread above is detached. If we wanted to wait for the thread to complete, the `spawn` returns a `JoinHandle` that we can call `join` to wait for termination.
+
+```rust
+let h = thread::spawn(move || {
+  println!("Hello");
+});
+h.join();
+```
+
+If the closure or function returns a value, we can use `join` to obtain it.
+
+```rust
+let h = thread::spawn(move || 100 * 100);
+let result = h.join().unwrap();
+println!("Result = {}", result);
+```
+
+### Data race protection in the compiler
+
+Data races are bad news, but fortunately in Rust the compiler has your back. You MUST protect your shared data or it won't compile.
+
+The simplest way to protect your data is to wrap the data in a mutex and provide each thread instance with a reference counted copy of the mutex.
+
+```rust
+let shared_data = Arc::new(Mutex::new(MySharedData::new()));
+
+// Each thread we spawn should have a clone of this Arc
+let shared_data = shared_data.clone();
+thread::spawn(move || {
+  let mut shared_data = shared_data.lock().unwrap();
+  shared_data.counter += 1;
+});
+```
+
+Here is a full example that spawns 10 threads that each increment the counter.
+
+```rust
+struct MySharedData {
+  pub counter: u32,
+}
+
+impl MySharedData {
+  pub fn new() -> MySharedData {
+    MySharedData {
+	  counter: 0
+	}
+  }
+}
+
+fn main() {
+  spawn_threads();
+}
+
+fn spawn_threads() {
+  let shared_data = Arc::new(Mutex::new(MySharedData::new()));
+  
+  // Spawn a number of threads and collect their join handles
+  let handles: Vec<JoinHandle<_>> = (0..10).map(|_| {
+	let shared_data = shared_data.clone();
+    thread::spawn(move || {
+	  let mut shared_data = shared_data.lock().unwrap();
+	  shared_data.counter += 1;
+	})
+  }).collect();
+  
+  // Wait for each thread to complete
+  for h in handles {
+    h.join();
+  }
+  
+  // Print the data
+  let shared_data = shared_data.lock().unwrap();
+  println!("Total = {}", shared_data.counter);
+}
+```
+
+So the basic strategy will be this:
+
+1. Every thread will get it's own atomic reference to the mutex. 
+2. Each thread that wishes to access the shared must obtain a lock on the mutex.
+3. Once the lock is released, the next waiting thread can obtain access.
+3. The compiler will enforce this and generate errors if ANYTHING is wrong.
+
+### Read Write Lock
+
+A read write lock works much like a mutex - we wrap the shared data in a `RwLock`, and then in an `Arc`.
+
+```rust
+let shared_data = Arc::new(RwLock::new(MySharedData::new()));
+```
+
+Each thread will then either need to obtain a read lock or a write lock on the shared data.
+
+```rust
+let shared_data = shared_data.read().unwrap();
+// OR
+let mut shared_data = shared_data.write().unwrap();
+```
+
+The advantage of a `RwLock` is that many threads can concurrently read the data, providing nothing is writing to it. This may be more efficient in many cases.
+
+### Sending data between threads using channels
+
+TODO mpsc channel
 
 ### Thread local storage
 
-TODO
+As with C++ you may have reason to use thread local storage
+
+```rust
+thread_local! {
+  // TODO
+}
+```

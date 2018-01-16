@@ -10,3 +10,43 @@ C++ and Rust have have collections as part of their standard library as is commo
 | - | `std::map` | `std::collections::HashMap`, `std::collections::BTreeMap`
 
 C has no standard collection classes or types. Users wanting collections might have resorted to using [glib](https://developer.gnome.org/glib/) or [cii](https://code.google.com/archive/p/cii/downloads).
+
+
+## Iterators
+
+Iterators are markers that hold a position within a collection and allow you to advance through the collection one element at a time.
+
+### C++
+
+Iterators are invoked like so in C++98 and before:
+
+```c++
+std::vector<char> values;
+
+for (std::vector<char>::const_iterator i = values.begin(); i != values.end(); ++i) {
+    const char &c = *i;
+    // do something to process the value in c
+}
+```
+
+This is quite verbose, but essentially each collection type defines a mutable `iterator` and immutable `const_iterator` type and calling `begin` returns an iterator to the beginning of the collection. Calling the increment overload on the iterator causes it to advance to the next element in the collection. When it hits the exclusive value returned by `end` it has reached the end of the collection.
+
+C++11 provides a shorthand
+
+```c++
+for (const char &c : values) {
+    // process
+}
+```
+
+Obviously with an indexed type such as a `vector` you could also reference elements by index, but it is far more efficient to use iterators for other collection types.
+
+#### Processing collections
+
+C++ provides a number of utility templates in <algorithm> for modifying sequences in collections on the fly. 
+
+### Rust
+
+Rust also has iterators which work in a similar fashion to C++ - incrementing their way through collections. 
+
+TODO
