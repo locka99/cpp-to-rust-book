@@ -38,9 +38,9 @@ The best way to avoid deadlock is only ever obtain a lock to one thing ever and 
 
 ## C / C++
 
-C and C++ predate threading to some extent so the languages have never had much built-in support for multi-threading. Instead the compiler will have code in its stdlib for threading, combined with a dependency on some operating system APIs.
+C and C++ predate threading to some extent so until C++11 the languages have had little built-in support for multi-threading and what there was tended to be compiler specific extensions.
 
-A consequence of this is that C and C++ have ZERO ENFORCEMENT of any the rules mentioned above. If you data race - too bad. If you forget to write a lock in one function even if you remembered all the others - too bad. You have to discipline yourself to think concurrently and apply the proper protections where it is required. 
+A consequence of this is that C and C++ have ZERO ENFORCEMENT of thread safety. If you data race - too bad. If you forget to write a lock in one function even if you remembered all the others - too bad. You have to discipline yourself to think concurrently and apply the proper protections where it is required. 
 
 The consequence of not doing so may not even be felt until your software is in production and that one customer starts complaining that their server freezes about once a week. Good luck finding that bug!
 
@@ -48,7 +48,7 @@ The consequence of not doing so may not even be felt until your software is in p
 
 The most common APIs would be:
 
-* std::thread - from C++11 onwards
+* `<thread>`, `<mutex>` - from C++11 onwards
 * POSIX threads, or pthreads. Exposed by POSIX systems such as Linux and most other Unix derivatives, e.g. OS X. There is also pthread-win32 support built over the top of Win32 threads.
 * Win32 threads. Exposed by the Windows operating system.
 * OpenMP. Supported by many C++ compilers.
@@ -75,7 +75,6 @@ void DoWork(int loop_count) {
     for (int i = 0; i < loop_count; ++i) {
         cout << "Hello world " << i << endl;
     }
-    pthread_exit(NULL);
 }
 
 int main() {
@@ -85,6 +84,38 @@ int main() {
 ```
 
 The example spawns a thread which invokes the function and passes the parameter into it, printing a message 100 times.
+
+### std::mutex
+
+C++ provides a family of various `mutex` types to protect access to shared data.
+
+The mutex is obtained by a `lock_guard` and other attempts to obtain the mutex are blocked until the lock is relinquished.
+
+```c++
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+using namespace std;
+
+mutex data_guard;
+int result = 0;
+
+void DoWork(int loop_count) {
+	for (auto i = 0; i < loop_count; ++i) {
+		lock_guard<mutex> guard(data_guard);
+		result += 1;
+	}
+}
+
+int main() {
+	thread worker1(DoWork, 100);
+	thread worker2(DoWork, 150);
+	worker1.join();
+	worker2.join();
+	cout << "result = " << result << endl;
+}
+```
 
 ### POSIX threads
 

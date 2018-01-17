@@ -33,7 +33,7 @@ cout << multiply() << endl;
 cout << sum() << endl;
 ```
 
-We can see from the output that multiply() has captured immutable copies of the values, whereas sum() is sensitive to changes to the variables:
+We can see from the output that `multiply()` has captured immutable copies of the values in `v1` and `v2`, whereas `sum()` is sensitive to changes to the variables because it has captured references to them:
 
 ```
 20
@@ -42,22 +42,22 @@ We can see from the output that multiply() has captured immutable copies of the 
 101
 ```
 
-Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures references to variables that go out of scope, the lambda's behaviour is undefined. In  practice that could mean the application crashes.
+Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures references to variables that go out of scope, the lambda's behaviour is undefined. In practice that could mean the application crashes.
 
 ## Closures in Rust
 
-Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can access any variable that is in the function it was declared within however it then owns that variable.
+Rust implements closures. A closure is like a lambda except it automatically borrows anything it references from its enclosing environment. i.e. by default it can access any variable that is in the function it was declared within however it then borrows that variable.
 
-Here is a sorting algorithm similar to the one in C++.
+Here is the equivalent sort function to the example in C++ that borrows nothing from its enclosing environment but does take a pair of arguments.
 
 ```rust
 use std::cmp::Ord;
 let mut values = [ 9.0, 3.0, 2.1, 3.0, 4.0, -10.0, 2.0, 4.0, 6.0, 7.0 ];
-values.sort_by(|a, b| a.partial_cmp(b).unwrap());
+values.sort_by(|a, b| a < b );
 println!("values = {:?}", values);
 ```
 
-But a closure can access a variable around it and borrow ownership. Borrowing means I can't change the value to something else because the closure relies on the value not changing. If I want to change the value I have to ensure the closure goes out of scope to free the borrow:
+A closure can borrow ownership of a variable in the outer scope. Borrowing means that variable can't change the value to something else while the borrow is in effect. To change the value we must ensure the closure goes out of scope to free the borrow, e.g. with a block:
 
 ```rust
 let mut x = 100;
@@ -68,7 +68,7 @@ let mut x = 100;
 x = 200;
 ```
 
-Alternatively you can `move` variables used by the closure so it owns them. Since our closure is using an integer, move implies copy so our `square` closure has its own `x` assigned the value `100`. Even if we change `x` to `200`, the function will still yield the same value
+Alternatively you can `move` variables used by the closure so it owns them. Since our closure was accessing an integer, the move becomes an implicit copy. So our `square` closure has its own `x` assigned the value `100`. Even if we change `x` in the outer scope to `200`, the closure has its own independent copy.
 
 ```rust 
 let mut x = 100;
@@ -78,9 +78,7 @@ x = 200;
 println!("square = {}", square()); // 10000
 ```
 
-So a closure is basically a lambda that captures everything around it.
-
-This is the equivalent to the C++ code above:
+This is the equivalent to the C++ code above that used lambda expressions to bind to copies and references:
 
 ```rust
 let mut v1 = 10.0;
@@ -94,4 +92,4 @@ println!("multiply {}", multiply());
 println!("sum {}", sum(&v1, &v2));
 ```
 
-This will yield the same results as the C++ code. The only difference was that rather than binding a lambda to references, we passed the reference values in as parameters to the closure.
+This will yield the same results as the C++ code. The main difference here is that rather than binding our closure to a reference, we passed the reference values in as parameters to the closure.
