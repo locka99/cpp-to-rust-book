@@ -69,7 +69,7 @@ let x: i32;
 println!("The value of x is {}", x);
 ```
 
-It is quite valid in C++ to declare variable and do nothing with it. Or conditiionally do something to the variable which confuses the compiler so it only generates a warning.
+It is quite valid in C++ to declare variable and do nothing with it. Or conditionally do something to the variable which confuses the compiler so it only generates a warning.
 
 ```c++
 int result;
