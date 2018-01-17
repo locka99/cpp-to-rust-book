@@ -46,12 +46,52 @@ Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures ref
 
 ## Closures in Rust
 
-Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can make reference to any variable that is in the function it was declared within. So a closure is basically a lambda that captures everything around it.
+Rust implements closures. A closure is a lambda with access to its enclosing environment. i.e. by default it can access any variable that is in the function it was declared within however it then owns that variable.
 
-Unlike a C++ capture however, the closure is directly referencing the outer variables and is subject to the same lifetime & borrowing rules that any other code is.
+Here is a sorting algorithm similar to the one in C++.
 
-TODO closure example
+```rust
+use std::cmp::Ord;
+let mut values = [ 9.0, 3.0, 2.1, 3.0, 4.0, -10.0, 2.0, 4.0, 6.0, 7.0 ];
+values.sort_by(|a, b| a.partial_cmp(b).unwrap());
+println!("values = {:?}", values);
+```
 
-If need be, ownership of variables can be moved to the closure. This may be necessary if the closure lives longer than the code around it does.
+But a closure can access a variable around it and borrow ownership. Borrowing means I can't change the value to something else because the closure relies on the value not changing. If I want to change the value I have to ensure the closure goes out of scope to free the borrow:
 
-TODO move semantics
+```rust
+let mut x = 100;
+{
+  let square = || x * x;
+  println!("square = {}", square());
+}
+x = 200;
+```
+
+Alternatively you can `move` variables used by the closure so it owns them. Since our closure is using an integer, move implies copy so our `square` closure has its own `x` assigned the value `100`. Even if we change `x` to `200`, the function will still yield the same value
+
+```rust 
+let mut x = 100;
+let square = move || x * x;
+println!("square = {}", square()); // 10000
+x = 200;
+println!("square = {}", square()); // 10000
+```
+
+So a closure is basically a lambda that captures everything around it.
+
+This is the equivalent to the C++ code above:
+
+```rust
+let mut v1 = 10.0;
+let v2 = 2.0;
+let multiply = move || v1 * v2;
+let sum = |x: &f64, y: &f64| x + y;
+println!("multiply {}", multiply());
+println!("sum {}", sum(&v1, &v2));
+v1 = 99.0;
+println!("multiply {}", multiply());
+println!("sum {}", sum(&v1, &v2));
+```
+
+This will yield the same results as the C++ code. The only difference was that rather than binding a lambda to references, we passed the reference values in as parameters to the closure.
