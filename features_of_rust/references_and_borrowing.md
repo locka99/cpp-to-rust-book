@@ -74,6 +74,8 @@ It is quite valid in C++ to declare variable and do nothing with it. Or conditio
 ```c++
 int result;
 {
+   // The scope is to control the lifetime of a lock
+   lock_guard<mutex> guard(data_mutex);
    result = do_something();
 }
 if (result == 0) {

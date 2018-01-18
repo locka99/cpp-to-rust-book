@@ -1,8 +1,8 @@
 # Explicit / Implicit Class Constructors
 
-It's not just overloading that be a mess. C++ has a bunch of rules about implicit / explicit type conversion for single argument constructors.
+It's not just overloading that can be a mess. C++ has a bunch of rules about implicit / explicit type conversion for single argument constructors.
 
-For example this would work:
+For example:
 
 ```c++
 class MagicNumber {
@@ -49,4 +49,4 @@ magic(2016.0); // ERROR
 
 Rust does not have constructors and therefore no implicit conversion.
 
-The only form of implicit coercion it has is if for mutable references and certain kinds of raw pointers.
+The only form of implicit coercion it has is if for mutable references and certain kinds of raw pointers. Explicit coercion of numbers is possible for numeric types with the `as` keyword. Types that want to convert into or from another type must implement the `Into<Foo>` or the `From<Bar>` traits respectively.

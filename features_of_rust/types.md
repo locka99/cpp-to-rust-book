@@ -24,7 +24,7 @@ For this section, we'll cover the _most likely_ analogous types between Rust and
 | `size_t` | `usize` | usize holds numbers as large as the address space [^3] |
 | `float` | `f32` |
 | `double` | `f64` |
-| `long double` | <s>f128<s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
+| `long double` | <s>f128</s> | f128 support was present in Rust but removed due to issues for some platforms in implementing it.
 | `bool` | `bool` |
 | `void` | `()` | The unit type (see below)
 
