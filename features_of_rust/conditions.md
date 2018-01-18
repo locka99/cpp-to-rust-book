@@ -53,39 +53,17 @@ let water_is = if (c >= 100) { "gas" } else if (c < 0) { "solid" } else { "liqui
 
 ## Conditional "if let"
 
-One unusual feature is the "if let" pattern. This combines a test to see if something matches a pattern and if it does, to automatically assign the result to the tuple. It would be most commonly see in code that returns an enum such as a Result or
+One unusual feature is the "if let" pattern. This combines a test to see if something matches a pattern and if it does, to automatically assign the result to the tuple. It would be most commonly see in code that returns an enum such as a `Result` or `Option`.
+
+For example:
 
 ```rust
+fn search(name: &str) -> Option<Person> { /* ... */ }
+//...
 if let Some(person) = search("fred") {
   println!("You fould a person {}", person);
 }
 else {
   println!("Could not find person");
-}
-```
-
-## The try!() macro
-
-The name of this macro might seem to have something to do with some kind of C++-style try-catch block. But don't be fooled. It's really a convenience to cut out some lines of code when processing calls to functions that return a Result.
-
-Sometimes you have code of this pattern:
-
-```rust
-fn my_code() -> Result<int, String> {
-  let result = my_other_code();
-  if let Err(err) = result {
-    return Err(err);
-  }
-  Ok(result.unwrap());
-}
-```
-
-The try!() macro simplifies the code by testing if the call to my_other_code() was is_ok or is_err. If it was an error it returns Err() for you and if it wasn't it returns the unwrapped ok value.
-So the above code reduces to this:
-
-```rust
-fn my_code() -> Result<int, String> {
-  let result = try!(my_other_code());
-  Ok(result);
 }
 ```

@@ -1,10 +1,10 @@
 # Lambda Expressions / Closures
 
-## Lambdas in C++
+## Lambdas in C++11
 
-A lambda expression, or lambda is a feature introduced in C++11 for creating an anonymous function that can be declared and passed around from within the scope of the call itself.
+A [lambda expression](https://msdn.microsoft.com/en-us/library/dd293608.aspx), or lambda is an anonymous function that can be declared and passed around from within the scope of the call itself.
 
-This can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring a function and making it work.
+This can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring and maintaining a separate function.
 
 In C++ a lambda looks like this:
 
@@ -17,7 +17,7 @@ std::sort(values, values + 10, [](float a, float b) {
 
 This lambda is passed to a std::sort function to sort an array of values by some criteria.
 
-A C++ lambda can (but doesn't have to) capture variables from the enclosing scope if it wishes and it can specify capture clauses in the [ ] section that define how capture is made. Captures can by value or reference, and can explicitly list the variables to capture, or specify to capture everything by reference or assignment. A lambda that captures variables effectively becomes a closure.
+A C++ lambda can (but doesn't have to) capture variables from the enclosing scope if it wishes and it can specify capture clauses in the `[]` section that define how capture is made. Captures can be by value or reference, and can explicitly list the variables to capture, or specify to capture everything by reference or assignment. A lambda that captures variables effectively becomes a closure.
 
 ```c++
 auto v1 = 10.;
@@ -33,7 +33,7 @@ cout << multiply() << endl;
 cout << sum() << endl;
 ```
 
-We can see from the output that `multiply()` has captured immutable copies of the values in `v1` and `v2`, whereas `sum()` is sensitive to changes to the variables because it has captured references to them:
+We can see from the output that `multiply()` has captured copies of the values in `v1` and `v2`, whereas `sum()` captures by reference and so it is sensitive to changes in the variables:
 
 ```
 20
@@ -42,13 +42,24 @@ We can see from the output that `multiply()` has captured immutable copies of th
 101
 ```
 
+A capture can also specify a default capture mode by specifying `=` in the capture clause or by reference `&` and then specify capture behaviour for specific variables.
+
+So our captures above could be simplified to:
+
+```c++
+// Capture by value
+auto multiply = [=]() { return v1 * v2; };
+// Capture by reference
+auto sum = [&]() { return v1 + v2; };
+```
+
 Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures references to variables that go out of scope, the lambda's behaviour is undefined. In practice that could mean the application crashes.
 
 ## Closures in Rust
 
-Rust implements closures. A closure is like a lambda except it automatically borrows anything it references from its enclosing environment. i.e. by default it can access any variable that is in the function it was declared within however it then borrows that variable.
+Rust implements closures. A closure is like a lambda except it automatically captures anything it references from the enclosing environment. i.e. by default it can access any variable that is in the enclosing scope.
 
-Here is the equivalent sort function to the example in C++ that borrows nothing from its enclosing environment but does take a pair of arguments.
+Here is the same sort snippet we saw in C++ expressed as Rust. This closure doesn't borrow anything from its enclosing scope but it does take a pair of arguments to compare two values for sorting. The `sort_by()` function repeatedly invokes the closure to sort the array.
 
 ```rust
 use std::cmp::Ord;
@@ -57,7 +68,7 @@ values.sort_by(|a, b| a < b );
 println!("values = {:?}", values);
 ```
 
-A closure can borrow ownership of a variable in the outer scope. Borrowing means that variable can't change the value to something else while the borrow is in effect. To change the value we must ensure the closure goes out of scope to free the borrow, e.g. with a block:
+A closure that uses a variable from the enclosing scope borrows it by default. That means the borrowed variable can't change while the closure is in scope. To change the value we must ensure the closure goes out of scope to free the borrow, e.g. with a block:
 
 ```rust
 let mut x = 100;
@@ -68,7 +79,7 @@ let mut x = 100;
 x = 200;
 ```
 
-Alternatively you can `move` variables used by the closure so it owns them. Since our closure was accessing an integer, the move becomes an implicit copy. So our `square` closure has its own `x` assigned the value `100`. Even if we change `x` in the outer scope to `200`, the closure has its own independent copy.
+Alternatively you can `move` variables used by the closure so it owns them and they become inaccessible from the outerscope. Since our closure was accessing an integer, the move becomes an implicit copy. So our `square` closure has its own `x` assigned the value `100`. Even if we change `x` in the outer scope to `200`, the closure has its own independent copy.
 
 ```rust 
 let mut x = 100;
