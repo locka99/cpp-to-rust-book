@@ -14,7 +14,7 @@ C has no standard collection classes or types. Users wanting collections might h
 
 ## Iterators
 
-Iterators are a position and reference to a collection with the means to advance through the collection one element at a time.
+Iterators are a reference to a position in a collection with the means to step through the collection one element at a time.
 
 ### C++
 
