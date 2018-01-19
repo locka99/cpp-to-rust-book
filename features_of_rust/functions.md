@@ -3,24 +3,38 @@
 In C++ the standard form of a function is this:
 
 ```c++
-int function_name(bool parameter1, const std::string &parameter2);
-```
+// Declaration
+int foo(bool parameter1, const std::string &parameter2);
 
-A function returns _something _ or it is marked void (returns nothing). The parameters to a C++ function and the return type can be the standard mix of values, pointers, references.  A function can be declared and implemented in a head as an inline function, or it may be defined in the header and implemented in the source file.
-
-In Rust a function is like this:
-
-```rust
-fn function_name(parameter1: bool, parameter2: &str) -> i32 {
-  // implementation
+// Implementation
+int foo(bool parameter1, const std::string &parameter2) {
+  return 1;
 }
 ```
 
-This Rust function is equivalent to the one we wrote in C++. The parameter types and the return type must be specified. Note how the return type is after the function, not before it.
+Usually you would declare the function, either as a forward reference in a source file, or in a header. Then you would implement the function in a source file. 
 
-The declaration and the implementation are one and the same thing. So unlike in C or C++ the function is defined and implemented simultaneously. 
+If a function does not return something, the return type is `void`. If the function does return something, then there should be return statements for each exiting branch within the function.
 
-Here is a function that adds two values together and returns them:
+You can forego the function declaration in two situations:
+
+1. If the function is inline, i.e. prefixed with the `inline` keyword. In which case the function in its entireity is declared and implemented in one place. 
+2. If the function is not inline but is declared before the code that calls it in the same source file. So if function `foo` above was only used by one source file, then just putting the implementation into the source would also act as the declaration
+
+In Rust the equivalent to `foo` above is this:
+
+```rust
+fn foo(parameter1: bool, parameter2: &str) -> i32 {
+  // implementation
+  1
+}
+```
+
+The implementation *is* the declaration there is no separation between the two. Functions that return nothing omit the `->` return section. The function can also be declared before or after whatever calls it. By default the function is private to the model (and submodules) that implement it but making it `pub fn` exposes it to other modules.
+
+Like C++, the function must evaluate to something for each exiting branch but this is mandatory. 
+
+Also note, that the `return` keyword is not usually unecessary. Here is a function that adds two values together and returns them with no return:
 
 ```rust
 fn add(x: i32, y: i32) -> i32 {
@@ -28,7 +42,7 @@ fn add(x: i32, y: i32) -> i32 {
 }
 ```
 
-Why is there no return call? As we saw in the section on Expressions, a block can have a return value if we omit the semi-colon from the end so x + y is the result of evaluating the function block and becomes what we return.
+Why is there no `return`? As we saw in the section on Expressions, a block evaluates to a value if we omit the semi-colon from the end so `x + y` is the result of evaluating the function block and becomes what we return.
 
 There are occasions were you explicitly need the return keyword. Typically you do that if you want to exit the function before you get to the end of the function block:
 
