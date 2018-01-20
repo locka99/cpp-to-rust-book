@@ -47,6 +47,38 @@ magic(2016.0); // ERROR
 
 ## How Rust helps
 
-Rust does not have constructors and therefore no implicit conversion.
+Rust does not have constructors and so there is no implicit conversion during construction. And since there is no implicit conversion there is no reason to have C++11 style function delete operators either. 
 
-The only form of implicit coercion it has is if for mutable references and certain kinds of raw pointers. Explicit coercion of numbers is possible for numeric types with the `as` keyword. Types that want to convert into or from another type must implement the `Into<Foo>` or the `From<Bar>` traits respectively.
+You must write explicit write "constructor" functions and call them explicitly. If you want to overload the function you can use `Into<>` patterns to achieve it.
+
+For example we might write our `MagicNumber` constructor like this:
+
+```rust
+struct MagicNumber { /* ... */ }
+
+impl MagicNumber {
+  fn new<T>(value: T) -> MagicNumber where T: Into<MagicNumber> {
+    value.into()
+  }
+}
+```
+
+We have said here that the `new()` function takes as its argument anything that type `T` which implements the trait `Into<MagicNumber>`.
+
+So we could implement it for `i32`:
+
+```rust
+impl Into<MagicNumber> for i32 {
+   fn into(self) {
+     MagicNumber { /* ... */ }
+   }
+}
+```
+
+Now our client code can just call `new` and providing it provides a type which implements that trait our constructor will work:
+
+```rust
+   let magic = MagicNumber::new(2016);
+   // But this won't work because f64 doesn't implement the trait
+   let magic = MagicNumber::new(2016.0); 
+```
