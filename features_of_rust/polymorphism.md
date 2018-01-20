@@ -1,4 +1,4 @@
-# Polymorphismtion
+# Polymorphism
 
 ## C++
 
@@ -12,7 +12,6 @@ C++ has 4 types of polymorphism:
 That is to say, the same named function can be overloaded with different parameters. 
 
 ### Function name overloading
-
 
 ```c++
 class Variant {
@@ -48,14 +47,16 @@ Rust has limited support for polymorphism.
 
 ### Alternatives to function name overloading
 
-If you have a trivial overloaded function you can just disambiguate your functions, e.g.
+If you have a few functions you can just disambiguate them, e.g.
 
 ```rust
-fn new(name: &str) -> Foo;
-fn new_age(name: &str, age: u16) -> Foo;
+fn new(name: &str) -> Foo { /* ... */ }
+fn new_age(name: &str, age: u16) -> Foo { /* ... */ }
 ```
 
-Another way you can do this is with _traits_. A standard trait is called `Into<T>` where `T` is the type you wish to convert from and you implement this trait on the thing you wish to be able to convert into. 
+#### Use traits
+
+A way to do polymorphism is with _traits_. A standard trait is called `Into<T>` where `T` is the type you wish to convert from and you implement this trait on the thing you wish to be able to convert into. 
 
 So let's say we want to write a `new` constructor function for struct `Foo`.
 
@@ -81,7 +82,7 @@ Now we will produce a `new` function that takes anything that implements `Into<F
 
 ```rust
 impl Foo {
-  pub fn Foo<T>(v: T) -> Foo where T: Into<Foo> {
+  pub fn new<T>(v: T) -> Foo where T: Into<Foo> {
     v.into()
   }
 }
@@ -90,7 +91,25 @@ let f = Foo::new(String::from("Bob"));
 let f = Foo::new((String::from("Mary"), 16));
 ```
 
-So Rust allows polymorphic-like code but it makes you think about it a little differently.
+#### Use enums
+
+Remember that an enumeration in Rust can contain actual data, so we could also implement a function that takes an enumeration as an argument that has values for each kind of value it accepts:
+
+```rust
+pub enum FooConstructorArgs {
+   String(String),
+   StringU16(String, u16)
+}
+
+impl Foo {
+  pub fn new(v: FooConstructorArgs) {
+    match v {
+      FooConstructorArgs::String(s) => { /* ... */ }
+      FooConstructorArgs::StringU16(s, i) => { /* ... */ }
+    }
+  }
+}
+```
 
 ### Coercion
 
