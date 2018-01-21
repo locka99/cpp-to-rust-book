@@ -130,39 +130,112 @@ for (int i = 0; i < loginCredentials; ++i) {
 
 #### Iterating a range
 
-Rust `for` loops are quite different from C++ because Rust allows software to iterate over a defined range:
+Rust `for` loops are quite different from C++ because Rust uses an `Iterator` to step through each element. 
+
+Here is a simple loop that counts from 0 to 9
 
 ```rust
-for i in 0..100 {
+for i in 0..10 {
   println!("Number {}", i);
 }
 ```
 
-Every iterable item also implements an `enumerate()` function that returns a tuple. The first item is the zero based index of the item in the range and the second is the value.
+The value `0..10` is a `Range` that runs from 0 to exclusive of 10. A range implements the `Iterator` trait so the for loop advances one element at a time until it reaches the end.
+
+Iterators have a lot of functions on them for doing fancy stuff, but one which is useful in loops is the `enumerate()` function. This
+transforms the iterator into returning a tuple containing the index and the value instead of just the value.
 
 So for example:
 
 ```rust
 for (i, x) in (30..50).enumerate() {
-   println!("Iteration {} is value {}", i, x);
+   println!("Index {} is value {}", i, x);
 }
 ```
 
-### For loop - Iterating collections
+### For loop - Iterating arrays and collections
 
-TODO
+Just like with ranges, arrays and collections also provide iterators. 
+
+Here is a loop that iterates an array, moving the values during iteration:
+
+```rust
+let values = [2, 4, 6, 7, 8, 11, 33, 111];
+for v in values {
+   println!("v = {}", v);
+}
+```
+
+But maybe we didn't want to move the values, just reference them. In which case we can iterate by adding a reference to the array (note the & below)
+
+```rust
+let values = [2, 4, 6, 7, 8, 11, 33, 111];
+for v in &values {
+   println!("v = {}", v);
+}
+```
+
+Alternatively we can directly use the `iter()` function that arrays and collections implement which works by reference:
+
+```rust
+let values = vec![2, 4, 6, 7, 8, 11, 33, 111];
+for v in values.iter() {
+   println!("v = {}", v);
+}
+```
+
+If the collection is a map, then iterators will return a key and value tuple
+
+```rust
+use std::collections::HashMap;
+
+let mut values = HashMap::new();
+values.insert("hello", "world");
+//...
+for (k, v) in &values {
+  println!("key = {}, value = {}", k, v);
+}
+```
+
+Another way to iterate is using the `for_each()` function on the iterator itself:
+
+```rust
+let values = [2, 4, 6, 7, 8, 11, 33, 111];
+values.iter().for_each(|v| println!("v = {}", v));
+```
 
 ### Break and Continue
 
 Rust also has `break` and `continue` keywords and they operate in a similar fashion - they operate on the innermost loop. A `continue` will start on the next iteration while a `break` will terminate the loop.
 
-TODO Rust example
+```rust
+let values = vec![2, 4, 6, 7, 8, 11, 33, 111];
+for v in &values {
+  if *v % 2 == 0 {
+    continue;
+  }
+  if *v > 20 {
+    break;
+  }
+  println!("v = {}", v);
+} 
+```
 
 #### Labels
 
-As `break` and `continue` only work on the inner most loop there will be occasions where they do not work as desired, e. If you need to break or continue an outer loop, you can label each loop and refer to the label in the break / continue to indicate what you're breaking.
+The `break` and `continue` work by default on the current loop. There will be occasions where you intend to break out
+of an enclosing loop instead. For those occasions you can label your loops and pass that label into the `break` or `continue:
 
-TODO example
+```rust
+'x: for x in 0..10 {
+  'y: for y in 0..10 {
+     if x == 5 && y == 5 {
+       break 'x;
+     }
+     println!("x = {}, y = {}", x, y);
+  }
+}
+```
 
 ### Infinite Loop
 
@@ -175,7 +248,8 @@ loop {
 }
 ```
 
-Rust recommends using this form when an infinite loop is required. Note that an infinite loop can still be broken out of using a `break` statement.
+Rust recommends using this form when an infinite loop is required to assist with code generation. Note that an 
+infinite loop can still be broken out of using a `break` statement.
 
 ### While Loop
 
@@ -210,4 +284,3 @@ while let Some(value) = iterator.next() {
 ```
 
 This loop will break when the iterator returns `None`.
-
