@@ -56,39 +56,79 @@ fn new_age(name: &str, age: u16) -> Foo { /* ... */ }
 
 #### Use traits
 
-A way to do polymorphism is with _traits_. A standard trait is called `Into<T>` where `T` is the type you wish to convert from and you implement this trait on the thing you wish to be able to convert into. 
+A common way to do polymorphism is with _traits_.
+ 
+There are two standard traits for this purpose:
 
-So let's say we want to write a `new` constructor function for struct `Foo`.
+* The `From<>` trait converts from some type into the our type. 
+* The `Into<>` trait converts some type (consuming it in the process) into our type 
 
-We'll first implement the `Into` trait multiple times for different values that our struct can be made from
+You only need to implement `From` or `Into` because one implies the other.
+
+The `From` trait is easier to implement:
+
+```rust
+use std::convert::From;
+
+impl From<&'static str> for Foo {
+  fn from(v: &'static str) -> Self {
+    Foo { /* ... */ }
+  }
+}
+
+impl From<(&'static str, u16)> for Foo {
+  fn from(v: (&'static str, u16)) -> Self {
+    Foo { /* ... */ }
+  }
+}
+//...
+
+let f = Foo::from("Bob");
+let f = Foo::from(("Mary", 16));
+```
+
+But let's say we want an explicit `new` constructor function on type `Foo`. In that case, we could write it using the `Into` trait:
+
+```rust
+impl Foo {
+  pub fn new<T>(v: T) -> Foo where T: Into<Foo> {
+    let result = Foo::foo(v);
+    // we could code here that we do here after making Foo by whatever means
+    result
+  }
+}
+```
+
+Since `From` implies `Into` we can just call the constructor like so:
+
+```rust
+let f = Foo::new("Bob");
+let f = Foo::new(("Mary", 16));
+```
+
+If you prefer you could implement `Into` but it's more tricky since it consumes the input, which might not be what you want.
 
 ```rust
 // This Into works on a string slice
-impl Into<Foo> for String
-    fn into(v: String) -> Foo {    
+impl Into<Foo> for &'static str {
+    fn into(self) -> Foo {    
         //... constructor
     }    
 }
 
 // This Into works on a tuple consisting of a string slice and a u16
-impl Into<Foo> for (String, u16)> {    
-    fn into(v: (String, u16)) -> Foo {    
+impl Into<Foo> for (&'static str, u16) {    
+    fn into(self) -> Foo {    
         //... constructor
     }    
 }
-```
 
-Now we will produce a `new` function that takes anything that implements `Into<Foo>`. Calling it is So you can produce constructors such as this:
-
-```rust
-impl Foo {
-  pub fn new<T>(v: T) -> Foo where T: Into<Foo> {
-    v.into()
-  }
-}
 //...
-let f = Foo::new(String::from("Bob"));
-let f = Foo::new((String::from("Mary"), 16));
+let f: Foo = "Bob".into();
+let f: Foo = ("Mary", 16).into();
+// OR
+let f = Foo::new("Bob");
+let f = Foo::new(("Mary", 16));
 ```
 
 #### Use enums
@@ -96,47 +136,20 @@ let f = Foo::new((String::from("Mary"), 16));
 Remember that an enumeration in Rust can contain actual data, so we could also implement a function that takes an enumeration as an argument that has values for each kind of value it accepts:
 
 ```rust
-pub enum FooConstructorArgs {
+pub enum FooCtorArgs {
    String(String),
    StringU16(String, u16)
 }
 
 impl Foo {
-  pub fn new(v: FooConstructorArgs) {
+  pub fn new(v: FooCtorArgs) {
     match v {
-      FooConstructorArgs::String(s) => { /* ... */ }
-      FooConstructorArgs::StringU16(s, i) => { /* ... */ }
+      FooCtorArgs::String(s) => { /* ... */ }
+      FooCtorArgs::StringU16(s, i) => { /* ... */ }
     }
   }
 }
-```
-
-### Coercion
-
-Coercion also makes use of the `Into<T>` trait. If we want to coerce one type to another we just implement the `Into` trait and invoke `into()` on it.
-
-```rust
-impl Into<SquarePeg> for RoundHole> {
-  fn into(v: RoundHole) -> SquarePeg {
-    // Impl
-  }
-}
-// Convert the type and use diamond pattern to indicate output type
-let v = RoundHole { /*..*/ }.into::<SquarePeg>()
-```
-
-We might also use the `From` trait which is reciprocal with `Into` allowing you to convert _from_ something. 
-
-```rust
-use std::convert::From;
-
-impl From<&RoundHole> for SquarePeg {
-  fn from(v: &RoundHole) -> Self {
-    // Impl
-  }
-}
-
-// Make one thing from the other, but in this case use a reference
-let rh = RoundHole { /*..*/};
-let v = SquarePeg::from(&rh);
+//...
+let f = Foo::new(FooCtorArgs::String("Bob".to_string()));
+let f = Foo::new(FooCtorArgs::StringU16("Mary".to_string(), 16));
 ```
