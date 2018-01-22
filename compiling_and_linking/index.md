@@ -32,12 +32,46 @@ fn main() {
 }
 ```
 
-Rust also supplies a [getopts](https://doc.rust-lang.org/getopts/getopts/) crate that simplifies argument processing if it is necessary.
-
 We can see some clear advantages to how Rust supplies args:
 
 * You don't need a separate argc, parameter. You have an array that defines its own length.
 * You can access arguments from anywhere in your program, not just from the `main()`. In C++ you would have to pass your args around from one place to another. In Rust you can simply ask for them from anywhere.
+
+#### Crates make it even easier
+
+Rust has a number of crates for processing arguments. The most popular crate for processing arguments is [clap](https://crates.io/crates/clap). It provides a very descriptive, declarative way of adding argument processing.
+
+For example we add this to `Cargo.toml`:
+
+```toml
+[dependencies]
+clap = "2.27"
+```
+
+And in our `main.rs`.
+
+```rust
+#[macro_use] extern crate clap;
+use clap::*;
+//... inside main()
+let matches = App::new("Sample App")
+    .author("My Name <myname@foocorp.com>")
+    .about("Sample application")
+    .arg(Arg::with_name("T")
+        .long("timetowait")
+        .help("Waits some period of time for something to happen")
+        .default_value("10")
+        .takes_value(true)
+        .possible_values(&["10", "20", "30"])
+        .required(false))
+    .get_matches();
+
+let time_to_wait = value_t_or_exit!(matches, "T", u32);
+```
+
+Putting this code in our `main()` will process arguments for `-T` or `--timetowait` and ensure the value is one of 3 accepted. And if the user doesn't supply a value, it defaults to `10`. And if the user doesn't supply a valid integer it will terminate the application with a useful error.
+
+The user can also provide `--help` as an argument and it will print out the usage.
 
 ### Exit code
 
@@ -50,7 +84,7 @@ fn main() {
 }
 ```
 
-When main\(\) drops out, the runtime cleans up and returns the code to the environment. Again there is no reason the status code has to be set in main\(\), you could set it somewhere else and panic!\(\) to cause the application to exit.
+When `main()` drops out, the runtime cleans up and returns the code to the environment. Again there is no reason the status code has to be set in `main()`, you could set it somewhere else and `panic!()` to cause the application to exit.
 
 ## Optimized compilation
 
@@ -60,7 +94,7 @@ Optimization takes longer to happen and can reorder the code so that backtraces 
 
 If you want to optimize your code, add a -O argument to rustc:
 
-```
+```sh
 rustc -O hw.rs
 ```
 
@@ -81,11 +115,11 @@ At the time of writing this support is experimental because it is tied to refact
 
 ## Managing a project
 
-In C++ we would use a makefile or a solution file of some kind to manage a real world project and build it.
+In C++ we would use a `makefile` or a solution file of some kind to manage a real world project and build it.
 
-For small programs we might run a script or invoke a compiler directly but as our program grows and takes longer to build, we would have to use a makefile to maintain our sanity.
+For small programs we might run a script or invoke a compiler directly but as our program grows and takes longer to build, we would have to use a `makefile` to maintain our sanity.
 
-A typical makefile has rules that say what files are our sources, how each source depends on other sources \(like headers\), what our final executable is and a bunch of other mess about compile and link flags that must be maintained.
+A typical `makefile` has rules that say what files are our sources, how each source depends on other sources \(like headers\), what our final executable is and a bunch of other mess about compile and link flags that must be maintained.
 
 There are lots of different makefile solutions which have cropped up over the years but a simple gmake might look like one:
 
@@ -99,7 +133,7 @@ $(EXE): $(OBJS)
     $(CC) $(CFLAGS) -c $< -o $@
 ```
 
-When you invoke "make", the software will check all the dependencies of your target, looking at their filestamps and determine which rules need to be invoked and which order to rebuild your code.
+When you invoke `make`, the software will check all the dependencies of your target, looking at their filestamps and determine which rules need to be invoked and which order to rebuild your code.
 
 Rust makes things a lot easier – there is no makefile! The source code is the makefile. Each file says what other files it uses via depencies on other crates, and on other modules.
 
@@ -114,17 +148,17 @@ fn main() {
 }
 ```
 
-If we save this file and type "rustc main.rs" the compiler will notice the reference to "mod pacman" and will search for a pacman.rs \(or pacman/mod.rs\) and compile that too. It will continue doing this with any other modules referenced along the way.
+If we save this file and type `rustc main.rs` the compiler will notice the reference to `mod pacman` and will search for a `pacman.rs` (or `pacman/mod.rs`) and compile that too. It will continue doing this with any other modules referenced along the way.
 
-In other words you could have a project with 1000 files and compile it as simply as "rustc main.rs". Anything referenced is automatically compiled and linked.
+In other words you could have a project with 1000 files and compile it as simply as `rustc main.rs`. Anything referenced is automatically compiled and linked.
 
-Okay, so we can call rustc, but what happens if our code has dependencies on other projects. Or if our project is meant to be exported so other projects can use it?
+Okay, so we can call `rustc`, but what happens if our code has dependencies on other projects. Or if our project is meant to be exported so other projects can use it?
 
 ### Cargo
 
 Cargo is a package manager build tool rolled into one. Cargo can fetch dependencies, build them, build and link your code, run unit tests, install binaries, produce documentation and upload versions of your project to a repository.
 
-The easiest way to create a new project in Rust is to use the "cargo" command to do it
+The easiest way to create a new project in Rust is to use the `cargo` command to do it
 
 ```
 cargo new hello_world –bin
@@ -163,7 +197,7 @@ cargo test
 
 Cargo doesn't just take care of building our code, it also ensures that anything our code depends on is also downloaded and built. These external dependencies are defined in a Cargo.toml in our project root.
 
-We can edit that file to say we have a dependency on an external "crate" such as the time crate:
+We can edit that file to say we have a dependency on an external "crate" such as the `time` crate:
 
 ```
 [package]
@@ -198,9 +232,9 @@ All that happened with a line in Cargo.toml and a line in our code to reference 
 
 #### Cargo.lock
 
-Also note that once we build, cargo creates a Cargo.lock file in our root directory.
+Also note that once we build, cargo creates a `Cargo.lock` file in our root directory.
 
-This file is made so that if `cargo build` is invoked again it has an exact list of what packages need to be pulled and compiled. It stops situations where the code under our feet \(so to speak\) moves and suddenly our project no longer builds. So if the lock file exists, the same dependency configuration can be reproduced even from a clean. If you want to force the cargo to rebuild a new lock file, e.g. after changing Cargo.toml, you can type `cargo update`.
+This file is made so that if `cargo build` is invoked again it has an exact list of what packages need to be pulled and compiled. It stops situations where the code under our feet \(so to speak\) moves and suddenly our project no longer builds. So if the lock file exists, the same dependency configuration can be reproduced even from a clean. If you want to force the cargo to rebuild a new lock file, e.g. after changing `Cargo.toml`, you can type `cargo update`.
 
 [^1]: You can change the main entry point using a special  `#[start]` directive if you want on another function but the default is main\(\)
 

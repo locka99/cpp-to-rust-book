@@ -19,8 +19,10 @@ let a = 123i32;
 let b = a as usize;
 ```
 
-The compiler does not permit code to cast away `const`-ness or treat one type as another except through unsafe code blocks. 
+Anything beyond this requires implementing the `Into<>` or `From<>` traits and making conversion an explicit action.
+
+The compiler also does not allow code to cast away `const`-ness or treat one type as another except through `unsafe` code blocks.
 
 # Transmutation
 
-Rust allows some types to be [transmuted](https://doc.rust-lang.org/book/casting-between-types.html#transmute) to others. Transmute is an unsafe action but it allows a memory location to be treated as another type, e.g. an array of bytes as an integer.
+Rust allows some types to be [transmuted](https://doc.rust-lang.org/book/casting-between-types.html#transmute) to others. Transmute is an `unsafe` action but it allows a memory location to be treated as another type, e.g. an array of bytes as an integer.

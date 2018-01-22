@@ -15,7 +15,7 @@ Headers also make the compiler slower because source that consumes the header in
 
 ## Guard blocks / #pragma once
 
-Headers will also be expanded as many times as they are #included. To prevent the expansion happening more than once per source file, they're usually protected by guard blocks.
+Headers will also be expanded as many times as they are `#include`'d. To prevent the expansion happening more than once per source file, they're usually protected by guard blocks.
 
 ```c++
 #ifndef FOO_H
@@ -28,7 +28,9 @@ If the same header is included more than once, the second time through it is pre
 
 ### #pragma once
 
-Most modern compilers support a "#pragma once" directive. This allows the compiler to completely ignore an #include which it's already done ones. It's also neater since it doesn't have to be done with guard blocks.
+Most modern compilers also support a `#pragma once` directive. This allows the compiler to completely ignore an `#include` which it knows it has already included at least once before per source file. 
+
+This is more efficient than guard blocks because the compile doesn't even bother opening or processing the file again and just skips over it. There may be situations where this is not suitable, but usually it results in faster compilation.
 
 ### Precompiled Headers
 
@@ -94,17 +96,15 @@ void ComplexThing:: somethingReallyComplex() {
 }
 ```
 
-This solution is known as Pimpl pattern and while it can work to protect consumers and speed up builds it also adds complexity and overhead to development. It's also optional and many pieces of code wouldn't do it, couldn't do it or would only do it to varying degrees.
+This solution is known as Pimpl (private implementation) pattern and while it can work to protect consumers and speed up builds it also adds complexity and overhead to development. Instead of 2 definitions of a class to maintain (header / source) you now have 4(!) because there is a public and private impl class. Changing the signature of a method means changing it in potentially 4 places, plus the line in the public class that invokes the private counterpart.
 
-For example one reason it couldn't be used is that the implementation class is heap allocated. Code that creates a lot of small objects on the heap could contribute to heap fragmentation.
+One danger for Pimpl is that the private class is allocated from the heap. Code that uses a lot of temporary Pimpl objects could contribute to heap fragmentation.
 
-Note 1: Remember the rule of three? That applies to this object too. The example doesn't show it but if we copy constructed or assigned ComplexThing to another instance we'd be in a heap of trouble. So on top of the issues with making PImpl work we also have to prevent the other ones. The easiest way to lock it down would be to derive from boost::noncopyable if you were using boost.
+Note 1: Remember the rule of three? That applies to this object too. The example doesn't show it but if we copy constructed or assigned ComplexThing to another instance we'd be in a heap of trouble. So on top of the issues with making PImpl work we also have to prevent the other ones. The easiest way to lock it down would be to derive from `boost::noncopyable` if you were using boost or make the copy constructor `private`, or use delete it in C++11.
 
 ## How Rust helps
 
-In Rust the definition and the implementation are the same thing.
-
-TODO use ComplexThing
+In Rust the definition and the implementation are the same thing. So immediately we have exactly one thing to maintain.
 
 Writing a function defines the function. Let's assume we have a functions.rs file
 
@@ -115,9 +115,9 @@ pub fn create_directory_structure() {
 }
 ```
 
-Anyone can call it as functions::create_directory_structure(). The compiler will validate the call is correct.
+Anyone can call it as `functions::create_directory_structure()`. The compiler will validate the call is correct.
 
-A struct's definition and its implementation functions are written once. e.g. directory.rs
+A struct's definition and its implementation are also written once. e.g. `directory.rs`
 
 ```rust
 // directory.rs
@@ -132,7 +132,8 @@ impl Directory {
 ```
 
 Implementations can be defined in a private Rust module and only public structs exposed to consumers.
-If we were a library crate (which we'll call file_utils) wishing to expose these objects to consumers we would write a top-level lib.rs which says what files our lib comprises of and we want to expose.
+
+If we were a library crate (which we'll call `file_utils`) wishing to expose these objects to consumers we would write a top-level `lib.rs` which says what files our lib comprises of and we want to expose.
 
 ```rust
 // lib.rs for file_utils
