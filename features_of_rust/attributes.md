@@ -3,13 +3,13 @@
 C++ has various ways to give *directives* during compilation:
 
 * Compile flags that control numerous behavious
-* #pragma statements - once, optimize, comment, pack etc. Some pragmas such as comment have been wildly abused in some compilers to insert "comments" into object files that control the import / export of symbols, static linking and other functionality.
-* #define with ubquitous #ifdef / #else / #endif blocks
-* Keywords inline, const, volatile etc.. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
+* `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` have been wildly abused in some compilers to insert "comments" into object files that control the import / export of symbols, static linking and other functionality.
+* `#define` with ubquitous `#ifdef` / `#else` / `#endif` blocks
+* Keywords `inline`, `const`, `volatile` etc.. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
 
 Rust uses a notation called *attributes* that serves a similar role to all of these things but in a more consistent form.
 
-An attribute applies to the next item it is declared before:
+An attribute `#[foo]` applies to the next item it is declared before. A common attribute is used to denote a unit test case with `#[test]`:
 
 ```rust
 #[test]
@@ -18,7 +18,16 @@ fn this_is_a_test() {
 }
 ```
 
-Attributes are enclosed in a #[ ] block and provide compiler directives that allow:
+Attributes can also be expressed as `#![foo]` which affects the thing they're contained by rather the thing that follows them. 
+
+```rust
+fn this_is_a_test() {
+  #![test]
+  //...
+}
+```
+
+Attributes are enclosed in a `#[ ]` block and provide compiler directives that allow:
 
 * Functions to be marked as unit or benchmark tests
 * Functions to be marked for conditional compilation for a target OS. A function can be defined that only compiles for one target. e.g. perhaps the code that communicates with another process on Windows and Linux is encapsulated in the same function but implemented differently.
@@ -31,22 +40,48 @@ Attributes are enclosed in a #[ ] block and provide compiler directives that all
 * Enabling compiler features such as plugins that implement procedural macros.
 * Importing macros from other crates
 
-Attributes can be expressed as #![foo] which affects the thing they're contained by rather the thing that follows them. Attributes can also have name=value pairs as part of the directive.
 
 ## Conditional compilation
 
-TODO
+Conditional compilation allows you to test the target configurations and optionally compile functions or modules in or not. 
+
+The main configurations you will test include:
+
+* Target architecture - "x86", "x86_64", mips", "arm" etc.
+* Target OS - "windows", "macos", "ios", "linux", "android", "freebsd" etc.
+* Target family - "unix" or "windows"
+* Target environment - "gnu", "msvc" etc
+* Target endianess
+* Target pointer width
+
+So if you have a function which is implemented one way for Windows and another for Linux you might code it like so:
+
+```rust
+#[cfg(windows)]
+fn get_app_data_dir() -> String { /* ... */ }
+
+#[cfg(not(windows))]
+fn get_app_data_dir() -> String { /* ... */ }
+```
+
+Many more possibilities are listed in the [documentation](https://doc.rust-lang.org/reference/attributes.html#crate-only-attributes).
 
 ## Linking to native libraries
 
-In C/C++ code is first compiled and then it is linked. The linking phase takes a list of object files and a list of static libs to be used to resolve functions.
+In C/C++ code is first compiled and then it is linked, either by additional arguments to the compiler, or by invoking a linker.
+
+In Rust most of your linking is taken care for you providing you use `cargo`. 
+
+1. All your sources are compiled and linked together. 
+2. External crates are automatically built as static libs and linked in. 
+3. But if you have to link against something external through FFI you have to write a `#link` directive in your `lib.rs` or `main.rs`. This is somewhat analogous to the `#pragma(comment, "somelib")` in C++.
 
 C++ | Rust
 --- | ----
-\#pragma (comment, "somelib") | #[link(name = "somelib")]
-- | #[link(name = "somelib", kind = "static")]
+`#pragma (comment, "somelib")` | `#[link(name = "somelib")]`
+- | `#[link(name = "somelib", kind = "static")]`
 
-Default "kind" is "dynamic" library but "static" can be specified.
+The default kind for `#link` is `dynamic` library but `static` can be explicitly stated specified.
 
 ## Inlining code
 
@@ -58,7 +93,7 @@ In Rust, inlining is only a hint. Rust recommends not forcing inlning, rather le
 
 C++ | Rust
 --- | ----
-Explicitly with "inline" or implicitly through methods implemented in class / struct | #[inline], #[inline(always)], #[inline(never)]
+Explicitly with `inline` or implicitly through methods implemented in class / struct | `#[inline]`, `#[inline(always)]`, `#[inline(never)]`
 
 Another alternative to explicitly inlining code is to use the link-time optimisation in LLVM.
 
