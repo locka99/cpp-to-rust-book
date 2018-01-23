@@ -86,7 +86,7 @@ The [FFI specification](https://doc.rust-lang.org/book/ffi.html) goes into a lot
 
 Rust maintains a crate called [libc](https://github.com/rust-lang/libc) which holds types and functions corresponding to C.
 
-A dependency to libc would be added to the Cargo.toml of your project:
+A dependency to libc would be added to the `Cargo.toml` of your project:
 
 ```
 [dependencies]

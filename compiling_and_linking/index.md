@@ -195,7 +195,7 @@ cargo test
 
 ### Crates and external dependencies
 
-Cargo doesn't just take care of building our code, it also ensures that anything our code depends on is also downloaded and built. These external dependencies are defined in a Cargo.toml in our project root.
+Cargo doesn't just take care of building our code, it also ensures that anything our code depends on is also downloaded and built. These external dependencies are defined in a `Cargo.toml` in our project root.
 
 We can edit that file to say we have a dependency on an external "crate" such as the `time` crate:
 
@@ -222,13 +222,13 @@ fn main() {
 }
 ```
 
-So the change to the Cargo.toml and a reference in the source is sufficient to:
+So the change to the `Cargo.toml` and a reference in the source is sufficient to:
 
 1. Fetch the crate \(and any dependencies\)
 2. Build the crate \(and any dependencies\)
 3. Compile and link to the crate and dependencies
 
-All that happened with a line in Cargo.toml and a line in our code to reference the crate. We didn't have to mess around figuring how to build the other library, or maintain multiple makefiles, or getting our compiler / linker flags right. It just happened.
+All that happened with a line in `Cargo.toml` and a line in our code to reference the crate. We didn't have to mess around figuring how to build the other library, or maintain multiple makefiles, or getting our compiler / linker flags right. It just happened.
 
 #### Cargo.lock
 
