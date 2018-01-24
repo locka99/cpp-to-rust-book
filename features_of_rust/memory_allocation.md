@@ -90,7 +90,21 @@ Rust requires most heap allocated memory to be contained by one or more of the s
 
 ### Box<T>
 
-A `Box` is something managed on the heap. If I create something created in a box, it's allocated by the heap.
+A `Box` is memory managed on the heap. 
+
+```rust
+struct Blob {
+  data: Box<[u8; 16384]>
+}
+
+impl Blob {
+  pub fn new() {
+    Efficient {
+      data: Box::new([0u8; 16384])
+    }
+  }
+}
+```
 
 Whoever owns the box can access it. Essentially, that means you can pass the box around from one place to another and whatever binds to it last can open it. Everyone else’s binding becomes invalid and will generate a compile error.
 

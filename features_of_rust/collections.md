@@ -8,7 +8,7 @@ A collection is something that holds zero or more elements in some fashion that 
 
 * LinkedList - a linked list individually allocates memory for each element making it cheap to add or remove elements from anywhere in the list. However there is a lot more overhead to iterating the list by index and much more heap allocation.
 
-* Set - a collection that holds a unique set of items. Duplicates are not permitted. Some sets maintain the order of insertion.
+* Set - a collection that holds a unique set of items. Inserting a duplicate item will not succeed. Some sets maintain the order of insertion. Sets are useful where you want to weed out duplicates from an input.
 
 * Map - a collection where each item is referenced by a unique key. Some maps can maintain the order of insertion.
 

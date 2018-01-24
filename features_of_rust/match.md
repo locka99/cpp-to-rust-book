@@ -21,10 +21,12 @@ default:
 
 Switch statements can be a source of error because behaviour is undefined when a `default` clause is not supplied. It is also possible to inadvertently forget the `break` statement. In the above example, the code explicitly "drops" from the 404 handler into the default handler. This code would work fine providing someone didn't insert some extra clauses between 404 and default...
 
-Additionally switch statements only work on numeric values (or bool)
+Additionally switch statements only work on numeric values (or `bool`).
 
 ## Rust
 
 [Match](https://doc.rust-lang.org/book/match.html) is like a `switch` statement on steroids.
 
 In C++ a switch is a straight comparison of an integer value of some kind (including chars and enums), against a list of values. If the comparison matches, the code next to it executes until the bottom of the switch statement or a break is reached.
+
+TODO
