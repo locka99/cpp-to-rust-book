@@ -1,5 +1,17 @@
 # Collections
 
+A collection is something that holds zero or more elements in some fashion that allows you to enumerate those elements, add or remove elements, find them and so forth.
+
+* Vector - a dynamic array. Appending or removing elements from the end is cheap (providing the array is large enough to accomodate an additional item). Inserting items or removing them from any other part of the array is more expensive and involves memory movements. Generally speaking you should always reserve enough space in a vector for the most elements you anticipate it will hold. Reallocating memory can be expensive and lead to fragmentation.
+
+* Vecdeque - a ring buffer array. Items can be added or removed from either end relatively cheaply. Items in the array are not arranged sequentially so there is a little more complexity to managing wraparound and removal than a Vector.
+
+* LinkedList - a linked list individually allocates memory for each element making it cheap to add or remove elements from anywhere in the list. However there is a lot more overhead to iterating the list by index and much more heap allocation.
+
+* Set - a collection that holds a unique set of items. Duplicates are not permitted. Some sets maintain the order of insertion.
+
+* Map - a collection where each item is referenced by a unique key. Some maps can maintain the order of insertion.
+
 C++ and Rust have have collections as part of their standard library as is common with modern languages.
 
 | C | C++ | Rust
@@ -9,8 +21,7 @@ C++ and Rust have have collections as part of their standard library as is commo
 | - | `std::set` | `std::collections::HashSet`, `std::collections::BTreeSet`
 | - | `std::map` | `std::collections::HashMap`, `std::collections::BTreeMap`
 
-C has no standard collection classes or types. Users wanting collections might have resorted to using [glib](https://developer.gnome.org/glib/) or [cii](https://code.google.com/archive/p/cii/downloads).
-
+C has no standard collection classes or types. Some libraries offer collection APIs such as [glib](https://developer.gnome.org/glib/) or [cii](https://github.com/drh/cii).
 
 ## Iterators
 
