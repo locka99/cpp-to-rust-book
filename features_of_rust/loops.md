@@ -17,6 +17,7 @@ So this is a valid for loop:
 ```cpp
 // Infinite
 for (;;) {
+  //...
 }
 ```
 
@@ -128,6 +129,9 @@ for (int i = 0; i < loginCredentials; ++i) {
 
 ### For loop
 
+Rust's `for` loop is actually sugar over the top of iterators. If a structured type can be converted i
+
+
 #### Iterating a range
 
 Rust `for` loops are quite different from C++ because Rust uses an `Iterator` to step through each element. 
@@ -142,8 +146,7 @@ for i in 0..10 {
 
 The value `0..10` is a `Range` that runs from 0 to exclusive of 10. A range implements the `Iterator` trait so the for loop advances one element at a time until it reaches the end.
 
-Iterators have a lot of functions on them for doing fancy stuff, but one which is useful in loops is the `enumerate()` function. This
-transforms the iterator into returning a tuple containing the index and the value instead of just the value.
+Iterators have a lot of functions on them for doing fancy stuff, but one which is useful in loops is the `enumerate()` function. This transforms the iterator into returning a tuple containing the index and the value instead of just the value.
 
 So for example:
 
@@ -155,18 +158,7 @@ for (i, x) in (30..50).enumerate() {
 
 ### For loop - Iterating arrays and collections
 
-Just like with ranges, arrays and collections also provide iterators. 
-
-Here is a loop that iterates an array, moving the values during iteration:
-
-```rust
-let values = [2, 4, 6, 7, 8, 11, 33, 111];
-for v in values {
-   println!("v = {}", v);
-}
-```
-
-But maybe we didn't want to move the values, just reference them. In which case we can iterate by adding a reference to the array (note the & below)
+Here is a loop that iterates an array:
 
 ```rust
 let values = [2, 4, 6, 7, 8, 11, 33, 111];
@@ -175,7 +167,9 @@ for v in &values {
 }
 ```
 
-Alternatively we can directly use the `iter()` function that arrays and collections implement which works by reference:
+Note you can only iterate over an array by reference because iterating it by value would be destructive. 
+
+We can directly use the `iter()` function that arrays and collections implement which works by reference:
 
 ```rust
 let values = vec![2, 4, 6, 7, 8, 11, 33, 111];
