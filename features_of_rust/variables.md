@@ -116,9 +116,23 @@ read(nullptr);
 
 ### In Rust:
 
-Rust supports pointers but only for interacting with external libraries or the operating system. As such if you wish to use them, they are available from an `unsafe` code programming block, and [documented](https://doc.rust-lang.org/std/primitive.pointer.html).
+Rust supports pointers, normally called *raw* pointers however you will rarely use them unless you need to interact with C API or similar purposes.
 
-In safe programming you would not use pointers. Instead you would use references and / or optional reference counted objects.
+A pointer looks fairly similar to that of C++:
+
+```rust
+// This is a reference coerced to a const pointer
+let age: u16 = 27;
+let age_ptr: *const u16 = &age;
+
+// This is a mut reference coerced to a mutable pointer
+let mut total: u32 = 0;
+let total_ptr: *mut u32 = &mut total;
+```
+
+Many of the functions you perform on pointers are unsafe by definition and are required to be inside `unsafe` blocks.
+
+The documentation in full is [here](https://doc.rust-lang.org/std/primitive.pointer.html).
 
 ## References
 

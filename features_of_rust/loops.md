@@ -129,12 +129,38 @@ for (int i = 0; i < loginCredentials; ++i) {
 
 ### For loop
 
-Rust's `for` loop is actually sugar over the top of iterators. If a structured type can be converted i
+Rust's `for` loop is actually sugar over the top of iterators. If a structured type implements the trait `IntoIterator` it can be looped over using a `for` loop.
 
+Basically in pseudo code, the loop desugars to this:
+
+```pseudocode
+If structure type can be turned `IntoIterator`
+  Loop
+   If let Some(item) = iterator.next() {
+     do_action_to_item(item)
+   Else
+     break;
+  End
+Else 
+  Compile Error
+Done
+```
 
 #### Iterating a range
 
-Rust `for` loops are quite different from C++ because Rust uses an `Iterator` to step through each element. 
+A `Range` object in Rust is expressed as `from..to` where `from` and `to` are values or expressions that evaluate to values.
+
+For example:
+
+```rust
+let range=0..33;
+// Variables
+let min = 0;
+let max = 100;
+let range2 = min..max;
+```
+
+A range is inclusive / exclusive, i.e. the minimum value is included in the `Range` but the maximum value is exclusive.
 
 Here is a simple loop that counts from 0 to 9
 
