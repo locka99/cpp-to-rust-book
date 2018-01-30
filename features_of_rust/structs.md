@@ -310,18 +310,109 @@ TODO traits partial implementation.
 
 ## Lifetimes
 
-C++ doesn't really care how long objects live. If you maintain a pointer to some object from your class, it won't care if the pointer is valid or not. It won't care if the object has long gone and you're holding onto garbage.
+In C++ an object lives from the moment it is constructed to the moment it is destructed. 
 
-Rust does care and carefully tracks the lifetime of objects to ensure that you cannot reference something that no longer exists.
+That lifetime is implicit if you declare the object on the stack. The object will be created / destroyed as it goes in and out of scope. It is also implicit if your object is a member of another object - the lifetime is within the containing object, and the declaration order of other members in the containing object.
 
-Occasionally this causes problems for structs and classes where a struct holds a reference to some other struct but is unsure about the life time.
+However, if you allocate your object via `new` then it is up to you when to `delete`. If you `delete` too soon, or forget to `delete` then you may destabilize your program.  C++ encourages using smart pointers that manage the lifetime of your object, tying it to the implicit lifetime of the smart pointer itself - when the smart pointer is destroyed, it deletes the held pointer. A more sophisticated kind of smart pointer allows multiple instances of the same pointer to exist at once, and reference counting is used so that when the last smart pointer is destroyed, it destroyes the pointer.
 
-TODO lifetimes
+Even so, C++ itself will not care if you initialized a class with a reference or pointer to something that no longer lives. If you do this, your program will crash.
 
-## Lifetime can be omitted / elided in most cases
+Let's write an `Incrementor` class which increments an integer value and returns that value.
+
+```c++
+class Incrementor {
+public:
+	Incrementor(int &value) : value_(value) {}
+
+	int increment() { return ++value_; }
+
+private:
+	int &value_;
+};
+```
+
+This seems fine, but what if we use it like this?
+
+```c++
+Incrementor makeIncrementor() {
+  // This is a bad idea
+	int value = 5;
+	return Incrementor(value);
+}
+```
+
+This code passes a reference to a stack allocated `int` into the class constructor and returns the `Incrementor` from the function itself. When `increment()` is called the pointer/reference to `value_` could be pointing at anything in the stack. The compiler has allowed a dangling reference to happen in the code, and the outcome is going to be bugs that will bite the code sooner or later.
+
+## Rust lifetimes
+
+Rust *does* care about the lifetime of objects and tracks them to ensure that you cannot reference something that no longer exists. Most of the time this is automatic and self-evidence from the error message you get if you try something bad. 
+
+The compiler implements a *borrow checker* which tracks references to objects to ensure that:
+
+1. References are held no longer than the lifetime of the object they refer to.
+2. Mutable references are not borrowed concurrently with immutable references to prevent data races.
+
+The compiler will generate compile errors if it finds code in violation of its rules.
+
+So let's try writing the equivalent of `Incrementor` above but in Rust. The Rust code will use a reference like in C++ and we have to instruct the compiler that it is a mutable reference:
+
+```rust
+struct Incrementor {
+  value: &mut i32
+}
+
+impl Incrementor {
+  pub fn increment(&mut self) -> i32 {
+    *self.value += 1;
+    *self.value
+  }
+}
+```
+
+Seems fine, but the first error we get is:
+
+```
+2 |   value: &mut u32
+  |          ^ expected lifetime parameter
+```
+
+We tried to create a struct that manages a reference, but the compiler doesn't know anything about this reference's lifetime and so it has generated a compile error.
+
+To help the compiler overcome its problem, we will annotate our struct with a lifetime which we will call `'a`. This lifetime is a hint on our struct that says how the lifetime of the reference we use inside the struct relates to the struct itself - namely that `Incrementor<'a>` and `value: &'a mut i32` share the same lifetime constraint and the compiler will ensure the reference always lives longer than the thing that uses it.
+
+```rust
+struct Incrementor<'a> {
+  value: &'a mut i32
+}
+
+impl <'a> Incrementor<'a> {
+  pub fn increment(&mut self) -> i32 {
+    *self.value += 1;
+    *self.value
+  }
+}
+```
+
+With the annotation in place, we can now use the code:
+
+```rust
+let mut value = 20;
+let mut i = Incrementor { value: &mut value };
+println!("value = {}", i.increment());
+```
+
+Note that the annotation `'a` could be any label we like - `'increment` would work if we wanted, but obviously its more longwinded.
+
+There is a special lifetime called `'static` that refers to things like static strings and functions which have a lifetime as long as the runtime and may therefore be assumed to always exist.
+
+### Lifetime elision
 
 Elision means - to omit. It's a [fancy word](https://ericlippert.com/2013/01/24/five-dollar-words-for-programmers-elision/) that is used for when the compiler can work out the lifetimes of structs for itself. If the compiler can work out the lifetime then we don't need to declare a lifetime.
 
 TODO example of elided lifetime versus specific
 
-When you do not have to specifically say anything about the lifetime because the compiler figures it out, it is said to be elided. Why it's called elision when omit would be a more commonly understood word is anyone's guess. Elide = omit, remember that.
+
+### Further reference
+
+Lifetimes are a large subject and the documentation is [here](https://doc.rust-lang.org/book/second-edition/ch10-03-lifetime-syntax.html#lifetime-elision).
