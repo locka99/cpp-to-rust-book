@@ -346,16 +346,16 @@ This code passes a reference to a stack allocated `int` into the class construct
 
 ## Rust lifetimes
 
-Rust *does* care about the lifetime of objects and tracks them to ensure that you cannot reference something that no longer exists. Most of the time this is automatic and self-evidence from the error message you get if you try something bad. 
+Rust *does* care about the lifetime of objects and tracks them to ensure that you cannot reference something that no longer exists. Most of the time this is automatic and self-evident from the error message you get if you try something bad. 
 
-The compiler implements a *borrow checker* which tracks references to objects to ensure that:
+The compiler also implements a *borrow checker* which tracks references to objects to ensure that:
 
 1. References are held no longer than the lifetime of the object they refer to.
-2. Mutable references are not borrowed concurrently with immutable references to prevent data races.
+2. Only a single mutable reference is possible at a time and not concurrently with immutable references. This is to prevent data races.
 
 The compiler will generate compile errors if it finds code in violation of its rules.
 
-So let's try writing the equivalent of `Incrementor` above but in Rust. The Rust code will use a reference like in C++ and we have to instruct the compiler that it is a mutable reference:
+So let's write the equivalent of `Incrementor` above but in Rust. The Rust code will hold a reference to a integer `i32` and increment it from a bound function:
 
 ```rust
 struct Incrementor {
@@ -379,7 +379,9 @@ Seems fine, but the first error we get is:
 
 We tried to create a struct that manages a reference, but the compiler doesn't know anything about this reference's lifetime and so it has generated a compile error.
 
-To help the compiler overcome its problem, we will annotate our struct with a lifetime which we will call `'a`. This lifetime is a hint on our struct that says how the lifetime of the reference we use inside the struct relates to the struct itself - namely that `Incrementor<'a>` and `value: &'a mut i32` share the same lifetime constraint and the compiler will ensure the reference always lives longer than the thing that uses it.
+To help the compiler overcome its problem, we will annotate our struct with a lifetime which we will call `'a`. The label is anything you like but typically it'll be a letter. 
+
+This lifetime label is a hint on our struct that says the reference we use inside the struct must have a lifetime of at least as much the struct itself - namely that `Incrementor<'a>` and `value: &'a mut i32` share the same lifetime constraint and the compiler will enforce it.
 
 ```rust
 struct Incrementor<'a> {
@@ -408,10 +410,17 @@ There is a special lifetime called `'static` that refers to things like static s
 
 ### Lifetime elision
 
-Elision means - to omit. It's a [fancy word](https://ericlippert.com/2013/01/24/five-dollar-words-for-programmers-elision/) that is used for when the compiler can work out the lifetimes of structs for itself. If the compiler can work out the lifetime then we don't need to declare a lifetime.
+Rust allows reference lifetimes to be elided (a [fancy word](https://ericlippert.com/2013/01/24/five-dollar-words-for-programmers-elision/) for omit) in most function signatures.
 
-TODO example of elided lifetime versus specific
+Basically, it assumes that when passing a reference into a function, that the lifetime of the reference is implicitly longer than the function itself so the need to annotate is not necessary.
 
+```rust
+fn find_person(name: &str) -> Option<Person>
+// instead of
+fn find_person<'a>(name: &'a str) -> Option<Person>
+```
+
+The rules for elision are described in the further reference link.
 
 ### Further reference
 
