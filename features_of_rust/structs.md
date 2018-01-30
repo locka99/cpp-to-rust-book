@@ -234,35 +234,61 @@ A class may designate another function or class as a friend which has access to 
 
 Rust makes things somewhat simpler.
 
-If you want something to access a member of a struct (including modifying it if its mutable), then mark it `pub`.
+If you want a struct to be visible outside your module you mark it `pub`. If you do not mark it `pub` then it is only visible within the module and submodules.
 
-TODO example
+```rust
+pub struct Person { /* ... */ }
+```
+
+If you want publicaccess a member of a struct (including modifying it if its mutable), then mark it `pub`.
+
+```rust
+pub struct Person {
+  pub age: u16,
+}
+```
 
 If you want something to be able to call a function on your struct you mark it `pub`.
 
-TODO example
-
-If you want a struct to be visible outside your module you mark it `pub`
-
-TODO example
+```rust
+impl Person {
+  pub fn is_adult(&self) -> bool {
+    self.age >= 18
+  }
+}
+```
 
 ## Functions
 
-And then it has functions that you bind to the struct contained within an `impl` block:
+Functions can be bound to a struct within an `impl` block:
 
 ```rust
 impl Shape {
-  fn area(&self) -> i32 {
+  pub fn new(width: u32, height: u32) -> Shape {
+    Shape { width, height }
+  }
+  
+  pub fn area(&self) -> i32 {
     self.width * self.height
   }
-  fn set(&mut self, width: i32, height: i32) {
+
+  pub fn set(&mut self, width: i32, height: i32) {
     self.width = width;
     self.height = height;
   }
 }
 ```
 
-Note how the first parameter is `&self` which is a reference to the struct instance. In one method we pass a immutable `&self` because it doesn’t need to modify the struct. In the second we pass a mutable `&mut self` so we can modify the struct.
+Functions that start with a `&self` / `&mut self` parameter are bound to instances.  Those without are bound to the type. So the `new()` function can be called as `Shape::new()`.
+
+Where `&self` is provided, the function is invoked on the instance. So for example:
+
+```rust
+let shape = Shape::new(100, 100);
+let area = shape.area();
+```
+
+Where `&mut self` is provided it signifies that the function mutates the struct.
 
 Unlike C++, all access to the struct has to be qualified. In C++ you don't have to say `this->foo()` to call foo() from another member of the class. Rust requires code to say unambiguously `self.foo()`.
 
