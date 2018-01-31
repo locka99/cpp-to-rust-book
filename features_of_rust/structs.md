@@ -292,9 +292,9 @@ Where `&mut self` is provided it signifies that the function mutates the struct.
 
 Unlike C++, all access to the struct has to be qualified. In C++ you don't publishing_interval: Double, lifetime_count: UInt32, max_keep_alive_count: UInt32, max_notifications_per_publish: UInt32, priority: Bytehave to say `this->foo()` to call foo() from another member of the class. Rust requires code to say unambiguously `self.foo()`.
 
-## Static methods
+## Static functions
 
-Static methods are merely functions in the `impl` block that do not have `&self` as their first parameter, e.g.
+Static functions are merely functions in the `impl` block that do not have `&self` or `&mut self` as their first parameter, e.g.
 
 ```rust
 impl Circle {
@@ -304,7 +304,7 @@ impl Circle {
 let pi = Circle::pi();
 ```
 
-You can attach functions to the class or the instance depending on the first argument being &self or not.
+In other words they're not bound to an instance of a type, but to the type itself. For example, `Circle::pi()`.
 
 ## Traits
 
@@ -363,7 +363,6 @@ Let's write an `Incrementor` class which increments an integer value and returns
 class Incrementor {
 public:
 	Incrementor(int &value) : value_(value) {}
-
 	int increment() { return ++value_; }
 
 private:
@@ -381,7 +380,7 @@ Incrementor makeIncrementor() {
 }
 ```
 
-This code passes a reference to a stack allocated `int` into the class constructor and returns the `Incrementor` from the function itself. When `increment()` is called the pointer/reference to `value_` could be pointing at anything in the stack. The compiler has allowed a dangling reference to happen in the code, and the outcome is going to be bugs that will bite the code sooner or later.
+This code passes a reference to an `int` into the class constructor and returns the `Incrementor` from the function itself. But when `increment()` is called the reference is dangling and anything can happen.
 
 ## Rust lifetimes
 
