@@ -290,7 +290,7 @@ let area = shape.area();
 
 Where `&mut self` is provided it signifies that the function mutates the struct.
 
-Unlike C++, all access to the struct has to be qualified. In C++ you don't have to say `this->foo()` to call foo() from another member of the class. Rust requires code to say unambiguously `self.foo()`.
+Unlike C++, all access to the struct has to be qualified. In C++ you don't publishing_interval: Double, lifetime_count: UInt32, max_keep_alive_count: UInt32, max_notifications_per_publish: UInt32, priority: Bytehave to say `this->foo()` to call foo() from another member of the class. Rust requires code to say unambiguously `self.foo()`.
 
 ## Static methods
 
@@ -318,21 +318,34 @@ A trait is declared like so:
 
 ```rust
 trait HasCircumference {
-  fn circumference() -> i32;
+  fn circumference(&self) -> f64;
 }
 ```
 
-And then structs can implement the trait by declaring it
+Here the trait `HasCircumference` has a function called `circumference()` whose signature is defined but must be implemented.
+
+A type can implement the trait by declaring and `impl` of it.
 
 ```rust
 impl HasCircumference for Size {
-  fn circumference() -> i32 {
-    2 * width + 2 * height
+  fn circumference(&self) -> i32 {
+    2.0 * std::f64::consts::PI * self.radius
   }
 }
 ```
 
-TODO traits partial implementation.
+A trait may supply default function implementations. For example, a `HasDimensions` trait might implement `area()` to spare the implementor the bother of doing it.
+
+```rust
+trait HasDimensions {
+  fn width(&self) -> u32;
+  fn height(&self) -> u32;
+
+  fn area(&self) -> u32 {
+    self.width() * self.height()
+  }
+}
+```
 
 ## Lifetimes
 
