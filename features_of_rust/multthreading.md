@@ -327,3 +327,25 @@ thread_local! {
   // TODO
 }
 ```
+
+### Useful crates ###
+
+#### Rayon ####
+
+The [rayon](https://github.com/rayon-rs/rayon) crate implements parallel iterators that allow your collections to be iterated in parallel. The crate
+utilises work stealing and divide and conquer algorithms couple to a thread pool to process collections more quickly
+than they could be in a sequential fashion.
+
+Generally speaking this is a drop-in replacement with the exception that you call `par_iter` instead of `iter`. The crate
+implements a `ParallelIterator` trait on collection classes.
+
+```rust
+use rayon::prelude::*;
+fn sum_of_squares(input: &[i32]) -> i32 {
+    input.par_iter()
+         .map(|&i| i * i)
+         .sum()
+}
+```
+
+See the crate site for more information.
