@@ -25,10 +25,22 @@ Rust doesn't process arguments this way. Instead you access the command-line par
 The function `args()` returns the parameters in a string array. As with C++, the first element of the array at index 0 is the command itself:
 
 ```rust
+use std::env;
 fn main() {
-    for argument in std::env::args() {
+    for argument in env::args() {
         println!("{}", argument);
     }
+}
+```
+
+Alternatively, since `args()` returns a type called `Args` that implements the `Iterator` trait  you can collect the arguments up into your own collection and process that:
+
+```rust
+use std::env;
+use std::collections::HashSet;
+fn main() {
+    let args: HashSet<String> = env::args().collect();
+    let verbose_flag = args.contains("--verbose");
 }
 ```
 
@@ -37,9 +49,11 @@ We can see some clear advantages to how Rust supplies args:
 * You don't need a separate argc, parameter. You have an array that defines its own length.
 * You can access arguments from anywhere in your program, not just from the `main()`. In C++ you would have to pass your args around from one place to another. In Rust you can simply ask for them from anywhere.
 
-#### Crates make it even easier
+#### Use a crate - easy command-line processing
 
-Rust has a number of crates for processing arguments. The most popular crate for processing arguments is [clap](https://crates.io/crates/clap). It provides a very descriptive, declarative way of adding argument processing.
+Rust has a number of crates for processing arguments. The most popular crate for processing arguments is [clap](https://crates.io/crates/clap).
+
+It provides a very descriptive, declarative way of adding rules for processing arguments into the code. It is especially useful if your program takes a lot of arguments, including parameters and validation rules.
 
 For example we add this to `Cargo.toml`:
 
@@ -53,8 +67,8 @@ And in our `main.rs`.
 ```rust
 #[macro_use] extern crate clap;
 use clap::*;
-//... inside main()
-let matches = App::new("Sample App")
+fn main() {
+  let matches = App::new("Sample App")
     .author("My Name <myname@foocorp.com>")
     .about("Sample application")
     .arg(Arg::with_name("T")
@@ -66,10 +80,12 @@ let matches = App::new("Sample App")
         .required(false))
     .get_matches();
 
-let time_to_wait = value_t_or_exit!(matches, "T", u32);
+  let time_to_wait = value_t_or_exit!(matches, "T", u32);
+  println!("Time to wait value is {}", time_to_wait);
+}
 ```
 
-Putting this code in our `main()` will process arguments for `-T` or `--timetowait` and ensure the value is one of 3 accepted. And if the user doesn't supply a value, it defaults to `10`. And if the user doesn't supply a valid integer it will terminate the application with a useful error.
+This code will process arguments for `-T` or `--timetowait` and ensure the value is one of 3 accepted. And if the user doesn't supply a value, it defaults to `10`. And if the user doesn't supply a valid integer it will terminate the application with a useful error.
 
 The user can also provide `--help` as an argument and it will print out the usage.
 
