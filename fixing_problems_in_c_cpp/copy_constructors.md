@@ -3,7 +3,7 @@
 In C++ you can construct one instance from another via a constructor and also by an assignment operator. In some cases a constructor will be used instead of an assignment:
 
 ```c++
-PersonList x;
+PersonList x; 
 PersonList y = x; // Copy constructor, not assignment
 PersonList z;
 z = x; // Assignment operator
@@ -14,10 +14,14 @@ By default C++ generates all the code to copy and assign the bytes in one class 
 So our class PersonList might look like this:
 
 ```c++
+struct Person {
+    //...
+};
+
 class PersonList {
-  std::Vector<Person> *personList_;
+  std::vector<Person> *personList_;
 public:
-  PersonList() : personList_(new std::Vector<Person>) {
+  PersonList() : personList_(new std::vector<Person>) {
   }
 
   ~PersonList() {
@@ -28,48 +32,59 @@ public:
 };
 ```
 
-Except we're not lucky, we just got slimed. The default byte copy takes the pointer in `personList_` and makes a copy of it. Now if we copy `x` to `y`, or assign `x` to `z` we have three classes pointing to the same private data! On top of that, `z` allocated its own `personList_` during its default constructor but the byte copy assignment overwrote it with the one from `x` so its old `personList_` value just leaks.
+Except we're not lucky, we just got slimed. The default byte copy takes the pointer in `personList_` and makes a 
+copy of it. Now if we copy `x` to `y`, or assign `x` to `z` we have three classes pointing to the same private data! 
+On top of that, `z` allocated its own `personList_` during its default constructor but the byte copy assignment 
+overwrote it with the one from `x` so its old `personList_` value just leaks.
 
-Of course we might be able to use a `std::unique_ptr` to hold our pointer. In which case the compiler would generate an error. But it might not always be that simple. `personList_` may have been opaquely allocated by an external library so have no choice but to manage its lifetime through the constructor and destructor.
+Of course we might be able to use a `std::unique_ptr` to hold our pointer. In which case the compiler would 
+generate an error. But it might not always be that simple. `personList_` may have been opaquely 
+allocated by an external library so have no choice but to manage its lifetime through the constructor and destructor.
 
 ## The Rule of Three
 
 This is such a terrible bug enabling problem in C++ that it has given rise to the so-called the Rule of Three[^1].
 
-The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class then we probably need to implement all three of them to safely handle assignment and construction. In other words the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
+The rule says that if we explicitly declare a destructor, copy constructor or copy assignment operator in a C++ class
+ then we probably need to implement all three of them to safely handle assignment and construction. In other words 
+ the burden for fixing C++'s default and dangerous behaviour falls onto the developer.
 
 So let's fix the class:
 
 ```c++
+struct Person {
+    //...
+};
+
 class PersonList {
-  std::Vector<Person> *personList_;
+    std::vector<Person> *personList_;
 public:
-  PersonList() : personList_(new std::Vector<Person>) {
-  }
-
-  PersonList(const PersonList &other) :
-          personList_(new std::Vector<Person>)    {
-    personList_->insert(
-      personList_->end(), other.personList_->begin(),
-      other.personList_->end());
-  }
-
-  ~PersonList() {
-    delete personList_;
-  }
-
-  PersonList & operator=(const PersonList &other) {
-    // Don't forget to check if someone assigns an object to itself
-    if (&other != this) {
-      personList_->clear();
-      personList_->insert(
-        personList_->end(), other.personList_->begin(),
-        other.personList_->end());
+    PersonList() : personList_(new std::vector<Person>) {
     }
-    return *this;
-  }
 
-  // ... Methods to add / search list
+    PersonList(const PersonList &other) :
+            personList_(new std::vector<Person>)    {
+        personList_->insert(
+                personList_->end(), other.personList_->begin(),
+                other.personList_->end());
+    }
+
+    ~PersonList() {
+        delete personList_;
+    }
+
+    PersonList & operator=(const PersonList &other) {
+        // Don't forget to check if someone assigns an object to itself
+        if (&other != this) {
+            personList_->clear();
+            personList_->insert(
+                    personList_->end(), other.personList_->begin(),
+                    other.personList_->end());
+        }
+        return *this;
+    }
+
+    // ... Methods to add / search list
 };
 ```
 
@@ -81,20 +96,20 @@ Alternatively we might disable copy / assignments by creating private constructo
 
 ```c++
 class PersonList {
-  std::Vector<Person> *personList_;
+    std::vector<Person> *personList_;
 
 private:
-  PersonList(const PersonList &other) {}
-  PersonList & operator=(const PersonList &other) { return *this }
+    PersonList(const PersonList &other) {}
+    PersonList & operator=(const PersonList &other) { return *this; }
 
 public:
-  PersonList() : personList_(new std::Vector<Person>) {
-  }
+    PersonList() : personList_(new std::vector<Person>) {
+    }
 
-  ~PersonList() {
-    delete personList_;
-  }
-  // ... Methods to add / search list
+    ~PersonList() {
+        delete personList_;
+    }
+    // ... Methods to add / search list
 };
 ```
 

@@ -30,7 +30,6 @@ DatabaseConn::DatabaseConn() {
   buffer_ = new char[100];
   // ... exception throwing code
 }
-```
 
 DatabaseConn::~DatabaseConn() {
   if (buffer_) {

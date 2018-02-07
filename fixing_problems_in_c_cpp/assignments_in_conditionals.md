@@ -12,7 +12,8 @@ else {
 }
 ```
 
-So here, result was assigned the value 200 rather than compared to the value 200. Some compilers may issue a warning for these cases, but an error would be better.
+So here, result was assigned the value 200 rather than compared to the value 200. Compilers should
+issue a warning for these cases, but an error would be better.
 
 Developers might also try to reverse the left and right hand side to mitigate the issue:
 
@@ -46,10 +47,10 @@ if ((err == SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
 This code just won't compile:
 
 ```rust
-let mut result: i32;
+let mut result = 0;
 if result = 200 { // Compile Error
   //...
 }
 ```
 
-The only form of assignment inside a conditional is the specialised and explicit `if let` and `while let` forms which are explained pages 55 and 58 respectively.
+The only form of assignment inside a conditional is the specialised and explicit `if let` and `while let` forms which are explained elsewhere.

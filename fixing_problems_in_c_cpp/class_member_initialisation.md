@@ -2,28 +2,32 @@
 
 C++ does not require that you initialise all variables in every constructor.
 
-* A member that is a C++ class with a default constructor doesn't need to be initialised
+* A member that is a C++ class with its own default constructor doesn't need to be initialised
 * A member that is a C++ class without a default constructor must be explicitly initialised.
-* A member that is a references must be explicitly initialised
-* Primitive types, including pointers do not have to be initialised
+* A member that is a reference must be explicitly initialised
+* Primitive types, including pointers do not have to be initialised although the compiler may warn if they are not
 * Members do not have to be initialised in the order they are declared
 
-Some compilers may issue warnings if you forget to initialise members or their ordering, but they will still compile the code.
+Some compilers may issue warnings if you forget to initialise members or their ordering, but they will still compile 
+the code.
 
-C++11 allows classes to have default member initializers which are used in the absence of a constructor setting the value to something else:
+C++11 allows classes to have default member initializers which are used in the absence of a constructor setting the 
+value to something else:
 
-```
+```c++
 class Coords {
 public:
-  double x = 0.0;
-  double y = 0.0;
-  double z = 0.0;
+    double x = 0.0;
+    double y = 0.0;
+    double z = 0.0;
 
-  // 2D initializer, x and y are set with the inputs, z is set to 0
-  Coords(x, y) : x(x), y(y) {} {
-  }
+    // 2D initializer, x and y are set with the inputs, z is set to 0
+    Coords(double x, double y) : x(x), y(y) {}
 };
 ```
+
+This is obviously a lot easier to read and ensures that if we have multiple constructors that we don't have to initialize
+members if the default value will do.
 
 ## How Rust helps
 
@@ -53,7 +57,9 @@ error[E0063]: missing field `b` in initializer of `main::Alphabet`
 
 Forcing you to initialise the members of the struct ensures the struct is always in a consistent predictable state.
 
-Structs often have a `new()` function implementation which encapsulates this initialisation and acts like a constructor in C++, e.g.
+Ordering of initialisation does not matter providing all of the fields are set.
+
+Structs often implement a `new()` function which encapsulates this initialisation and acts like a constructor in C++, e.g.
 
 ```rust
 struct Coord {
@@ -70,3 +76,26 @@ impl Coord {
 ///...
 let coord1 = Coord::new(100f64, 200f64);
 ```
+
+Alternatively the struct might implement one or more `From<>` traits:
+
+```rust
+impl From<(f64, f64)> for Coord {
+  fn from(value: (f64, f64)) -> Coord {
+    Coord { x: value.0, y: value.1, z: 0.0 }
+  }
+}
+
+impl From<(f64, f64, f64)> for Coord {
+  fn from(value: (f64, f64, f64)) -> Coord {
+    Coord { x: value.0, y: value.1, z: value.2 }
+  }
+}
+
+
+//...
+let coord = Coord::from((10.0, 20.0));
+let coord = Coord::from((10.0, 20.0, 30.0));
+```
+
+There can be multiple `From` trait implementations so we can implement a form of polymorphism.
