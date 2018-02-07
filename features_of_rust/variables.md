@@ -130,7 +130,7 @@ let mut total: u32 = 0;
 let total_ptr: *mut u32 = &mut total;
 ```
 
-Many of the functions you perform on pointers are unsafe by definition and are required to be inside `unsafe` blocks.
+Although you can make a pointer outside of an unsafe block, many of the functions you might want to perform on pointers are unsafe by definition and must be inside `unsafe` blocks.
 
 The documentation in full is [here](https://doc.rust-lang.org/std/primitive.pointer.html).
 
