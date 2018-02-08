@@ -1,8 +1,8 @@
 # Attributes
 
-C++ has various ways to give *directives* during compilation:
+C++ has various ways to give compiler *directives* during compilation:
 
-* Compile flags that control numerous behavious
+* Compile flags that control numerous behaviours
 * `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` have been wildly abused in some compilers to insert "comments" into object files that control the import / export of symbols, static linking and other functionality.
 * `#define` with ubquitous `#ifdef` / `#else` / `#endif` blocks
 * Keywords `inline`, `const`, `volatile` etc.. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
@@ -18,7 +18,7 @@ fn this_is_a_test() {
 }
 ```
 
-Attributes can also be expressed as `#![foo]` which affects the thing they're contained by rather the thing that follows them. 
+Attributes can also be expressed as `#![foo]` which affects the thing they're contained *by* rather the thing that follows them. 
 
 ```rust
 fn this_is_a_test() {
@@ -39,7 +39,7 @@ Attributes are enclosed in a `#[ ]` block and provide compiler directives that a
 * Deriving certain traits
 * Enabling compiler features such as plugins that implement procedural macros.
 * Importing macros from other crates
-
+* Used by certain crates like serde and rocket to instrument code - NB Rocket uses unstable compiler hooks for this and in so doing limits itself to working in nightly builds only. 
 
 ## Conditional compilation
 
