@@ -1,5 +1,7 @@
 # Error Handling
 
+## C++
+
 C++ allows code to throw and catch exceptions. As the name suggests, exceptions indicate an exceptional error. An exception is thrown to interrupt the current flow of logic and allows something further up the stack which to catch the exception and recover the situation. If nothing catches the throw then the thread itself will exit.
 
 ```c++
@@ -17,11 +19,68 @@ catch (std::exception e) {
 }
 ```
 
-Most coding guidelines would say to use exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures. However C++ has no simple way to confer error information for ordinary failures and exceptions can be complicated to follow and can cause their own issues.
+Most coding guidelines would say to use exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures.
 
-Rust does not support exceptions. Rust programs are expected to use a type such as `Option` or `Result` to propagate errors to their caller. In other words, the code is expected to anticipate errors and have code to deal with them.
+However C++ has no simple way to confer error information for ordinary failures. Here are some common ways they may work
 
-The `Option` enum either returns `None` or `Some` where the `Some` is a payload of data. It's a generic enum that specifies the type of what it may contain:
+* Functions that return a `bool` or an `int` with special meaning. e.g. `false` or `-1` for failure.
+* Functions that return a result code or enum. This might have a GOOD value and a bunch of ERROR_ values.
+* Functions that have a special out parameter that is filled in with additiona detail in the case of failure.
+* Functions that set a value in `errno()` or some similar function supplied by the library.
+* Exceptions that are thrown for any failure and must be caught. 
+
+## Rust
+
+Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate any errors to their caller. In other words, the errors that a function may return become part of the function signature.
+
+### Result<T, E>
+
+The type `Result<T, E>` takes a success value type `T` and an error type `E`.
+
+```rust
+enum Result<T, E> {
+  Ok(T),
+  Err(E)
+}
+```
+
+So perhaps we have `validate_files()` function that either succeeds or it returns with an error. We can define it like so:
+
+```rust
+enum ErrorResultCode {
+  ResourcesNotFound(Vec<String>),
+  DataCorrupted,
+  PermissionDenied
+}
+
+fn validate_files() -> Result<(), ErrorResultCode> { /* ... */ }
+//...
+match validate_files() {
+  Ok(_) => { println!("Success"); }
+  Err(err) => {
+    match err {
+      ErrorResultCode::ResourcesNotFound(resources) => {
+        println!("Fail resources not found");
+        resources.for_each(|resource| println!("Not found {}", resource));
+      }
+      ErrorResultCode::DataCorrupted => { println!("Fail data corrupted"); }
+      ErrorResultCode::PermissionDenied => { println!("Fail permission denied"); }
+    }
+  }
+}
+
+```
+
+The return code `Result<(), ErrorResultCode>` means calling the function will either return:
+
+* `Ok(T)` where the payload is the `()` unity type/value. i.e. when we succeed we get back nothing more of interest.
+* `Err(E)` where the payload is `ErrorResultCode` which we can inspect further if we want to.
+
+### Option<T>
+
+The `Option` enum either returns `None` or `Some(T)` where the `Some` contains a type `T` payload of data.
+
+This type is particularly useful for functions that either return something or nothing, e.g. a database query.
 
 ```rust
 enum Option<T> {
@@ -46,38 +105,6 @@ fn find_person(name: &str) {
    }
 }
 ```
-
-The `Result` enum either returns a value of some type or an error of some type.
-
-```rust
-enum Result<T, E> {
-  Ok(T),
-  Err(E)
-}
-```
-
-So we might have a function `set_thermostat` for setting the room temperature. 
-
-```rust
-fn set_thermostat(temperature: u16) -> Result<(), String> {
-   if temperature < 10 {
-     err(format!("Temperature {} is too low", temperature))
-   }
-   else if temperature > 30 {
-     err(format!("Temperature {} is too high", temperature))
-   }
-   else {
-     Ok(())
-   }
-}
-// ...
-let result = set_thermostat();
-if result.is_ok() {
-  // ...
-}
-```
-
-This function will return a unity `()` value for success, or a `String` for failure.
 
 ## The ? directive
 
@@ -127,11 +154,11 @@ fn delete_user(name: &str) -> Result<(), ErrorCode> {
 
 If code really wants to do something equivalent to a throw / catch in C++ it may call panic!\(\).
 
-This is NOT recommended for dealing with regular errors, only irregular ones that the code has no way of dealing with.
+This is NOT recommended for dealing with regular errors, only irregular ones that the code has little or no way of dealing with.
 
 This macro will cause the thread to abort and if the thread is the main programme thread, the entire process will exit.
 
-A panic!\(\) can be caught and should be if Rust is being invoked from another language. The way to catch an unwinding panic is a closure at the topmost point in the code where it can be handled.
+A panic!\(\) can be caught _in some situations_ and should be if Rust is being invoked from another language. The way to catch an unwinding panic is a closure at the topmost point in the code where it can be handled.
 
 ```rust
 use std::panic;
