@@ -35,10 +35,15 @@ Since there is no consistent way to deal with errors, every library and function
 
 ## Rust
 
-Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate any errors to their caller. The intention is that there are no magic numbers that a function may return become part of the function signature.
+Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate results to their caller. The intention is that there are no magic numbers that indicate an error - you either get something or you explicitly get an error / nothing.
 
-It also provides a `panic!()` macro that you can use for unexpected state and other failings in your code. A panic is similar to an exception except there are limits on how you can catch it.
+It also provides a `panic!()` macro that you can use for unexpected state and other failings in your code. A panic is similar to an exception except there are limits on if you can catch it.
 
+So the normal order of things is:
+
+1. Functions provide a return type which indicates to the caller the success / failure.
+2. The caller can propagate the result up the call chain to its caller and so on.
+3. For extreme unrecoverable errors there is a panic option.
 
 ### Result<T, E>
 
