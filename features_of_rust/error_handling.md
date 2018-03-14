@@ -21,17 +21,24 @@ catch (std::exception e) {
 
 Most coding guidelines would say to use exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures.
 
-However C++ has no simple way to confer error information for ordinary failures. Here are some common ways they may work
+However C++ has no simple way to confer error information for ordinary failures. Here are some common ways they may work:
 
-* Functions that return a `bool` or an `int` with special meaning. e.g. `false` or `-1` for failure.
-* Functions that return a result code or enum. This might have a GOOD value and a bunch of ERROR_ values.
-* Functions that have a special out parameter that is filled in with additiona detail in the case of failure.
-* Functions that set a value in `errno()` or some similar function supplied by the library.
+* Functions that return a `bool`, an `int`, or a pointer with special meaning. e.g. `false`, `-1` or `NULL` for failure.
+* Functions that return a result code or enum. This might have a `GOOD` value and a bunch of `ERROR_` values. An extreme example would be `HRESULT` used by Windows that bitpacks information about goodness, severity and origin into a result and requires macros to extract the information.
+* Functions that have a special out parameter that is filled in with additional detail in the case of failure.
+* Functions that provide further information about the last error in `errno()` or some similar function supplied by the library.
 * Exceptions that are thrown for any failure and must be caught. 
+* Exceptions that are thrown sometimes and error codes are returned other times.
+* Functions that are overloaded into two forms, one that throws an exception, another that stores the error in an error parameter. The boost library has functions like this.
+
+Since there is no consistent way to deal with errors, every library and function has its own ad hoc way to return information.
 
 ## Rust
 
-Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate any errors to their caller. In other words, the errors that a function may return become part of the function signature.
+Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate any errors to their caller. The intention is that there are no magic numbers that a function may return become part of the function signature.
+
+It also provides a `panic!()` macro that you can use for unexpected state and other failings in your code. A panic is similar to an exception except there are limits on how you can catch it.
+
 
 ### Result<T, E>
 
