@@ -6,20 +6,30 @@
 
 C and C++ code tends to be split over two general kinds of file:
 
-* The Header file \(.h, .hpp\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like Qt may sometimes omit the extension.
+* The Header file \(.h, .hpp\) contains class definitions, external function signatures, macros, templates, inline functions. Sometimes inline functions get stored in their own file. The standard template library C++ headers do not have a file extension. Some 3rd party libraries like Qt may also omit the extension.
 * The Source file \(.c, .cc, .cpp\) contains the implementation of classes and anything private.  Sometimes C++ will use tricks such as forward class references and Pimpl patterns to keep complex or dependent code out of the header file.  
 
 Occasionally you may also see files with a .inl, or .ipp extension which are headers with a lot of inline templates or functions. 
 
-Compilers are only interested in source files and what they `#include` so what's really happening in most C/C++ code is that a preprocessor concatenates various header files to the front of the source file according to the `#` directives within it and the resulting file is fed to a compiler.
+Prior to compilation, a _preprocessor_ will read and follow the `#include` directives in a source file and produce a concatenated file for the compiler to parse. The preprocessor will also handle `#ifdef` and `#define` commands in this step.
 
-Splitting definition and implementation across multiple files can be a nuisance since it means that changes to a single class can require modifications to multiple files.
+The problem with this of course is that if you make changes to a class or a function signature, you must edit two files to effect the change - the definition and the implementation. In addition, C++ does not support forward references - e.g. you cannot call a function until the signature of the function is first defined. So this can affect the ordering of files.
 
 ### Rust
 
-Rust does not have header files. Every struct, implementation and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
+Rust does not have header files. 
 
-Ordering is less important too. It is possible to forward reference structs or functions, or even `use` the very same module that a piece of code is a part of. The only time that ordering matters is for macro definitions. A macro must be defined before a module that uses it. 
+Every struct, implementation, function, const, and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
+
+For functions, the definition and the implementation are the same thing - the function implementation's signature is its definition.
+
+For structs, the structure is declared and there are zero or more implementation blocks for functions and traits that are associated with the struct. Usually the implementation and definition will reside right next to each other.
+
+Other modules can `use` the other module's public types and functions and the compiler will obtain the definition.
+
+Ordering is less important too. Rust can forward reference structs or functions, or even `use` the very same module that a piece of code is a part of. 
+
+The only time that ordering matters is for macro definitions. A macro must be defined before a module that uses it. 
 
 Rust files reference non-dependent modules with the `use` keyword and pull-in dependent modules with the `mod` keyword.
 
@@ -29,7 +39,16 @@ Rust files reference non-dependent modules with the `use` keyword and pull-in de
 
 C does not use namespaces. Libraries tend to prefix their functions and structs with a qualifying name of some sort. 
 
-C++ _does_ have namespaces but their use is optional and varies from one piece of code to the next.
+e.g. the SQLite3 library prefixes every function,  struct and macro definition
+
+```c++
+SQLITE_API SQLITE_EXTERN const char sqlite3_version[];
+SQLITE_API const char *SQLITE_STDCALL sqlite3_libversion(void);
+SQLITE_API const char *SQLITE_STDCALL sqlite3_sourceid(void);
+SQLITE_API int SQLITE_STDCALL sqlite3_libversion_number(void);
+```
+
+C++ _does_ have namespaces but their use is optional and varies from one piece of code to the next. Some code may hold all their definitions in a single flat namespace while others may nest namespaces. 
 
 ### Rust
 
@@ -56,30 +75,31 @@ So if you name your file foo.rs, then everything inside is scoped foo::\* when e
 
 ## Unicode support
 
-Using Unicode in C++ has always been a pain. Neither C nor C++ had support for it at all, and various solutions have appeared over time. Recent implementations of the standards of C and C++ provide string literal types for UTF encodings, but prior to that it was strictly ascii or wide characters.
+Using Unicode in C++ has always been a pain. 
 
-Here are some general guidelines for Unicode in C / C++:
+Here are just some of the problems
 
-* Source code is normally only safe to use characters 0-127 although some compilers may have parameters that allow makefiles to specify other encodings.
-* C++ has char and wchar\_t types for 8-bit and 32-bit or possibly 16-bit wide strings. Part of the problem with wchar\_t was the width was immediately subverted.
-* Char type implies no encoding. It normally means ASCII but could also mean UTF-8, Latin1, or in fact any form of encoding that predates Unicode. Basically it is up to the program to understand the meaning.
-* A "wide" wchar\_t is NOT UTF-32. It might be, or it might be UTF-16 on some platforms \(e.g Windows\). This messed up definition makes operations such as slicing strings dangerous due to the risk of cutting through a control point.
-* What if I want to read Unicode arguments from the command-line such as file paths - what encoding are they in? The main\(\) method passes them as char_. Windows has a wmain\(\) that takes wchar\_t_. What am I supposed to do?
-* Windows favours wide \(UTF-16\) character strings for its APIs although it has ASCII versions too. The ASCII versions are not UTF-8. Compiled code has \#define UNICODE to support multiple languages.
-* Linux tends to favour UTF-8 encoded char strings. Most languages, toolkits and tools assume UTF-8. The exception is Qt which has chosen to use UTF-16 internally.
-* C-lib has acquired various wide versions of its strdup, strcmp, strcpy etc. It also acquired wide versions of functions for opening files on disk and so forth.
-* C++ lib has acquired std::string / std::wstring classes. C++ has acquired explicit UTF-16 and UTF-32 versions of these classes.
-* C11 and C++11 introduce explicit string literals for various UTF widths.
-* Limited conversion capabilities between wide / narrow in C++. Some operating systems have incomplete conversion capabilities.
-* 3rd party conversion libraries like ICU4C are commonly used. Libraries like boost, Qt use libicu for converting between encodings
-* Embedding Unicode into C source involves using escape codes or hex values
+1. Source code is normally only safe to use characters 0-127 although some compilers may have parameters that allow makefiles to specify other character encodings. 
+2. Other characters outside of 0-127 are normally escaped
+3. C++98 has `char` and `wchar_t` types for 8-bit and 32-bit characters and corresponding `std::string` and `std::wstring` template types. Providing we assume UTF-8 and UTF-32 are the encodings our problem is solved?
+4. No because `wchar_t` was immediately subverted be compilers such as MSVC where it is treated as only 16-bits wide.
+5. 16-bits is only sufficient to hold Unicode's basic multilingual plane. Characters outside of that plane must use control points.
+6. So  "wide" `wchar_t` can be UTF-32 on some compilers and must assumed to be UTF-16 on others such as Windows.
+7. This messed up definition makes operations such as slicing strings dangerous due to the risk of cutting through a control point.
+8. C++11 tried to rectify this with new and explicit `char16_t` and `char32_t` types and corresponding `std::u16string` and `std::u32string` template types.
+9. So now we have four(!) character types and their corresponding string types to hold different character widths.
+10. But that doesn't even cover anything to do with UTF. The `u` in `u16string` suggests Unicode but nothing in the string types can convert between UTF-8, UTF-16, UTF-32 or even to walk the string by displayable characters.
+11. Linux tends to favour UTF-8 encoding of strings while Windows favours UTF-16 encoding. This means portable code has to be able to losslessly convert between types.
+12. 3rd party conversion libraries like ICU4C are commonly used. Libraries like boost, Qt use libicu for converting between encodings
+
+So it's messy.
 
 Rust simplifies things a lot by benefit of hindsight.
 
 * Source code is UTF-8 encoded.
 * Comments, characters and string literals can contain Unicode characters without escaping.
-* The native char type is 4 bytes wide – as wide as a Unicode characters.
-* The native str & String types are internally UTF-8 to save space but may be iterated by char or by byte according to what the function is doing.
+* The native `char `type is 4 bytes wide – as wide as a Unicode characters.
+* The native `str &` and `String` types internally use UTF-8 to save space but may be iterated by `char` or by `u8` byte according to what the function is doing.
 
 Since source code is UTF-8 encoded you may embed strings straight into the source.
 

@@ -1,15 +1,16 @@
 # Rust Background
 
-The catalyst for Rust was the Mozilla Firefox web browser. Firefox like most web browsers is:
+So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve issues related to developing in C++. It progressed until the release of version 1.0 in 2015.
+
+The motivating force isn't hard to see if you consider the Mozilla Firefox web browser. Like most web browsers it is:
 
 * Written in C++. [^1]
-* Complex with millions of lines of code.
+* Has millions of lines of code.
+* Complex
 * Vulnerable to bugs, vulnerabilities and exploits, many of which are attributable to the language the software is written in.
-* Mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc. Implementing multi-threading to the existing engine would doubtless cause even more bugs and vulnerabilities than being single threaded.
+* Subsystems are mostly single-threaded and therefore not well suited for many-core devices - PCs, phones, tablets etc. Implementing multi-threading to the existing engine would doubtless cause even more bugs and vulnerabilities than being single threaded.
 
-Rust was conceived as a way to obtain C or C++ levels of performance but also remove entire classes of software problem that destabilize software and could be exploited. Code that passes the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency.
-
-So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve these issues. It progressed until the release of version 1.0 in 2015.
+Rust was conceived as a way to obtain C or C++ levels of performance but also remove entire classes of software problem that destabilize software and could be exploited. Code that passes the compiler phase could be guaranteed to be memory safe and therefore could be written in a way to take advantage of concurrency. It has even been coined as _fearless concurrency_ because it removes a lot of the uncertainty and doubt that comes from typical concurrent code - data race conditions and so on.
 
 The project is hosted on [GitHub](https://github.com/rust-lang/rust). The language has been _self-hosting_ for quite some time - that is to say the Rust compiler is written in Rust, so compiling Rust happens from a compiler written in Rust. Get your head around that! But it's the same way that C and C++ compilers are these days too.
 
