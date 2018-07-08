@@ -40,10 +40,10 @@ There are some obvious points of similarity that we can observe:
 
 * C/C++ and Rust follow the convention of having a `main()` function as the entry point into code. Note that Rust's main doesn't return anything. It's effectively a void method.
 * There is a general purpose print statement.
-* The general structure in terms of main, use of { } and semi-colons is mostly the same. In both languages a block of code is enclosed in curly braces, and a semi-colon is used as a separator between statements.
+* The general structure in terms of main, use of `{`, `}` and semi-colons is mostly the same. In both languages a block of code is enclosed in curly braces, and a semi-colon is used as a separator between statements.
 * Rust looks a little bit more terse than either C or C++ because it automatically includes references to part of its standard runtime that it refers to as its "prelude".
 
-The `println!()` is actually a macro that expands into code that writes to the standard output. We know it's a macro because it ends in a ! character but you may treat it like a function call for now. We'll see how Rust macros differ to those in C/C++ later.
+The `println!()` is actually a macro that expands into code that writes to the standard output. We know it's a macro because it ends in a `!` character but you may treat it like a function call for now. We'll see how Rust macros differ to those in C/C++ later.
 
 ## Compiling our code
 
