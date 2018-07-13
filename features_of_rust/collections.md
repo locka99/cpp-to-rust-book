@@ -59,10 +59,50 @@ C++ provides a number of utility templates in <algorithm> for modifying sequence
 
 ### Rust
 
-Rust also has iterators which work in a similar fashion to C++ - incrementing their way through collections. 
+Rust also has iterators which are superficially similar fashion to C++ - incrementing their way through collections. 
 
-TODO
+However the iterator concept is taken a LOT further in Rust. Iterators can be chained together in Rust to produce some powful and terse operations.
 
-TODO chaining iterators together
+A conventional loop might look like this:
 
-TODO mapping one collection to another collection
+```rust
+let values = vec![10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+for v in &values {
+    println!("Value = {}", v);
+}
+```
+
+In this instance, the iterator is invisible. The value `v` is a reference to the `i32` of the currently iterated element so each iteration prints a different value.
+
+However we can also be explicit and obtain the iterator if we desire and apply an action to each value:
+
+```rust
+let values = vec![10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+values.iter().for_each(|v| println!("Value = {}", v);
+```
+
+In this example the code calls `for_each` on the `Iterator` which iterates over each element and calls the closure.
+
+We can go further. Let's say we want to only print the first 5 results:
+
+```rust
+let values = vec![10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+values.iter().take(5).for_each(|v| println!("Value = {}", v));
+```
+
+Now the code calls `take` on the `Iterator` which produces a `Take<Iterator>` which iterates only 5 times before it ends.
+
+Perhaps we want to produce a tuple, consisting of the index of the iterator and `f64` result of dividing the number by 5.
+
+```rust
+let values = vec![10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+let result = values.
+    iter().
+    enumerate().
+    map(|v| (v.0, *v.1 as f64 / 5.0) ).
+    collect::<Vec<(usize, f64)>>();
+```
+
+Breaking this down, we iterate, `enumerate()` produces a tuple `(usize, i32)` from the index and value, `map()` creates a new tuple `(usize, f64)` and then finally the result is gathered into a new collection. 
+
+As you can see iterators expose very powerful functions that are an efficient, terse and provide less chance for error than writing a loop.

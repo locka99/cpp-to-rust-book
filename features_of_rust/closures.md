@@ -2,9 +2,9 @@
 
 ## Lambdas in C++11
 
-A [lambda expression](https://msdn.microsoft.com/en-us/library/dd293608.aspx), or lambda is an anonymous function that can be declared and passed around from within the scope of the call itself.
+A [lambda expression](https://msdn.microsoft.com/en-us/library/dd293608.aspx) is an anonymous function that can be declared and passed around from within the scope of the call itself.
 
-This can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring and maintaining a separate function.
+A lambda can be particularly useful when you want to sort, filter, search or otherwise do some trivial small action without the bother of declaring and maintaining a separate function.
 
 In C++ a lambda looks like this:
 
@@ -59,6 +59,8 @@ Note that C++ lambdas can exhibit dangerous behaviour - if a lambda captures ref
 
 Rust implements closures. A closure is like a lambda except it automatically captures anything it references from the enclosing environment. i.e. by default it can access any variable that is in the enclosing scope.
 
+However it is important to note that using captured variables also limits the closure to the lifetime of the variables it uses. i.e. We could not spawn a thread that uses variables from its enclosing environment because the thread could outlive them.
+
 Here is the same sort snippet we saw in C++ expressed as Rust. This closure doesn't borrow anything from its enclosing scope but it does take a pair of arguments to compare two values for sorting. The `sort_by()` function repeatedly invokes the closure to sort the array.
 
 ```rust
@@ -79,7 +81,7 @@ let mut x = 100;
 x = 200;
 ```
 
-Alternatively you can `move` variables used by the closure so it owns them and they become inaccessible from the outerscope. Since our closure was accessing an integer, the move becomes an implicit copy. So our `square` closure has its own `x` assigned the value `100`. Even if we change `x` in the outer scope to `200`, the closure has its own independent copy.
+Remember how the closure cannot exist outside the lifetime of the variables it uses from its enclosing environment. If this is a limitation you can `move` ownership of variables used by the closure so it owns a bitwise copy of them and they become inaccessible from the outerscope. Since our closure was accessing an integer, the move becomes an implicit copy. So our `square` closure has its own `x` assigned the value `100`. Even if we change `x` in the outer scope to `200`, the closure has its own independent copy.
 
 ```rust 
 let mut x = 100;
