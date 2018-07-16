@@ -22,7 +22,7 @@ Conditional compilation on C++ can get _really_ hard due to the large number of 
 
 # Rust
 
-Rust uses attributes to control conditional compilation. The `cfg` attribute allows the compiler to test whether some configuration / feature holds true and to generate code for it.
+Rust uses attributes to control conditional compilation. The `cfg()` attribute allows the compiler to test whether some configuration / feature holds true and to generate code for it.
 
 ```rust
 #[cfg(windows)]
@@ -35,6 +35,32 @@ fn main() {
 }
 ```
 
+In this example, the `data_path` constant is either declared one way, another way or not at all in which case the program will be in error.
+
+The `cfg()` attribute takes a range of different predefined values, and can be extended using features.
+
+Say for example our `Cargo.toml` defined a feature:
+
+```
+[features]
+default = []
+webservice = ["actix-web"]
+```
+
+So we have a project which can optionally build something with a command such as `cargo build --features webservice`.
+
+Our code might contain conditional tests to that:
+
+```rust
+#[cfg(features = webservice)]
+extern crate actix_web;
+
+#[cfg(features = webservice)]
+fn start_webservice() {
+    //...
+}
+```
+
 ## cfg!
 
-TODO
+Sometimes it would be more useful to have inline configuration testing, which is where the `cfg!` macro is used.
