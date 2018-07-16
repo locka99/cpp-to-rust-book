@@ -1,8 +1,30 @@
 # Error Handling
 
+## C
+
+C supports a conventional way of error propagation - functions can return a value to indicate the success or failure of the operation.
+
+```c
+if (strcmp("hello", "world") != 0) {
+  printf("Strings do not match");
+}
+```
+
+In addition most C compilers offer `setjmp()` and `longjmp()`. These functions are used together to allow a program to set a place in the stack from which code further down the stack can "long jump" back to in the case of an error or some other condition. Note that C has no destructors so the code itself is responsible for freeing resources and memory it may have allocated in between the two points in the stack.
+
+There is little in the language beyond this, however some compilers may offer `structured exception handling` (SEH) as a poor-man's version of the functionality in C++. 
+
+Generally speaking `setjmp()`, `longjmp()` and SEH do not mix well with their C++ counterparts so if they are used at all should only be in the same language context, and not across C to C++ boundaries. If C++ code attempts to `longjmp()` it will not invoke destructors in the same manner as a try-catch block.
+
 ## C++
 
-C++ allows code to throw and catch exceptions. As the name suggests, exceptions indicate an exceptional error. An exception is thrown to interrupt the current flow of logic and allows something further up the stack which to catch the exception and recover the situation. If nothing catches the throw then the thread itself will exit.
+C++ allows C-style error handling but also allows code to throw and catch exceptions. 
+
+As the name suggests, exceptions indicate an exceptional error but some code may use them considerably more than that.
+
+A thrown exception interrupts the current flow of logic and allows something further up the stack to catch the exception and recover. The compiler instruments the code so that any intervening objects on the stack are destroyed as the stack is unwound. Note however that this only applies to stack allocated objects, not those which are heap allocated.
+
+If nothing catches the throw then the thread itself will exit. Uncaught exceptions on the main thread cause the entire program to terminate.
 
 ```c++
 void do_something() {
@@ -19,9 +41,11 @@ catch (std::exception e) {
 }
 ```
 
-Most coding guidelines would say to use exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures.
+### Exceptions vs Error codes
 
-However C++ has no simple way to confer error information for ordinary failures. Here are some common ways they may work:
+Most coding guidelines suggest using exceptions sparingly for truly exceptional situations, and use return codes and other forms of error propagation for ordinary failures.
+
+However C++ has no simple way to confer error information for ordinary failures. Here are some common ways that they do:
 
 * Functions that return a `bool`, an `int`, or a pointer with special meaning. e.g. `false`, `-1` or `NULL` for failure.
 * Functions that return a result code or enum. This might have a `GOOD` value and a bunch of `ERROR_` values. An extreme example would be `HRESULT` used by Windows that bitpacks information about goodness, severity and origin into a result and requires macros to extract the information.
@@ -35,19 +59,45 @@ Since there is no consistent way to deal with errors, every library and function
 
 ## Rust
 
-Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate results to their caller. The intention is that there are no magic numbers that indicate an error - you either get something or you explicitly get an error / nothing.
+### Panic
 
-It also provides a `panic!()` macro that you can use for unexpected state and other failings in your code. A panic is similar to an exception except there are limits on if you can catch it.
+Rust has a limited form of exception handling called a panic which is invoked through a `panic!()` macro.
 
-So the normal order of things is:
+```rust
+if connection_status == Status::Error {
+  panic!("We should have been connected by now");
+}
+```
 
-1. Functions provide a return type which indicates to the caller the success / failure.
-2. The caller can propagate the result up the call chain to its caller and so on.
-3. For extreme unrecoverable errors there is a panic option.
+As the name suggests, a panic is a serious problem, usually in the programming logic. Panics are generally a way to fail the program, obtain a stack trace and fix the position where it happened so it doesn't happen again.
 
-### Result<T, E>
+As with C++ exceptions, the panic will unwind all the way to the top of the thread and will kill the thread. If the thread is the main thread, the entire process is terminated.
 
-The type `Result<T, E>` takes a success value type `T` and an error type `E`.
+You can catch most panics with a `catch_unwind()` function that takes the code to trap as a closure. For example, this code will call `simulate_panic()`, catch the problem, report the error to the program to handle.
+
+```rust
+use std::panic::catch_unwind;
+
+if let Err(cause) = catch_unwind(|| simulate_panic()) {
+  println!("Code suffered a panic, cause = {:?}", cause);
+}
+
+fn simulate_panic() {
+  panic!("I failed");
+}
+```
+
+The panic is a very heavy handed mechanism and is not suitable for standard error handling. It should be used for _exceptional_ circumstances, not those which are likely to occur frequently.
+
+### Result and Option
+
+Rust provides two enumeration types called `Result` and `Option` that allow functions to propagate results to their caller. 
+
+These should be your every day option for error handling.
+
+#### Result<T, E>
+
+The result type is used by functions that return something on success or they return an error. The type is a generic, so the code decides what the type for success and error are: The `Result<T, E>` takes a success value type `T` and an error type `E`.
 
 ```rust
 enum Result<T, E> {
@@ -88,7 +138,7 @@ The return code `Result<(), ErrorResultCode>` means calling the function will ei
 * `Ok(T)` where the payload is the `()` unity type/value. i.e. when we succeed we get back nothing more of interest.
 * `Err(E)` where the payload is `ErrorResultCode` which we can inspect further if we want to.
 
-### Option<T>
+#### Option<T>
 
 The `Option` enum either returns `None` or `Some(T)` where the `Some` contains a type `T` payload of data.
 
@@ -118,7 +168,7 @@ fn find_person(name: &str) {
 }
 ```
 
-## The ? directive
+#### The ? directive
 
 Let's say you have 2 functions `delete_user` and `find_user`. The function `delete_user` first calls `find_user` to see if the user even exists and then proceeds to delete the user or return the error code that it got from `find_user`.
 
@@ -162,20 +212,3 @@ fn delete_user(name: &str) -> Result<(), ErrorCode> {
 }
 ```
 
-## Nuclear option - panic!\(\)
-
-If code really wants to do something equivalent to a throw / catch in C++ it may call panic!\(\).
-
-This is NOT recommended for dealing with regular errors, only irregular ones that the code has little or no way of dealing with.
-
-This macro will cause the thread to abort and if the thread is the main programme thread, the entire process will exit.
-
-A panic!\(\) can be caught _in some situations_ and should be if Rust is being invoked from another language. The way to catch an unwinding panic is a closure at the topmost point in the code where it can be handled.
-
-```rust
-use std::panic;
-
-let result = panic::catch_unwind(|| {
-    panic!("Bad things");
-});
-```
