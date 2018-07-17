@@ -20,6 +20,13 @@ gcc -DFOO_WINDOWS somefile.cpp
 
 Conditional compilation on C++ can get _really_ hard due to the large number of compilers and supported platforms. It is not uncommon for libraries to try and isolate the mess into a file such as a `config.h`. Many open source programs even have a large number of settings and options which require configuration to be generated, e.g. via a `./configure` script.
 
+Compilers will define at least these definitions to assist with conditional compilation
+
+* `__LINE__` expands to the current line number in the current source file.
+* `__FILE__` expands to the current file name.
+* `__DATE__` and `__TIME__` contain the date and time respectively.
+* `__cplusplus` allows code to test if it is being run on a C++ compiler.
+
 # Rust
 
 Rust uses attributes to control conditional compilation. The `cfg()` attribute allows the compiler to test whether some configuration / feature holds true and to generate code for it.
