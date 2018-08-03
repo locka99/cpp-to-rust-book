@@ -6,6 +6,14 @@ TODO This section will provide a more real world C/C++ example and port it to th
 
 ## Automation tools
 
+### C2Rust
+
+The [C2Rust project](https://github.com/immunant/c2rust) is developing a tool that translates C to semantically equivalent Rust.
+
+There is an online demo of it working [here](https://c2rust.com/).
+
+As C is unsafe by default, it means the Rust equivalent is also unsafe by default, but it can be useful as a starting point for converting code.
+
 ### Corrode
 
 [Corrode](https://github.com/jameysharp/corrode) is a command-line tool that can partially convert C into Rust. At the very least it may spare you some drudgery ensuring the functionality is as close to the original as possible.
@@ -23,6 +31,40 @@ Interestingly Corrode is written in Haskell and more interestingly is written as
 Bindgen requires that you preinstall the Clang C++ compiler in order to parse code into a structure it can digest. 
 
 The readme documentation on the site link provides more information on installing and using the tool.
+
+### CBindgen
+
+[CBindgen](https://github.com/eqrion/cbindgen) works in the opposite direction of bindgen - it produces C header files from Rust structures and functions.
+
+So if you have Rust code that you wish to call from C, then you can generate the appropriate header files that enable you to do this.
+
+The headers can be produced from the command line like so:
+
+```
+cargo install cbindgen
+cbindgen -o bindings.h
+```
+
+Alternatively you can create a `build.rs` that automatically does this when you build your crate:
+
+```rust
+extern crate cbindgen;
+
+use std::env;
+
+fn main() {
+    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+
+    cbindgen::Builder::new()
+      .with_crate(crate_dir)
+      .generate()
+      .expect("Unable to generate bindings")
+      .write_to_file("bindings.h");
+}
+```
+
+A `cbindgen.toml` allows you to configure things that go into the header file. See the site link for more information.
+
 
 ## Experiences
 

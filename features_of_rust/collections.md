@@ -1,6 +1,7 @@
 # Collections
 
-A collection is something that holds zero or more elements in some fashion that allows you to enumerate those elements, add or remove elements, find them and so forth.
+A collection is something that holds zero or more elements in some fashion that allows you 
+ enumerate those elements, add or remove elements, find them and so forth.
 
 * Vector - a dynamic array. Appending or removing elements from the end is cheap (providing the array is large enough to accomodate an additional item). Inserting items or removing them from any other part of the array is more expensive and involves memory movements. Generally speaking you should always reserve enough space in a vector for the most elements you anticipate it will hold. Reallocating memory can be expensive and lead to fragmentation.
 
