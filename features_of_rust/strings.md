@@ -30,18 +30,36 @@ C and C++ does not have a string primitive type, instead it has `char` type, tha
 
 ```c++
 // The array that my_string points at ends with a hidden \0
-char *my_string = "This is as close to a string primitive as you can get";
+const char *my_string = "This is as close to a string primitive as you can get";
+printf("String is %d chars long.\n", strlen(my_string));
 ```
 
-In C, functions such as `strlen()`, `strcpy()`, `strdup()` etc. allow strings to be manipulated but they work by using the zero byte to figure out the length of things. So `strlen()` the number of bytes that were encountered before a `\0` was found. Sicne these functions run until they find a terminating character it is very easy to accidentally for them to overrun a buffer. 
+#### String functions
 
-In C++ the `std::string` class wraps a char pointer and provides safe methods for modifying the string in a safe manner. It is a vast improvement over C but it is still not a primitive - it is a class defined in a header that is compiled and linked to the executable just like every other class. 
+In C, functions such as `strlen(s)`, `strcpy(dst, src)`, `strdup(s)` etc. allow strings to be inspected, copied or duplicated. But they work all work by essentially walking the array of bytes until they reach the `\0`. So `strcpy(dst, src)` copies from `src` to `dst` a byte at a time up to and including the `\0`. 
 
-In addition, a `std::string` will usually use heap to store the string's data which can have repercussions for memory usage and fragmentation. There is usually a hidden cost to assigning one string to another because memory must be allocated to receive a copy of the string, even if the string itself is not modified during the assignment.
+But what if `dst` was not a big enough array to hold the input? Well now we have a buffer overrun which may crash the software, or cause it to be compromisd.
+
+C11 introduces "safe" versions of functions like `strcpy` that say how large the destination is, i.e. `strcpy_s(dst, dstlen, src)`. It will not overstep the output buffer's size and if the output is not big enough to hold the input or is truncated, the function will return an error. Even so, we are required to set this size correctly, include space for the terminator byte and test for errors.
+
+#### std::string template
+
+C++ provides `std::string` which can manage the lifetime of a string and provide methods for modifying the string in a safe manner. It is a vast improvement over C.
+
+```c++
+#include <string>
+//...
+std::string my_string = "Mary had a little lamb";
+std::cout << "String is " << my_string.size() << " chars long." << std::endl;
+```
+
+However this is not a primitive type. Instead `std::string` is a fairly opaque template defined in `<string>` that is included, compiled and linked to the executable just like every other class. 
+
+In addition, a `std::string` will normally uses the heap to store the string's data which can have repercussions for memory usage and fragmentation. There is also a hidden cost to assigning one string to another strings are duplicated in the process. So even if you had 5 strings holding the same value, you would be looking at 5 copies.
 
 ### Unicode support
 
-C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring`.
+C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring` which is `std::basic_string<wchar_t>`.
 
 We're sorted now right?
 
