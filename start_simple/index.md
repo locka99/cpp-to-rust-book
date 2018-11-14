@@ -1,5 +1,7 @@
 # Let's Start Simple
 
+For this section we're going to ignore makefiles for the time being and just concentrate on how you might compile and run a single file of source code.
+
 The usual introduction to any language is "Hello, World!". A simple program that prints that message out to the console.
 
 Here is how we might write it for C:
@@ -13,7 +15,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-C++ could write it the same way, or we could use the C++ stream classes if we preferred:
+C++ could write it the same way, or use streams if it preferred:
 
 ```c++
 #include <iostream>
@@ -78,8 +80,3 @@ Again there are points of similarity:
 * The binary runs in the same way.
 
 A less obvious point of similarity is that Rust shares its code generation backend with gcc-llvm and clang. Rustc outputs llvm bitcode which is compiled \(and optimized\) into machine code via LLVM. This means the resulting executable is very similar in form to that output by C++ compilers. That includes the symbolic information it supplies for debugging purposes. A rust executable can be debugged in gdb, lldb or Microsoft Visual Studio depending on the target platform.
-
-```bash
-rustc -O hw.rs
-```
-

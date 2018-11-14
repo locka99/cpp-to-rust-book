@@ -13,7 +13,7 @@ So variables are scoped and the scope is the constraint that affects their lifet
 
 In this example, it is important to remember the `Vec` is on the stack but the pointer it allocates to hold its elements is on the heap. The heap space will also be recovered when the `Vec` is dropped.
 
-If we assign v1 to another variable, then all the object ownership is moved to that other variable:
+If we assign `v1` to another variable `v2`, then all the bytes of the `v1` struct will be copied to `v2` and the copy in `v1` will be invalidated. Note this doesn't apply to the array's contents, just the contents of `Vec` which is a pointer to the heap. 
 
 ```rust
 {

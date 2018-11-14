@@ -55,6 +55,8 @@ std::cout << "String is " << my_string.size() << " chars long." << std::endl;
 
 However this is not a primitive type. Instead `std::string` is a fairly opaque template defined in `<string>` that is included, compiled and linked to the executable just like every other class. 
 
+Now note that `std::string` is actually a specialisation of a more general template `std::basic_string<char_type>` that works with various width of character. We'll look at that in a moment.
+
 In addition, a `std::string` will normally uses the heap to store the string's data which can have repercussions for memory usage and fragmentation. There is also a hidden cost to assigning one string to another strings are duplicated in the process. So even if you had 5 strings holding the same value, you would be looking at 5 copies.
 
 ### Unicode support
