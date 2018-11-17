@@ -1,6 +1,25 @@
 # Strings
 
-Strings in C++ are a bit messy thanks to the way languages and characters have been mapped onto bytes in different ways. The explanation for this requires some backstory...
+The way that Rust handles strings is quite a bit different from C or C++.
+
+In summary:
+
+In C/C++
+
+* A string is a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. 
+* The string's length is denoted by a special nul (`'\0'`) value. So finding a string's length requires counting the number of characters before the nul.
+* Only `char16_t` and `char32_t` types are considered to be Unicode (encoded as UTF-16, UTF-32 respectively). There is no encoding knowledge about the meaning of other kinds of string.
+* In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely.
+
+In Rust
+
+* A `str` is a read-only string consisting of a length (`usize`) followed by an array of `u8` bytes.
+* Strings are UTF-8 encoded so the bytes are not necessarily visible characters.
+* Usually a `str` is handled by reference, i.e. `&str`.
+* A `char` in Rust is 32-bits. A `str` can be itereat
+* A `String` is a structured type that manages a read-write string, i.e. it can be truncated, extended etc.
+* 
+
 
 ## What is a character exactly?
 
