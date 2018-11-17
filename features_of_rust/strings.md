@@ -2,24 +2,22 @@
 
 The way that Rust handles strings is quite a bit different from C or C++.
 
-In summary:
+## Summary
 
 In C/C++
 
-* A string is a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. 
-* The string's length is denoted by a special nul (`'\0'`) value. So finding a string's length requires counting the number of characters before the nul.
+* A string is a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. Historically most strings are `char` but efforts have been made to support wide character strings.
+* A string's length is calculated by looking for a special nul (`'\0'`) value that signifies the end of the string. So a 2000 character string requires iterating through the whole string, potentially 2000 times looking for a nul.
 * Only `char16_t` and `char32_t` types are considered to be Unicode (encoded as UTF-16, UTF-32 respectively). There is no encoding knowledge about the meaning of other kinds of string.
-* In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely.
+* In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely. Other 3rd party libraries also have their own string wrappers, e.g. `QString` in QT.
 
 In Rust
 
-* A `str` is a read-only string consisting of a length (`usize`) followed by an array of `u8` bytes.
-* Strings are UTF-8 encoded so the bytes are not necessarily visible characters.
-* Usually a `str` is handled by reference, i.e. `&str`.
-* A `char` in Rust is 32-bits. A `str` can be itereat
-* A `String` is a structured type that manages a read-write string, i.e. it can be truncated, extended etc.
-* 
-
+* A `char` is a primitive in Rust that is 32-bits and can represent any Unicode character. So it equivalent to `char32_t` in C++.
+* A `str` is a primitive that represents a read-only string. Typically you will use a through a special borrow reference `&str`.
+* A `&str`, also called a slice, consists of a pointer to a string and a length. So obtaining the length of a string is a cheap operation.
+* A `String` is a heap allocated growable string. i.e. it can be truncated, extended etc. It implements all the functions of `str` and can also be used as a `&str`.
+* All strings are internally coded with UTF-8 to reduce memory overhead but they can be iterated by `char`.
 
 ## What is a character exactly?
 
