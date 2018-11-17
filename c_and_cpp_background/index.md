@@ -6,25 +6,33 @@ This section talks about C and C++. It describes its history, standards and prov
 
 ### Early Days
 
-The creation of C is closely associated with the early days of Unix. Bell Labs developed Unix out of an earlier project called Multics. The first version of Unix ran on PDP-7 microcomputer and funding was given to move it to PDP-11. Dennis Ritchie was a key member on this project and set about creating a language that could help him develop Unix while minimizing the amount of assembly language he had to write. Most of the code up to that point was expressed in assembly language which was error prone and obviously non portable.
+The C [^1] programming language was developed as part of Unix [^2] by Dennis Ritchie and Ken Thompson.
 
-Ritchie developed C so that he could write code in terms of variables, expressions, loops, functions etc. and use a _compiler_ to translate C code into machine code. The generated code ran almost as fast as hand written assembly and was more portable since only the compiler had to be changed in order to support a new architecture. C itself was influenced by B \(hence why it was called C\), which itself was influenced by BCPL.
+Unix started life on the PDP-7 microcomputer. This version was written in assembly language. The OS was then ported to the PDP-11 architecture, also in assembly. 
+
+Ritchie developed C in 1972 as a higher level language and compiler for writing Unix software than pure assembly. The language provided constructs such as static types, loops, conditionals, expressions etc and the compiler produced machine code which was almost as efficient as hand written assembly. Over time much of Unix itself, including much of the kernel was rewritten in C which in turn aided portability.
+
+The compiler was also a bundled component of Unix, so Unix users could develop their own software using the language. 
+
+[^1] C was called C because it was influenced by a language called B developed by Thompson as a simplified version of BCPL.
+
+[^2] Unix is a multi-tasking operating system that evolved into many commerical and free variants such as Solaris, HPUX, BSD etc. Many of these are in use today as well as Linux. You may be thinking Linux is Unix, but Linux *isn't* derived from Unix code. However, it did independently implement most of the same interfaces and concepts as a typical Unix OS. These days Linux is the dominant Unix-like OS and can be found in anything from lightbulbs all the way up to mainframe computers.
 
 ### Defacto standard and emerging popularity
 
-In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book.
+In 1978 C was formalised into a defacto standard called K&R C, named after Brian Kernighan & Dennis Ritche who published the standard as a book. K&R formalised the language and defined the standard I/O library and some other features.
 
 Over time the use of C became more widespread and compilers such as Turbo C, Lattice C, Microsoft C popularized C on other operating systems including personal computers.
 
 ### International Standards
 
-C later became an ANSI standard, C89. A further standard followed with C99 and C is still under review and development.
+C was later standardised by the American National Standards Institute (ANSI) and thus became known as ANSI C, or C89. Further standards followed such as C99, C11, C18 and so on.
 
-Some functionality that was introduced in C++ has also found its way back into C standards. For example, the // style single-line comment and variable declaration rules in blocks.
+Later standards have attempted to align C with developments in C++ to keep the two in sync as much as possible. Some functionality that was introduced in C++ has also found its way back into C standards. For example, the // style single-line comment and variable declaration rules in blocks.
 
 ## History of C++
 
-C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like features. Simula is a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. However it was considered too slow for systems programming and so something that combined speed of C with object oriented concepts was highly desirable.
+C++ first appeared in 1983 as C with classes. It was invented by Bjarne Stroustrop as a way to imbue C with Simula-like [^3] object-oriented features. 
 
 C++ added these concepts as extensions to the C language and used a precompiler called `cfront` to transform the C++ extensions into C code that could then be compiled into machine code. So a C++ program could have the high level object oriented concepts but without the overhead that came with Simula.
 
@@ -33,6 +41,8 @@ C++ became popular in its own right and outgrew the limitations of cfront prepro
 Object oriented programming has mostly been used in higher level software - applications, games,  simulations and mathematical work.
 
 C++ has also become formalised standards with C++98, C++03, C++11 and so on.
+
+[^3] Simula is a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. However it was considered too slow for systems programming and so something that combined speed of C with object oriented concepts was highly desirable.
 
 #### Modern C++
 
@@ -49,9 +59,9 @@ However it is worth noting that since many of these things are late additions to
 
 ### The relationship between C and C++
 
-While C++ grew out of C and has developed alongside it, it is not true to say C++ is a superset of C. Rather it is _mostly_ a superset. There are differences such as keywords and headers that C recognizes that C++ does not.
+While C++ grew out of C and has developed alongside it, C++ is *not* a superset of C. It is _mostly_ a superset but C can use C++ keywords as variable / function names that would cause a compiler error with C++.
 
-C++ has function overloading and classes and uses name mangling to disambiguate overloaded functions. But in practice it is possible to write C as a subset of C++ and compile the two into the same executable. Most real-world C code could be called C++ _without_ classes.
+C++ also has function overloading and classes and uses name mangling to disambiguate overloaded functions. But in practice it is possible to write C as a subset of C++ and compile the two into the same executable. Most real-world C code could be called C++ _without_ classes.
 
 C and C++ are even usually handled by the same toolchain. Most compilers would consist of a front half that parses the language into an intermediate form and a back half which turns the intermediate form into optimized machine code. Finally the linker would join all the binary objects together to form an executable. C and C++ would share most of this code path.
 
