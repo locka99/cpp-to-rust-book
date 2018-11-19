@@ -1,68 +1,105 @@
 # Lifetimes, References and Borrowing
 
+C/C++ have very little enforcement of object lifetimes aside from checking to see if a variable exists in scope or not, as well as the initialisation of reference variables. This can easily lead to situations where the reference / pointer to some object is left "dangling", i.e. the object has been destroyed but it is possible to call to where it used to be causing runtime errors.
+
+Rust takes a far stricter view of lifetimes and ownership.
+
+1. Data moves on assignment
+2. Data must implement a `Copy` trait if it wants to implicitly copy on assignment and there are strict rules on this - basically every member of the struct must be a primitive.
+3. Data must implement a `Clone` trait if it wants to implicity create a clone of itself.
+4. Data can be "borrowed" (with similar notation and meaning as a reference in C++) but the compiler tracks lifetimes and it is an error for a borrow to exceed the lifetime of the object it references.
+5. Data can only be mutably borrowed by a single reference. It is a compile error for there to be any other references in existence at the same time. This is to prevent one place from modifying data that other places may be reading.
+
+## Binding
+
 When you assign an object to a variable in Rust, you are said to be binding it. i.e your variable "owns" the object for as long as it is in scope and when it goes out of scope it is destroyed.
 
 ```rust
 {
-  let v1 = vec![1, 2, 3, 4]; // Vec is created
+  let v1 = vec![1, 2, 3, 4]; // v1 is bound to the Vec
   ...
-} // v1 goes out of scope, Vec is dropped
-```
-
-So variables are scoped and the scope is the constraint that affects their lifetime. Outside of the scope, the variable is invalid.
-
-In this example, it is important to remember the `Vec` is on the stack but the pointer it allocates to hold its elements is on the heap. The heap space will also be recovered when the `Vec` is dropped.
-
-If we assign `v1` to another variable `v2`, then all the bytes of the `v1` struct will be copied to `v2` and the copy in `v1` will be invalidated. Note this doesn't apply to the array's contents, just the contents of `Vec` which is a pointer to the heap. 
-
-```rust
-{
-  let v1 = vec![1, 2, 3, 4];
-  let v2 = v1;
-  ...
-  println!("v1 = {:?}", v1); // Error!
+  // v1 goes out of scope, Vec is dropped
 }
 ```
 
-This may seem weird but it's worth remembering a serious problem we saw in C++, that of copy constructor errors. It is too easy to duplicate a class and inadvertantly share private date or state across multiple instances.
+## Moving on assignment
 
-We don't want objects v1 and v2 to share internal state and in Rust they don't. Rust moves the data from v1 to v2 and marks v1 as invalid. If you attempt to reference v1 any more in your code, it will generate a compile error. This compile error will indicates that ownership was moved to v2.
+In C++ when I copy a value from `v1` to `v2`, I have two copies of the same data, independent of each other. This can cause some problems:
 
-Likewise, if we pass the value to a function then that also moves ownership:
+```c++
+class Data {
+  Data() : data_(new char[100]) {}
+  ~Data() {
+    delete []data_;
+  }
+private:
+  char *data_;
+}
+//...
+Data v1;
+Data v2 = v1;
+// What happens when these go out of scope?
+```
+
+The problem here is that by assigning `v1` to `v2` we now have two classes who share the same private pointer `data_` and the last to go out of scope and delete the pointer will crash. We could mitigate the problem assuming we noticed it in a couple of ways:
+
+1. Implement a copy constructor and assignment operator to go with the destructor. This is a pattern called the *rule of three* and while it solves the issue, it complicates our simple class and brings its own issues (e.g. handling `v1 = v1` properly). 
+2. Inherit from a base class with a private copy constructor. This causes the compiler to generate an error on assignment. This is how the `boost::noncopyable` works
+3. Implement move on assignment. A move means that the assignment passes ownership of the data from `v1` to `v2` and the value in `v1` is invalid and will not be unwound or destroyed. This is even more complex than 1) and usually leads to the *rule of five* which is even more complex.
+
+Rust simplifies this by treating everything as move on assignment.
+
+```rust
+struct Data {
+  data: Box<[u8; 100]>
+}
+// ...
+let v1 = Data { data: Box::new([0u8; 100])};
+let v2 = v1;
+// ...
+```
+
+The assignment moves the data from `v1` to `v2` and marks `v1` as invalid. If you attempt to reference `v1` any more in your code, it will generate a compile error. If there was a panic and the stack unwound, the data in `v2` would be unwound and the data in `v1` would be ignored.
+
+Likewise, if we pass by value to a function then that also moves ownership:
 
 ```rust
 {
-  let v1 = vec![1, 2, 3, 4];
+  let v1 = Data { data: Box::new([0u8; 100])};
   we_own_it(v1);
   println!("v = {:?}", v1);
 }
 
-fn we_own_it(v: Vec<i32>) {
+fn we_own_it(v: Data) {
   // ...
 }
 ```
 
-When we call we_own_it() we moved ownership of the object to the function and it never came back.
-Therefore the following call using v1 is invalid. We could call a variation of the function called  we_own_and_return_it() which does return ownership:
+When we called `we_own_it(v1)` we moved ownership of the data from `v1` to the function parameter and it never came back.
+
+If we absolutely wanted the data to come back we could do it in this somewhat clumsy inefficient way:
 
 ```rust
 v1 = we_own_and_return_it(v1)
 ...
-fn we_own_and_return_it(v: Vec<i32>) -> Vec<i32> {
+fn we_own_and_return_it(v: Data) -> Data {
   // ...
   v1
 }
 ```
 
-But that's pretty messy and there is a better way described in the next section called borrowing.
+So we:
 
-These move assignments look weird but it is Rust protecting you from the kinds of copy constructor error that is all too common in C++. If you assign a non-Copyable object from one variable to another you move ownership and the old variable is invalid.
+1. Assign the data to `v1`
+2. Move the data to `v` when we call `we_own_and_return_it`
+3. Return `v` as the result of the function
+4. Move the data back to `v1`.
 
-If you truly want to copy the object from one variable to another so that both hold independent objects you must make your object implement the Copy trait.  Normally it's better to implement the Clone trait which works in a similar way but through an explicit clone() operation.
+That's a lot of moving and a further section will explain borrowing.
 
-## Variables must be bound to something
+### Variables must be bound to something
 
-Another point. Variables must be bound to something. You cannot use a variable if it hasn't been initialized with a value of some kind:
+Just one more point. Variables must be bound to something. You cannot use a variable if it hasn't been initialized with a value of some kind:
 
 ```rust
 let x: i32;
@@ -87,10 +124,9 @@ The Rust compiler will throw an error, not a warning, if variables are uninitial
 
 ## References and Borrowing
 
-We've seen that ownership of an object is tracked by the compiler. If you assign one variable to another, ownership of the object is said to have moved to the assignee. The original variable is invalid and the compiler will generate errors if it is used.
+We've seen that ownership of an object is tracked by the compiler. If you assign one variable to another, ownership is bound to the assignee. The original variable is invalid and the compiler will generate errors if it is used.
 
-Unfortunately this extends to passing values into functions and this is a nuisance.
-But variable bindings can be borrowed. If you wish to loan a variable to a function for its duration, you can pass a reference to the object:
+Sometimes we only want to *borrow* data, use it temporarily without moving it around or the added noise in the code of reassignment.
 
 ```rust
 {
