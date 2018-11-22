@@ -12,14 +12,20 @@ C++ has a range of cast operators that turn a pointer or value of one kind into 
 
 That's a very brief summary of casting which probably invokes more questions than it answers. Casting in C++ is very complex and nuanced. Some casts merely instruct the compiler to ignore const or treat one type as another. A static cast might involve code generation to convert a type. A dynamic cast might add runtime checks and throw exceptions.
 
-Rust has nothing equivalent to this complexity. A numeric type may be converted to another numeric type using the [`as`](https://doc.rust-lang.org/book/casting-between-types.html#as) keyword.
+## Coercion
+
+Rust does not do casting. A numeric type may be coerced to another numeric type using the [`as`](https://doc.rust-lang.org/book/casting-between-types.html#as) keyword.
 
 ```rust
 let a = 123i32;
 let b = a as usize;
 ```
 
+## Into and From traits
+
 Anything beyond this requires implementing the `Into<>` or `From<>` traits and making conversion an explicit action.
+
+TODO
 
 The compiler also does not allow code to cast away `const`-ness or treat one type as another except through `unsafe` code blocks.
 

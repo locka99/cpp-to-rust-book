@@ -315,36 +315,71 @@ This code is really neat - the lock allows us to obtain the values, the lock goe
 
 ## Arrays
 
-An array is a fixed size list of elements allocated either on the stack or the heap.
+An array is a fixed size list of elements in a contiguous memory location that can be referenced by an index. Arrays can be allocated either on the stack or the heap.
 
-E.g to create a 100 element array of `double` values in C++:
+E.g to create a 100 element array of `double` values in C++ / C using the language features:
 
 ```c++
-// Stack
-double values[100];
+// Stack (uninitialized)
+double values[100]; // ?,?,?,?,?,...
+// Stack with assignment
+double values[100] = [1, 2, 3]; // 1,2,3,?,?,?,?,...
 // Heap
-double *values = new double[100];
+double *values = new double[100]; // ?,?,?,?,?,...
 delete []values;
-// C99 style brace enclosed lists
-double values[100] = {0}; // Set all to 0
+// C99 initialized arrays
+double values[100] = { }; // 0,0,0,0,0,...
 double values[100] = {1, 2, 3}; // 1,2,3,0,0,0,0...
-// C99 with designator
-double values[100] = {1, 2, 3, [99] 99}; // 1,2,3,0,0,0,...,0,99
+// C99 initialized arrays with designators
+double values[100] = {1, 2, 3, [99] = 99}; // 1,2,3,0,0,0,...,0,99
+// C++ doesn't need the assignment
+double values[100] {1, 2, 3}; // 1,2,3,0,0,0,0...
 ```
 
-And in Rust:
+As can be seen, arrays have evolved a lot to resolve issues using uninitialized data but it is also leads to a lot of variation in how they are defined. Designators can be be incredibly powerful.
+
+The language also doesn't help you know what the size of an array is, so you will often see code like this:
+
+```c++
+// Number of elements is the size of the entire array divided by the size of one element
+int len = sizeof(values) / sizeof(values[0]);
+```
+
+But this isn't the end of it because C++ also defines `std::array` which is slightly more convenient for having `size()`, `empty()`, `begin()`, `end()` etc. making it similar to other kinds of collection:
+
+```c++
+#include <array>
+//...
+std::array values {1, 2, 3};
+for (int i = 0; i < values.size(); i++) {
+  //...
+}
+```
+
+Rust has a less powerful syntax than is possible with initialized arrays in C++ but it is also less ambiguous:
 
 ```rust
 // Stack
-let mut values = [0f64; 100]; // 100 elements 
-let mut values = [1f64, 2f64, 3f64]; // 3 elements 1,2,3
+let values = [0f64; 100]; // 100 elements initialised to 0
+let values = [1f64, 2f64, 3f64]; // 3 elements 1,2,3
 // Heap
-let mut values = Box::new([0f64; 100]);
+let values = Box::new([0f64; 100]);
 ```
 
-Note how Rust provides a shorthand to initialise the array with the same value or assigns the array with every value. Initialisation in C and C++ is optional however it is more expressive in that portions of the array can be set or not set using enclosed list syntax.
+Note how Rust provides a shorthand to initialise the array with the same value or assigns the array with every value. Initialisation in C and C++ is optional but it is more expressive in that portions of the array can be set or not set using enclosed list syntax.
 
-Rust actually *forces* you to initialise an array to something. Attempting to declare an array without assigning it a value is a compiler error.
+But Rust *forces* you to initialise an array to something, ensuring the content of the array is predictable. Attempting to declare an array without assigning it a value is a compiler error.
+
+In addition, a Rust array coerces to be a slice `&[T]`, so methods like `len()`, `is_empty()`, `get()`, `swap()`, `reverse()` are all instantly available:
+
+```rust
+// Reverse the order of values in this array in-place
+let mut values = [1, 2, 3, 4];
+values.reverse();
+println!("Values = {:?}", values);
+```
+
+### Multi-dimensional arrays
 
 ## Slices
 

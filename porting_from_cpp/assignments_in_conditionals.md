@@ -1,32 +1,26 @@
-# Assignment in Conditionals
+# Assignment in Expressions
 
-The omission of an `=` in an `==` condition turns it into an assignment that evaluates to true:
+C and C++ allow you do do things like this:
 
 ```c++
-int result = getResponseCode();
-if (result = 200) { // BUG!
-  // Success
-}
-else {
-  //... Process error
+int result;
+while (result = getResponseCode()) {
+  // In C++ result is non-zero which is evaluated as boolean true
+  // In C result is non-zero which is treated as statement success
+  if (result == 200) {
+    //...
+  }
+  else if (result = 404) { // BUG!!!
+    //...
+  }
 }
 ```
 
-So here, result was assigned the value 200 rather than compared to the value 200. Compilers should
-issue a warning for these cases, but an error would be better.
+Our loop here is calling `doSomething()`, and continuing for as long as `result` is non-zero. Inside the loop it then further tests the value. But look at the second test, we wrote `=` instead of `==`, the language is fine about it and introduced a bug.
 
-Developers might also try to reverse the left and right hand side to mitigate the issue:
+Some compilers may warn if a result is assigned to a constant but it is still allowed.
 
-```c++
-if (200 = result) { // Compiler error
-  // Success
-}
-else {
-  // ... Process error
-}
-```
-
-Now the compiler will complain because the value of result is being assigned to a constant which makes no sense. This may work if a variable is compared to a constant but arguably it makes the code less readable and wouldn't help if the left and right hand sides were both assignable so their order didn't matter.
+## Real world
 
 The `goto fail` example that we saw in section "Missing braces in conditionals" also demonstrates a real world dangers combining assignment and comparison into a single line:
 
@@ -42,15 +36,45 @@ if ((err == SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
   goto fail;
 ```
 
-## How Rust helps
+## In Rust 
 
-This code just won't compile:
+Rust does not allow assignment within expressions so they will fail to compile. This is done to prevent subtle errors with `=` being used instead of `==`.
+
+Let's look how we might do the equivalent (but not optimal way) in Rust.
 
 ```rust
-let mut result = 0;
-if result = 200 { // Compile Error
-  //...
+let mut result;
+while { result = getResponseCode(); result > 0 } {
+  if result == 200 {
+    //...
+  }
+  else if result == 404 {
+    //...
+  }
 }
 ```
+
+Here we declare a mutable `result` var and run a loop that tests a conditional block expression. The block expression assigns a value to `result` and then evaluates to `result > 0`. We also use a `match` to test the value of result since that makes sense in this context.
+
+So this is functionally the same thing as C++. 
+
+Can we do better? Yes since Rust also has a `while let` construct and if we change the function signature of `getResponseCode()` to return an enum such as `Option<>` or `Result<>` we can use it:
+
+```rust
+fn getResponseCode() -> Option<u32> { /*... */}
+//...
+while let Some(result) = getResponseCode() {
+  if result == 200 {
+    //...
+  }
+  else if result == 404 {
+    //...
+  }
+}
+```
+
+This code will run the loop for as long as `doSomething()` returns `Some(value)` where `value` is assigned to a variable `result`.
+
+Rust really likes function to convey something-ness, or status in their signature so this is a good solution. Not only do we make the distinction between a bad result and a good one, but we can use `while let`.
 
 The only form of assignment inside a conditional is the specialised and explicit `if let` and `while let` forms which are explained elsewhere.
