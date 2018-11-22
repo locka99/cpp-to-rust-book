@@ -1,5 +1,7 @@
 # Casting
 
+## C/C++ casting
+
 Casting is the act of coercing one type to be another, or dynamically producing the equivalent value in the other type.
 
 C++ has a range of cast operators that turn a pointer or value of one kind into a pointer or value of another kind.
@@ -14,7 +16,11 @@ That's a very brief summary of casting which probably invokes more questions tha
 
 ## Coercion
 
-Rust does not do casting. A numeric type may be coerced to another numeric type using the [`as`](https://doc.rust-lang.org/book/casting-between-types.html#as) keyword.
+Rust does not do casting so this complexity is gone. Basically if you wish to "cast" you must do one of the following.
+
+1. A numeric type may be coerced to another numeric type using the [`as`](https://doc.rust-lang.org/book/casting-between-types.html#as) keyword.
+2. Complex types can implement `Into<Foo>` or `From<Foo>` traits that allows one structured type to be turned into another.
+3. Unsafe code can transmutate memory, essentially reinterpretting the contents.
 
 ```rust
 let a = 123i32;
