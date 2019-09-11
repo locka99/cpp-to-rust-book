@@ -20,16 +20,14 @@ Our loop here is calling `doSomething()`, and continuing for as long as `result`
 
 Some compilers may warn if a result is assigned to a constant but it is still allowed.
 
-## Real world
-
-The `goto fail` example that we saw in section "Missing braces in conditionals" also demonstrates a real world dangers combining assignment and comparison into a single line:
+We saw this `goto fail` example in section "Missing braces in conditionals":
 
 ```c++
 if ((err = SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
   goto fail;
 ```
 
-This line is not broken for other reasons, but it's easy to see how might be, especially if this pattern were repeated all over the place. The programmer might have saved a few lines of code to combine everything in this way but at a greater risk. In this case, the risk might be inadvertantly turning the `=` into an `==`, i.e. comparing err to the function call and then comparing that to 0.
+We could inadvertantly break it as easily in the other direction if we used `==` instead of `=`, i.e. comparing err to the function call and then comparing that to 0.
 
 ```c++
 if ((err == SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
@@ -38,9 +36,9 @@ if ((err == SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
 
 ## In Rust 
 
-Rust does not allow assignment within expressions so they will fail to compile. This is done to prevent subtle errors with `=` being used instead of `==`.
+Rust does not allow assignment within simple expressions so they will fail to compile. This is done to prevent subtle errors with `=` being used instead of `==`.
 
-Let's look how we might do the equivalent (but not optimal way) in Rust.
+Let's look how we might do the equivalent (but not optimal way) in Rust using a block expression.
 
 ```rust
 let mut result;
@@ -54,11 +52,11 @@ while { result = getResponseCode(); result > 0 } {
 }
 ```
 
-Here we declare a mutable `result` var and run a loop that tests a conditional block expression. The block expression assigns a value to `result` and then evaluates to `result > 0`. We also use a `match` to test the value of result since that makes sense in this context.
+Here we declare a mutable `result` var and run a loop against a block expression. The block expression assigns a value to `result` and then evaluates as `result > 0`. We also use a `match` to test the value of result since that makes sense in this context.
 
-So this is functionally the same thing as C++. 
+So this is functionally the same thing as C++ but it's a little bit noisy.
 
-Can we do better? Yes since Rust also has a `while let` construct and if we change the function signature of `getResponseCode()` to return an enum such as `Option<>` or `Result<>` we can use it:
+Can we do better? Yes if change the function signature of `getResponseCode()` to return an enum such as `Option<>` or `Result<>`. Rust has a `while let` construct that allows us to test if a enum value matches a pattern and to automatically assign the payload to another value:
 
 ```rust
 fn getResponseCode() -> Option<u32> { /*... */}
@@ -73,8 +71,6 @@ while let Some(result) = getResponseCode() {
 }
 ```
 
-This code will run the loop for as long as `doSomething()` returns `Some(value)` where `value` is assigned to a variable `result`.
+This code will run the loop, calling `getResponseCode()` and if it evaluates to `Some(value)` then `value` is copied to variable `result`. If it does not match the pattern then the loop breaks.
 
-Rust really likes function to convey something-ness, or status in their signature so this is a good solution. Not only do we make the distinction between a bad result and a good one, but we can use `while let`.
-
-The only form of assignment inside a conditional is the specialised and explicit `if let` and `while let` forms which are explained elsewhere.
+This is good design in Rust. It is always to convey information in a function's signature. Not only do we make the distinction between a bad result and a good one, but we can use `while let`.

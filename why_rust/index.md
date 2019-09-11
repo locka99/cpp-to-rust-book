@@ -64,11 +64,31 @@ Some examples of this safe-by-design philosophy:
 * Unit tests can be integrated into the code and run automatically
 * Modules \(equivalent to namespaces C++\) are automatic meaning we implicitly get them by virtue of our file structure.
 
-## Don't C++11 / C++14 get us this?
+## Don't C++11 / C++14 / C++17 get us this?
 
 Yes and no. C++11 and C++14 certainly bring in some long overdue changes. Concurrency primitives \(threads at last!\), move semantics, pointer ownership and other beneficial things all come in with these latest standards. Conveniences such as type inference, lambdas et al also come in.
 
-And perhaps if you program the right subset of features and diligently work to avoid pitfalls of C++ in general then you are more likely to create safe code.
+But let's look at some of the issues
+
+### Move semantics
+
+Move semantics in C++ require you implement explicit move constructors on classes you wish to use then. Any class that doesn't is using copy semantics. The compiler will not care either that you leave the old class instance in a valid state as a result of your implementation. The compiler will even let you call your old class instance despite having moved data to a new instance. Move errors can be handled at runtime with a sentinel state. Simply put, move in C++ is complex and blogs [like this](https://foonathan.net/blog/2017/09/14/destructive-move.html) spend a long time explaining the gory details.
+
+Remember in Rust you just get them for free, and they are enforced by the compiler.
+
+### Smart pointers
+
+Smart pointers can still be null dereferenced. Null dereferencing is undefined behaviour and can crash or compromise your code. C++ strongly prefers that you use references to avoid null dereferencing, but it doesn't check the lifetimes of references so it is still not always possible. Certainly data structures like trees and graphics virtually preclude using references.
+
+C++ introduces an `std::optional` type that attempts to fulfill the same purpose as `Option` in Rust. There is a `nullopt`, equivalent to `None`, and `std::optional<T>(value)` to hold a value. 
+
+### Concurrency
+
+Concurrency requires correct programming habits - ensuring to avoid concurrency errors like data races by using guards. The compiler will not help if you do not write correct code.
+
+#### Programming safety
+
+Perhaps if you program the right subset of features and diligently work to avoid pitfalls of C++ in general then you are more likely to create safe code. If you search for "C++ coding guidelines" you will find no end of articles that try to minimize risky practice. 
 
 But what is the _right_ subset?
 

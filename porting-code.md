@@ -81,13 +81,40 @@ TODO references are equivalent to C++ references or to pointers in C. Passing by
 
 TODO you do not need to use references on intrinstic types such as integers, bools etc. and there is no point unless you intend for them to be mutable and change. 
 
-## Learn move semantics
+## Move semantics
 
-C and C++ default to copy on assign, Rust moves on assign unless the type implements the `Copy` trait. This is easily one of the most mind boggling things that new Rust programmers will encounter. Code that works perfectly well in C++ will instantly fail in Rust. 
+C and C++ default to copy on assign. Unless you explicitly implement a move constructor on objects, the default is copy. Copying is dangerous because it allows two data structures to potentially point to the same data, e.g. a raw file handle. Even if code implements a move constructor, the compiler will not care if you reference the old 
+object so you are required to put the object into a valid but safe state.
 
-The way to overcome this is first use references and secondly don't move unless you intend for the recipient to be the new owner of an object.
+Rust by default will move on assign unless the type implements a `Copy` trait. Only simple primitives or structs comprised of simple primitives can implement or derive the `Copy` trait.
 
-TODO if you intend for the recipient to own a copy of an object then implement the Clone trait on your struct. Then you may call `.clone()` and the recipient becomes the owner of the clone instead of your copy.
+```rust
+let x = 100;
+let y = x; // This is a copy
+println!("x = {}", x);
+
+let x = "Hello world".to_string();
+let y = x; // This is a move
+println!("x = {}", x); // compile error
+```
+
+And unlike C++, you CANNOT access the old object once you have assigned the value to a new one. The compiler will generate an error if you try.
+
+If you need to copy data in Rust you must implement / derive the `Clone` trait which allows you to explicitly invoke `.clone()` to make a copy of an object:
+
+```rust
+let x = "Hello world".to_string();
+let y = x.clone();
+println!("x = {}", x);
+
+#[derive(Clone)]
+struct MyData {
+  name: String;
+}
+///...
+let x = MyData { name: "Fred".to_string() };
+let y = x.clone();
+```
 
 ## Use modules to naturally arrange your source code
 
