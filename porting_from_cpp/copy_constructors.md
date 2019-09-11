@@ -1,17 +1,7 @@
 # Copy Constructor / Assignment Operators
 
-In C++ you can construct one instance from another via a constructor and also by an assignment operator. In some cases a constructor will be used instead of an assignment:
+Imagine this class in C++:
 
-```c++
-PersonList x; 
-PersonList y = x; // Copy constructor, not assignment
-PersonList z;
-z = x; // Assignment operator
-```
-
-By default C++ generates all the code to copy and assign the bytes in one class to another without any effort. Lucky us!
-
-So our class PersonList might look like this:
 
 ```c++
 struct Person {
@@ -31,6 +21,19 @@ public:
   // ... Methods to add / search list
 };
 ```
+
+Note we're deliberately going to use a raw pointer to a vector for illustrative purposes. In your real code you'd probably use a scoped pointer.
+
+Prior to C++11, all assignment was via copy construction and assignment operators. You would copy one instance to another via a constructor and also by an assignment operator. In some cases a constructor will be used instead of an assignment:
+
+```c++
+PersonList x; 
+PersonList y = x; // Copy constructor, not assignment
+PersonList z;
+z = x; // Assignment operator
+```
+
+By default C++ generates all the code to copy and assign the bytes in one class to another without any effort. Lucky us!
 
 Except we're not lucky, we just got slimed. The default byte copy takes the pointer in `personList_` and makes a 
 copy of it. Now if we copy `x` to `y`, or assign `x` to `z` we have three classes pointing to the same private data! 
@@ -117,27 +120,55 @@ Another alternative would be to use noncopyable types within the class itself. F
 
 Boost also provides a `boost::noncopyable` class which provides yet another option. Classes may inherit from noncopyable which implements a private copy constructor and assignment operator so any code that tries to copy will generate a compile error.
 
-### The Rule of Five
+## Move Constructor
 
-The Rule of Three has become the Rule of Five\(!\) in C++11 because of the introduction of move semantics.
+C++11 introduces move semantics. That basically you can avoid copying from one instance to another and instead *move*. A move essentially means shifting all the bytes over from one class to another and then rendering the first class in a valid, inoperable state.
 
-If you have a class that can benefit from move semantics, the Rule of Five essentially says that the existence of the user-defined destructor, copy constructor and copy assignment operator requires you to also implement a move constructor and a move assignment operator. So in addition to the code we wrote above we must also write two more methods.
+In our `PersonList` adding a move constructor would be relatively simple - we put the pointer in the new class and render the old pointer as null. A move constructor uses a `&&` notation.
 
-```
-class PersonList {
-  // See class above for other methods, rule of three....
-  
-  PersonList(PersonList &&other) {
-    // TODO
-  }
-  
-  PersonList &operator=(PersonList &&other) {
-    if (&other != this) {
-      // TODO
+```c++
+    PersonList(const PersonList &&other) :
+      personList_(nullptr) {
+      personList_ = other.personList_;
+      other.personList_ = nullptr;
     }
-    return  *this
+```
+
+## Move assignment operator
+
+Ah, but we also need a move assignment operator:
+
+```c++
+  PersonList & operator=(const PersonList &&other) {
+      // Don't forget to check if someone assigns an object to itself
+      if (&other != this) {
+          // We have to clear out anything we're holding already
+          if (this->personList_) {
+            delete this->personList_;
+          }
+          // Now take the other guy's data
+          this.personList_ = other.personList_;
+          other.personList_ = nullptr;
+      }
+      return *this;
   }
 ```
+
+And finally, our constructor needs tweaking since if data moves out of us, we need to ensure we test for that before deleting it.
+
+```c++
+  ~PersonList() {
+    if (personList_)
+        delete personList_;
+    }
+  }
+```
+
+## The Rule of Five
+
+So adding a move constructor and move assignment operator means the Rule of Three has become the Rule of Five\(!\).
+
+What a mess.
 
 ## How Rust helps
 
