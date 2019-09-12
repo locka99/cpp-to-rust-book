@@ -70,4 +70,16 @@ fn start_webservice() {
 
 ## cfg!
 
-Sometimes it would be more useful to have inline configuration testing, which is where the `cfg!` macro is used.
+Sometimes it would be more useful to have inline conditional testing, which is where the `cfg!` macro is used.
+
+For example, our code might want to launch a browser which may depend on the platform we run on:
+
+```rust
+fn default_browser_path() -> String {
+    String::from(if cfg!(windows) {
+        "firefox.exe"
+    } else {
+        "firefox"
+    })
+}
+```

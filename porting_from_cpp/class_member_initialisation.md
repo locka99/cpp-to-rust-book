@@ -2,14 +2,11 @@
 
 C++ does not require that you initialise all variables in every constructor.
 
-* A member that is a C++ class with its own default constructor doesn't need to be initialised
+* A member that is a C++ class with its own default constructor doesn't need to be initialised.
 * A member that is a C++ class without a default constructor must be explicitly initialised.
-* A member that is a reference must be explicitly initialised
-* Primitive types, including pointers do not have to be initialised although the compiler may warn if they are not
-* Members do not have to be initialised in the order they are declared
-
-Some compilers may issue warnings if you forget to initialise members or their ordering, but they will still compile 
-the code.
+* A member that is a reference must be explicitly initialised.
+* Primitive types, including pointers do not have to be initialised although the compiler may warn if they are not.
+* Members do not have to be initialised in the order they are declared although the compiler may warn if they are not.
 
 C++11 allows classes to have default member initializers which are used in the absence of a constructor setting the 
 value to something else:
@@ -29,11 +26,15 @@ public:
 This is obviously a lot easier to read and ensures that if we have multiple constructors that we don't have to initialize
 members if the default value will do.
 
+However what is not so nice is that initialisation is spread all over the place in the code. Some of it may be in a header file, some in the 
+constructor. Nothing is very clear at all.
+
 ## How Rust helps
 
-You MUST initialise all members of a struct. If your code does not initialise a struct you will get a compiler error.
+You MUST initialise all members of a struct. You CANNOT forget to initialise anything or it becomes a compiler error. This
+always means fields in structs are in an initialised state.
 
-This will not compile:
+So this will not compile:
 
 ```rust
 struct Alphabet {
@@ -42,6 +43,7 @@ struct Alphabet {
   c: bool,
 }
 
+// Forgot to init b
 let a = Alphabet { a: -10, c: true };
 ```
 
@@ -55,11 +57,10 @@ error[E0063]: missing field `b` in initializer of `main::Alphabet`
   |             ^^^^^^^^ missing `b`
 ```
 
-Forcing you to initialise the members of the struct ensures the struct is always in a consistent predictable state.
+* Forcing you to initialise the members of the struct ensures the struct is always in a consistent predictable state.
+* Ordering of initialisation does not matter providing all of the fields are set.
 
-Ordering of initialisation does not matter providing all of the fields are set.
-
-Structs often implement a `new()` function which encapsulates this initialisation and acts like a constructor in C++, e.g.
+Structs often implement a `new()` function which encapsulates this initialisation and acts like a class constructor in C++, e.g.
 
 ```rust
 struct Coord {
