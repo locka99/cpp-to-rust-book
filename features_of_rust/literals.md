@@ -24,7 +24,7 @@ In C++ an [integer literal](http://en.cppreference.com/w/cpp/language/integer_li
 0b111111110010000 // or 0B
 ```
 
-The `u`, `l`, and `ll` suffixes on integers denotes if it is `unsigned`, `long` or a `long long` type. The `u` and `l`/`ll` can be upper or lowercase. Ordinarily the `u` must precede the size but C++14 allows the reverse order.
+The `u`, `l`, and `ll` suffixes on integers denotes if it is `unsigned`, `long` or a `long long` type. The `u` and `l`/`ll` can be upper or lowercase. Ordinarily the `u` must precede the size but C++14 allows the reverse order, i.e. `ull` or `llu`.
 
 C++14 also allows single quotes to be inserted into the number as separators - these quotes can appear anywhere and are ignored.
 
@@ -32,9 +32,23 @@ C++14 also allows single quotes to be inserted into the number as separators - t
 
 Floating point numbers may represent whole or fractional numbers.
 
+C++ offers `float` and `double` types that typically map onto the corresponding 32-bit or 64-bit IEEE-754 floating point number. All the C and C++ specifications say is that `float` must be less than or the same number of bytes as a `double`
+
+By default floating point numbers are `double` unless they have a `f` suffix.
+
+```c++
+100.0
+0.134
+2.3f
+12e+99
+```
+
+Compilers can also support a `long double` type which may be 64-bit (same as `double`) but may be higher such as a 80-bits (padded to 12-bytes). This is architecture dependent - x86 processors support an extended precision format with 80-bits whereas other architectures may not.
+
 ### Boolean values
 
-C/C++ `bool` literals are `true` or `false`.
+C/C++ `bool` literals are `true` or `false`. The language supports
+integral promotion where `true` can evaluate 1 and `false` to 0.
 
 ### Characters and Strings
 
@@ -73,18 +87,22 @@ See the link for more information.
 
 ## Integers
 
-In Rust [number literals](https://doc.rust-lang.org/reference.html#integer-literals) can also be expressed as just the number or also with a suffix. Values in hexadecimal, octal and binary are also denoted with a prefix:
+In Rust [number literals](https://doc.rust-lang.org/reference.html#integer-literals) can also be expressed as just the number or also with a suffix. The suffix denotes the signage and bit size of the value, e.g. `u8` is an unsigned 8-bit value, whereas a `i64` is a signed 64-bit value.
+
+There are two special sizes called `usize` (unsigned) and `isize` signed which are not a fixed size. These values are designed for indexing and memory addressing and therefore their size is architecture dependent. On a 32-bit architecture, the `usize`/`isize` types are 32-bits, on a 64-bit architecture they are 64-bits. In Rust you will find that every collection class uses the `usize` and `isize` for every index addressable operation.
+
+Values in hexadecimal, octal and binary are also denoted with a prefix:
 
 ```rust
 // Integers
-123i32;
-123u32;
-123_444_474u32;
-0usize;
+123i32
+123u32
+123_444_474u32
+0usize
 // Hex, octal, binary
-0xff_u8;
-0o70_i16;
-0b111_111_11001_0000_i32;
+0xff_u8
+0o70_i16
+0b111_111_11001_0000_i32
 ```
 
 The underscore in Rust is a separator and functions the same way as the single quote in C++14.
@@ -94,13 +112,15 @@ The underscore in Rust is a separator and functions the same way as the single q
 Floating point numbers may represent whole or fractional numbers. As with integers they may be suffixed to indicate their type.
 
 ```rust
-let a = 100.0f64;
-let b = 0.134f64;
-let c = 2.3f32; // But 2.f32 is not valid (note 1)
-let d = 12E+99_E64;
+100.0f64
+0.134f64
+2.3f32 // But 2.f32 is not valid (note 1)
+12E+99_E64
 ```
 
-One quirk with floating point numbers is the decimal point is used for float assignments but it's also used for member and function invocation. So you can't say `2.f32` since it thinks you are referencing f32 on 2. Instead syntax requires you to say `2.f32` or alter how you declare the type, e.g. `let v: f32 = 2.;`.
+One quirk with floating point numbers is the decimal point is used for float assignments but it's also used for member and function invocation. So you can't say `2.f32` since it thinks you are referencing f32 on 2. Instead syntax requires you to say `2.0f32` or alter how you declare the type, e.g. `let v: f32 = 2.;`.
+
+Rust does not presently support 80-bit format floats.
 
 ## Booleans
 
@@ -110,6 +130,8 @@ Boolean literals are simply `true` or `false`.
 true
 false
 ```
+
+There is no integral promotion in Rust so you cannot just pass an expression such as `1` to a function that takes a boolean (or `false` to a function that takes an integer).
 
 ## Characters and Strings
 
