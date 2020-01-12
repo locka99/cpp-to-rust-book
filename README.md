@@ -36,7 +36,7 @@ For example, the Firefox browser uses Rust to analyse video stream data - header
 
 ## Some cases?
 
-You may have notice the "some cases" qualifier above. Obviously if you have code that works and is reliable then rewriting that code serves no purpose. Nobody is suggesting you should rewrite for the sake of rewriting. However if you have code that you need to rewrite or substantially modify then perhaps you should consider what follows.
+You may notice the "some cases" qualifier above. Obviously if you have code that works and is reliable then rewriting code from one language to another serves no purpose. Nobody is suggesting you should do that. However if you have code that you need to rewrite or substantially modify then perhaps you should consider what follows.
 
 ## Why Rust?
 
