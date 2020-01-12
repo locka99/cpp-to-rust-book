@@ -34,6 +34,10 @@ In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C 
 
 For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable.
 
+## Some cases?
+
+You may have notice the "some cases" qualifier above. Obviously if you have code that works and isn't temperamental or hard to extend then porting or rewriting that code serves no purpose. Nobody is suggesting you should rewrite for the sake of rewriting. However if you have code that you intend to rewrite or substantially modify then perhaps you should consider what follows.
+
 ## Why Rust?
 
 Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason" you should consider porting.
