@@ -36,13 +36,11 @@ For example, the Firefox browser uses Rust to analyse video stream data - header
 
 ## Some cases?
 
-You may have notice the "some cases" qualifier above. Obviously if you have code that works and isn't temperamental or hard to extend then porting or rewriting that code serves no purpose. Nobody is suggesting you should rewrite for the sake of rewriting. However if you have code that you intend to rewrite or substantially modify then perhaps you should consider what follows.
+You may have notice the "some cases" qualifier above. Obviously if you have code that works and is reliable then rewriting that code serves no purpose. Nobody is suggesting you should rewrite for the sake of rewriting. However if you have code that you need to rewrite or substantially modify then perhaps you should consider what follows.
 
 ## Why Rust?
 
-Let's start by saying if what you have works and is reliable, then the answer to the question is "there's no reason" you should consider porting.
-
-However if you have code that _doesn't_ work or _isn't_ reliable, or _hasn't_ been written yet or is due a major rewrite then perhaps you have answered your own question.
+See the previous section. If you have code that _doesn't_ work or _isn't_ reliable, or _hasn't_ been written yet or is due a major rewrite then perhaps you have answered your own question.
 
 You could write the code or fixes in C/C++ in which case you have to deal with all the unsafe issues that the language does not protect you from. Or you might consider that choosing a safe-by-design language is a good way to protect you from suffering bugs in the field when the code is supposed to be ready for production.
 
