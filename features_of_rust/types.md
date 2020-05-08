@@ -15,9 +15,26 @@ The four common data models in C++ are:
 
 As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice however software expects one of the models above.
 
+### stdint.h / cstdint
+
+C provides a `<stdint.h>` header that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. The equivalent in C++ is `<cstdlib>`.
+
+If you use the types defined in this header file the types become directly analogous and unambiguous between C/C++ and Rust.
+
+| C/C++ | Rust
+| --- | ----
+| `int8_t` | `i8`
+| `uint8_t` | `u8`
+| `int16_t` | `i16`
+| `uint16_t` | `u16`
+| `uint32_t` | `u32`
+| `int32_t` | `i32`
+| `int64_t` | `i64`
+| `uint64_t` | `u64`
+
 ## Comparing C/C++ types to Rust
 
-For this section, we'll cover the _most likely_ analogous types between Rust and C/C++.
+If code isn't using unambiguous types then these are the _most likely_ analogous types between Rust and C/C++.
 
 | C/C++ | Rust | Notes
 | --- | ---- | ---
@@ -44,23 +61,6 @@ For this section, we'll cover the _most likely_ analogous types between Rust and
 [^2] See the next section to for a discussion on data models.
 
 [^3] Rust has a specific numeric type for indexing on arrays and collections called `usize`. A `usize` is designed to be able to reference as many elements in an array as there is addressable memory. i.e. if memory is 64-bit addressable then usize is 64-bits in length. There is also a signed `isize` which is less used but also available.
-
-### stdint.h / cstdint
-
-C provides a `<stdint.h>` header that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. The equivalent in C++ is `<cstdlib>`.
-
-If you use the types defined in this header file the types become directly analogous and unambiguous between C/C++ and Rust.
-
-| C/C++ | Rust
-| --- | ----
-| `int8_t` | `i8`
-| `uint8_t` | `u8`
-| `int16_t` | `i16`
-| `uint16_t` | `u16`
-| `uint32_t` | `u32`
-| `int32_t` | `i32`
-| `int64_t` | `i64`
-| `uint64_t` | `u64`
 
 ### Machine types under the covers
 
