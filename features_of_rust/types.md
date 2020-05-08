@@ -2,7 +2,7 @@
 
 ## Data model
 
-C/C++ compilers implement a *data model* that affects what width the standard types are. The general rule is that:
+C/C++ compilers implement a *data model* that affects what the width of standard types are. The general rule is that:
 
 `1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
 
@@ -13,7 +13,7 @@ The four common data models in C++ are:
 * LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
 * LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
 
-As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice however the models above are the most common.
+As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice however software expects one of the models above.
 
 ## Comparing C/C++ types to Rust
 
