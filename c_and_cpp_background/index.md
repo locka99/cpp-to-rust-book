@@ -1,3 +1,5 @@
+
+|
 # C and C++ Background
 
 This section talks about C and C++. It describes its history, standards and provides a background as to how it ended up where it is today.
@@ -95,7 +97,8 @@ These are the major revisions of C and C++
 | 2003 | C++03 \(ISO/IEC 14882:2003\) | Primarily a defect revision, addressing various defects in the specification. |
 | 2011 | C++11 \(ISO/IEC 14882:2011\) | A major revision that introduces type inference \(auto\), range based loops, lambdas, strongly typed enums, a nullptr constant, struct initialization. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. |
 | 2011 | C11 \(ISO/IEC 9899:2011\) | Multi-threading support. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. Other minor changes |
-| 2014 | C++14 \(ISO/IEC 14882:2014\) | Another major revision that introduces auto return types, variable templates, digit separators \(1'000'000\), generic lambdas, lambda capture expressions, deprecated attribute. |
+| 2014 | C++14 \(ISO/IEC 14882:2014\) | A major revision that introduces auto return types, variable templates, digit separators \(1'000'000\), generic lambdas, lambda capture expressions, deprecated attribute. 
+| 2017 | C++17 \(ISO/IEC 14882:2017\) | A major revision that introduces a number of enhancements but notably `option` types and `UTF-8` strings |
 
 
 
