@@ -68,7 +68,7 @@ New versions of Rust appear in a semi-frequent basis. If you want to update your
 rustup update
 ```
 
-Sometimes rustup will get an update of its own in which case you type:
+Sometimes `rustup` will need an update of its own in which case you type:
 
 ```
 rustup self update
