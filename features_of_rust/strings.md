@@ -76,6 +76,11 @@ Now note that `std::string` is actually a specialisation of a more general templ
 
 In addition, a `std::string` will normally uses the heap to store the string's data which can have repercussions for memory usage and fragmentation. There is also a hidden cost to assigning one string to another strings are duplicated in the process. So even if you had 5 strings holding the same value, you would be looking at 5 copies.
 
+
+#### std::string_view template
+
+C++17 supports a `string_view` which is equivalent to a read-only slice of a string. This allows string operations to be more efficient, however it offers no guarantees that the view points to anything by the time it is accessed.
+
 ### Unicode support
 
 C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring` which is `std::basic_string<wchar_t>`.
