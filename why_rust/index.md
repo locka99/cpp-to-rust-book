@@ -44,10 +44,10 @@ What you compile with Rust \(or LLVM\) is not affected by the open source licens
 
 No of course not. Performance and safety are only two things to consider when writing software.
 
-* Sometimes it's okay for a program to crash every so often
+* Sometimes it's okay for a program to crash every so often. That depends on what you are writing of course.
 * If you have code that's written and works then why throw that away?
 * Writing new code will always take effort and will still cause application level bugs of one sort or another.
-* Performance may not be a big deal especially for network bound code and a higher level language like Java, C\#, Go may suit better.
+* Performance may not be a big deal especially for network bound code and a higher level language such as Java, C\#, or Go may be more suitable.
 * Some people will find the learning curve extremely steep. 
 * Rust is still relatively immature as a language and still has some rough edges - compilation times, optimization, complex macros.
 
@@ -68,25 +68,29 @@ Some examples of this safe-by-design philosophy:
 
 ## Don't C++11 / C++14 / C++17 get us this?
 
-Yes and no. C++11 and C++14 certainly bring in some long overdue changes. Concurrency primitives \(threads at last!\), move semantics, pointer ownership and other beneficial things all come in with these latest standards. Conveniences such as type inference, lambdas et al also come in.
+Yes and no. C++ is converging with Rust in some aspects, but it is still unsafe by default and that could never change without changing the language itself.
 
-But let's look at some of the issues
+But let's look at some of the fundamental differences between C++ and Rust
 
 ### Move semantics
 
-Move semantics in C++ require you implement explicit move constructors on classes you wish to use then. Any class that doesn't is using copy semantics. The compiler will not care either that you leave the old class instance in a valid state as a result of your implementation. The compiler will even let you call your old class instance despite having moved data to a new instance. Move errors can be handled at runtime with a sentinel state. Simply put, move in C++ is complex and blogs [like this](https://foonathan.net/blog/2017/09/14/destructive-move.html) spend a long time explaining the gory details.
+Move semantics in C++ require you implement explicit move constructors on classes you wish to use with them. 
+
+Any class that doesn't is using copy semantics. The compiler will not care either that you leave the old class instance in a valid state as a result of your implementation. The compiler will even let you call your old class instance despite having moved data to a new instance. Move errors can be handled at runtime with a sentinel state. Simply put, move in C++ is complex and blogs [like this](https://foonathan.net/blog/2017/09/14/destructive-move.html) spend a long time explaining the gory details.
 
 Remember in Rust you just get them for free, and they are enforced by the compiler.
 
 ### Smart pointers
 
-Smart pointers can still be null dereferenced. Null dereferencing is undefined behaviour and can crash or compromise your code. C++ strongly prefers that you use references to avoid null dereferencing, but it doesn't check the lifetimes of references so it is still not always possible. Certainly data structures like trees and graphics virtually preclude using references.
+Smart pointers can still be null dereferenced. Null dereferencing is undefined behaviour and can crash or compromise your code. C++ strongly prefers that you use references to avoid null dereferencing, but it doesn't check the lifetimes of references so it is still not always possible. Certain data structures like trees and graphics virtually preclude using references.
 
 C++ introduces an `std::optional` type that attempts to fulfill the same purpose as `Option` in Rust. There is a `nullopt`, equivalent to `None`, and `std::optional<T>(value)` to hold a value. 
 
 ### Concurrency
 
 Concurrency requires correct programming habits - ensuring to avoid concurrency errors like data races by using guards. The compiler will not help if you do not write correct code.
+
+In C++ you might protect access to some shared data with a `std::mutex` or `std::recursive_mutex` and use a `std::lock_guard` to hold the mutex for the duration of the operation. But the compiler does not care if you do or not.
 
 #### Programming safety
 
