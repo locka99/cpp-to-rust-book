@@ -6,18 +6,20 @@ C/C++ compilers implement a *data model* that affects what the width of standard
 
 `1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
 
-The four common data models in C++ are:
+So basically you *cannot* tell how big any type is other than a `short` is at least as big as a `char` and so on. 
 
-* LP32 - `int` is 16-bit, `long` and pointers are 32-bit. This is an uncommon model, a throw-back to DOS / Windows 3.1
+Compilers tend implement a data model which determines the size of types. The four common data models in C++ are:
+
+* LP32 - `int` is 16-bit, `long` and pointers are 32-bit. This is an uncommon model (mostly gone since the days of DOS / Windows 3.1) but it is still used on some Arduino targets.
 * ILP32 - `int`, `long` and pointers are 32-bit. Used by Win32, Linux, OS X
 * LLP64 - `int` and `long` are 32-bit, `long long` and pointers are 64-bit. Used by Win64
 * LP64 - `int` is 32-bit, `long` / `long long` and pointers are 64-bit. Used by Linux, OS X
 
-As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice however software expects one of the models above.
+As you can see, potentially everything all the way to `long long` could be a single byte, or there could be some other crazy definition. In practice software expects one of the models above.
 
 ### stdint.h / cstdint
 
-C provides a `<stdint.h>` header that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. The equivalent in C++ is `<cstdlib>`.
+C provides a `<stdint.h>` header that provides unambigious typedefs with length and signedess, e.g. `uint32_t`. The equivalent in C++ is `<cstdint>`.
 
 If you use the types defined in this header file the types become directly analogous and unambiguous between C/C++ and Rust.
 
