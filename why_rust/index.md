@@ -1,8 +1,10 @@
 # Rust Background
 
-So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve issues related to developing in C++. It progressed until the release of version 1.0 in 2015.
+So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve issues related to developing in C++. It progressed until the release of version 1.0 in 2015 and has since iterated through releases every six weeks since.
 
-The motivating force isn't hard to see if you consider the Mozilla Firefox web browser. Like most web browsers it is:
+## Why a
+
+The motivating force for a new language isn't hard to see if you consider the Mozilla Firefox web browser. Like most web browsers it is:
 
 * Written in C++. [^1]
 * Has millions of lines of code.
@@ -16,13 +18,13 @@ The project is hosted on [GitHub](https://github.com/rust-lang/rust). The langua
 
 [^1] Read this [Mozilla internal string guide](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Guide/Internal_strings) to get a flavor of the sort of problems the browser had to overcome. A browser obviously uses a lot of temporary strings. STL strings were too inefficient / flakey from one compiler to the next and so the browser sprouted an entire tree of string related classes to solve this issue. Similar tales are told in Qt and other large libraries.
 
-## Problems with C/C++
+## Safe by design
 
-It is trivial \(by accident\) to write code that is in error such as causing a memory leak. It is easy \(by malice\) to exploit badly written code to force it into error. It easy with the best testing in the world for some of these errors to only manifest themselves when the code is in production.
+Rust enforces a safe-by-design philosophy. Simply put, the language and the compiler try to stop errors from happening in the first place. 
 
-At best, bugs are a costly burden for developers to find and fix, not just in time and dollars but also their reputation. At worst, the bug could causes catastrophic failure but more ordinarily leaves code unstable or vulnerable to hacking.
+For example the compiler rigorously enforces lifetime tracking on objects and generates errors on violations. That means you cannot hold a reference to an object which has been destroyed unlike in C++.
 
-Rust is a language that produces machine code that is comparable in performance as C/C++ but enforces a safe-by-design philosophy. Simply put, the language and the compiler try to stop errors from happening in the first place. For example the compiler rigorously enforces lifetime tracking on objects and generates errors on violations. Most of these checks and guards are done at compile time so there is a zero-cost at runtime.
+Most of these checks and guards are done at compile time so there is a zero-cost at runtime.
 
 ## Active Development
 
