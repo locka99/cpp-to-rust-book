@@ -147,13 +147,13 @@ In most compilers and architectures however a float is a 32-bit single precision
 
 #### Long double
 
-The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite expectations that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour.
+The [`long double`](https://en.wikipedia.org/wiki/Long_double) has proven quite problematic for compilers. Despite the expectation that it is a quadruple precision value it usually isn't. Some compilers such as gcc may offer 80-bit extended precision on x86 processors with a floating point unit but it is implementation defined behaviour.
 
 The Microsoft Visual C++ compiler treats it with the same precision as a `double`. Other architectures may treat it as quadruple precision. The fundamental problem with `long double` is that most desktop processors do not have the ability in hardware to perform 128-bit floating point operations so a compiler must either implement it in software or not bother.
 
 #### Math functions
 
-The `<math.h>` C header provides math functions for working with different precision types.
+The `<math.h>` / `<cmath>` C header provides math functions for working with different precision types.
 
 ```c++
 #include <math.h>
@@ -168,7 +168,7 @@ float result3 = sqrtf(9.0f);
 long double result4 = powl(9,10);
 ```
 
-Note how different calls are required according to the precision, e.g. sinf, sin or sinl. C99 supplies a "type-generic" set of macros in `<tgmath.h>` which allows sin to be used regardless of type.
+Note how different calls are required according to the precision, e.g. `sinf`, `sin` or `sinl`. C99 supplies a "type-generic" set of macros in `<tgmath.h>` which allows `sin()` to be used regardless of type.
 
 C++11 provides a `<cmath>` that uses specialised inline functions for the same purpose:
 
@@ -192,7 +192,7 @@ Unlike in C/C++, the math functions are directly bound to the type itself provid
 ```rust
 let result = 10.0f32.sqrt();
 //
-let degrees = 45.0f64;
+let angle = 45.0f64;
 let result2 = angle.to_radians().cos();
 ```
 
