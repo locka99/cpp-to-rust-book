@@ -39,7 +39,7 @@ In addition Rust plays well C. You can call C from Rust or call Rust from C via 
 Despite the things the language can protect you against, it cannot protect you against the following:
 
 * General race conditions such as deadlocks between threads
-* Unbounded growth, e.g. a loop that pushes values onto a vector until memory is exhausted.
+* Halting problems such as a loop that pushes values onto a vector until memory is exhausted.
 * Application logic errors, i.e. errors that have nothing to do with the underlying language, e.g. missing out the line that should say "if door\_open { sound\_alarm\(\); }"
 * Explicit unsafe sections doing unsafe and erroneous things
 * Errors in LLVM or something outside of Rust's control.
