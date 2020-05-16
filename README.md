@@ -32,13 +32,7 @@ Code that passes the compiler's checks is transformed into machine code with sim
 
 This is a "zero-cost" approach. The compiler enforces the rules so that there is zero runtime cost over the equivalent and correctly written program in C or C++. Safety does not compromise performance.
 
-In addition Rust plays well C. You may invoke C from Rust or invoke Rust from C using foreign function interfaces. You can choose to rewrite a critical section of your codebase leave the remainder alone.
-
-For example, the Firefox browser uses Rust to analyse video stream data - headers and such like where corrupt or malicious code could destabilize the browser or even be exploitable.
-
-## Some cases?
-
-You may notice the "some cases" qualifier above. Obviously if you have code that works and is reliable then why do you want to rewrite it? However if you have code that you need to rewrite or perhaps substantially modify then you should consider what follows.
+In addition Rust plays well C. You can call C from Rust or call Rust from C via foreign function interfaces. So you could rewrite a critical section of your codebase while leaving the remainder alone. You can also invoke Rust via the FFI of other languages - for example NodeJS or Python.
 
 ## Rust is not a magic wand
 
@@ -50,5 +44,4 @@ Despite the things the language can protect you against, it cannot protect you a
 * Explicit unsafe sections doing unsafe and erroneous things
 * Errors in LLVM or something outside of Rust's control.
 
-
-
+And rewriting something for the sake of rewriting is never a good idea. Make sure you have a reason to port or rewrite your code.
