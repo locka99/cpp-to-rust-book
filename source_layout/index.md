@@ -56,7 +56,7 @@ Rust has modules which are like `#include` and namespaces rolled into one
 
 One major convenience definition and implementation are one and the same. Implementing a function brings it into existence. Any other module that chooses to "use" it simply says so and the compiler will ensure it compiles properly.
 
-See Namespacing with modules TODO ref
+See [Namespacing with modules](../namespacing_with_modules/index.md)
 
 ## File name conventions
 
