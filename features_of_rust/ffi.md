@@ -3,7 +3,7 @@
 Rust doesn't work in a vaccum and was never intended as such. Instead it was always assumed that it would need to call other code and other code would need to call it,
 
 * Call other libraries via their entry points
-* Produce libraries in Rust that can be called by code written in another language. e.g. C, C++, Python, Ruby etc.
+* Produce C ABI libraries in Rust that can be called by code written in another language. e.g. C, C++, Python, Ruby etc.
 
 To that end it has the Foreign Function Interface, the means to define external functions, expose its own functions without name mangling and to invoke unsafe code that would otherwise be illegal in Rust.
 
@@ -34,7 +34,7 @@ Note how we can use unsafe features like pointers inside of this unsafe block. T
 
 ## Making Rust code callable
 
-The converse is also possible. We can produce a library from Rust that can be invoked by some other code.
+The converse is also possible. We can produce a C ABI library from Rust that can be invoked by some other code.
 
 For example, imagine we have some code written in Python. The code works fine but it is not performant and the bottle neck is in just one portion of the code, e.g. some file operation like a checksum. We want our code to consist of a make_checksum() and a release_checksum().
 

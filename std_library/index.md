@@ -4,27 +4,28 @@ The core functionality in Rust is provided by a module called `std`. This is the
 
 As with its C++ namesake, everything can be referenced through a `std::` namespace prefix or via a `use std::{foo}` import.
 
-Some of std is implicitly available by a special [`std::prelude`](https://doc.rust-lang.org/beta/std/prelude/) that is automatically used (along with a reference to the std crate) without declaration. The prelude contains functionality that virtually all code is likely to use and therefore Rust spares code from having to import it:
-
-* String and ToString trait
-* Iterators traits of various kinds - Iterator, Exten, IntoIterator etc.
-* Result<> and Option<> enums
-* Conversion traits AsRef, AsMut, Into, From
-* Vec heap allocated vector
-* Other traits such as Drop, Fn, FnMut, FnOnce, Box, Clone, Copy, Send, Sized, Sync, PartialEq, PartialOrd etc.
-* Macros such as println!, format!, assert! etc.
+The most commonly used parts of `std` are implicitly brought in as if you had typed this at the top of your code:
 
 ```rust
-// You don't need these
 extern crate std;
 use std::prelude::*;
 ```
 
+The [`std::prelude`](https://doc.rust-lang.org/beta/std/prelude/) contains the most commonly used parts of std that you can just implicitly reference. For example:
+
+* `String` and `ToString` trait
+* Iterators traits of various kinds - `Iterator`, `IntoIterator` etc.
+* `Result<>` and `Option<>` enums
+* Conversion traits `AsRef`, `AsMut`, `Into`, `From`
+* `Vec` heap allocated vector
+* Common traits such as `Drop`, `Fn`, `FnMut`, `FnOnce`, `Box`, `Clone`, `Copy`, `Send`, `Sized`, `Sync`, `PartialEq`, `PartialOrd` etc.
+* Macros such as `println!`, `format!`, `assert!` etc.
+
 There are various sub-modules under std that concern themselves with aspects of development. Here are just some of them:
 
-1. clone – the Clone trait
-2. cmp – Eq, Ord, PartialEq, PartialOrd traits. These traits are used for equality and ordering functionality.
-3. collections - contains the standard collection types for sequences, maps, sets, and miscellaneous. e.g. Vec and HashMap are members of this module.
+1. clone – the `Clone` trait
+2. cmp – `Eq`, `Ord`, `PartialEq`, `PartialOrd` traits. These traits are used for equality and ordering functionality.
+3. collections - contains the standard collection types for sequences, maps, sets, and miscellaneous. e.g. `Vec` and `HashMap` are members of this module.
 4. env – environmental helpers - command line arguments, status codes, environment variables, temporary folder
 5. fmt – utilities for formatting and printing strings
 6. fs - filesystem manipulation
@@ -33,6 +34,12 @@ There are various sub-modules under std that concern themselves with aspects of 
 9. net – networking
 10. path – path manipulation
 11. process – spawn, fork, exec etc.
+
+Anything not brought in by `std::prelude` can be pulled in through a `use` statement:
+
+```
+use std::collections::BTreeMap;
+```
 
 ## C / C++ lib to Rust lib cross reference
 
@@ -56,22 +63,25 @@ Note that because due to the decimal point being used on a float, you have to pr
 
 ## Standard Traits
 
-Some traits are system defined and in some cases can be derived automatically.
+Commonly used traits are defined in `std` and in some cases can be derived automatically via compiler directives.
 
-In others they cause the compiler to generate additional code for you such as the Drop trait (described in class destructor section)
+In others they cause the compiler to generate additional code for you such as the `Drop` trait (described in class destructor section)
 
 ### Drop
-The Drop trait allows you do something when an object is dropped, such as add additional logging or whatever.
+The `Drop` trait allows you do something when an object is dropped, such as add additional logging or whatever.
 
 ### Copy
 A struct implementing a Copy trait can be copied through assignment, i.e. if you assign a to b then a and b now how copies of the object, independent of each other.
 The Copy trait really only useful when you have small amounts of data that represent a type or value of some kind.
-TODO copy example, e.g. struct PlayingCard { suit: Suit, rank: Rank }
+TODO copy example, e.g. `struct PlayingCard { suit: Suit, rank: Rank }`
 If you find yourself with a type that is larger, or contains heap allocated memory then you should use clone.
+
 ### Clone
 A struct implementing the Clone trait has a .clone() method. Unlike Copy you must explicitly .clone() the instance to create another.
 TODO clone example
+
 ### Eq, PartialEq
 TODO equality
+
 ### Ord, PartialOrd
 TODO ordering

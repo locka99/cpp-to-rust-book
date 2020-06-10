@@ -6,16 +6,17 @@ The way that Rust handles strings is quite a bit different from C or C++.
 
 In C/C++
 
-* A string is a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. Historically most strings are `char` but efforts have been made to support wide character strings.
-* A string's length is calculated by looking for a special nul (`'\0'`) value that signifies the end of the string. So a 2000 character string requires iterating through the whole string, potentially 2000 times looking for a nul.
-* Only `char16_t` and `char32_t` types are considered to be Unicode (encoded as UTF-16, UTF-32 respectively). There is no encoding knowledge about the meaning of other kinds of string.
+* A string is typically a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. Historically most strings are `char` but efforts have been made to support wide character strings as well as encodings such as UTF-8.
+* A string's length is calculated by looking for a special nul (`'\0'`) value that signifies the end of the string. So a 2000 character string requires iterating through the whole string, potentially 2000 times looking for a nul. The `std::basic_string<>` type will hold a length to negate the need to calculate the length.
 * In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely. Other 3rd party libraries also have their own string wrappers, e.g. `QString` in QT.
+* Only `char16_t` and `char32_t` types are considered to be Unicode (encoded as UTF-16, UTF-32 respectively). There is no encoding knowledge about the meaning of other kinds of string.
+* In C++17 you may create a `std::basic_string_view<>` which is a 
 
 In Rust
 
 * A `char` is a primitive in Rust that is 32-bits and can represent any Unicode character. So it equivalent to `char32_t` in C++.
 * A `str` is a primitive that represents a read-only string. Typically you will use a through a special borrow reference `&str`.
-* A `&str`, also called a slice, consists of a pointer to a string and a length. So obtaining the length of a string is a cheap operation.
+* A `&str`, also called a slice, consists of a pointer to a string and a length. So obtaining the length of a string is a cheap operation. 
 * A `String` is a heap allocated growable string. i.e. it can be truncated, extended etc. It implements all the functions of `str` and can also be used as a `&str`.
 * All strings are internally coded with UTF-8 to reduce memory overhead but they can be iterated by `char`.
 

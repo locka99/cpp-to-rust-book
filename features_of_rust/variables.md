@@ -4,7 +4,8 @@
 
 ### Type Inference
 
-C++11 has type inference, previous versions of C++ do not. Type inference allows the programmer to assign a value to an `auto` typed variable and let the compiler infer the type based on the assignment.
+C++11 implements type inference, previous versions of C++ do not. Type inference allows the programmer to assign a value to an `auto` typed variable and let the compiler infer the type based on the assignment. The
+`auto` keyword is a convenience because it allows the compiler to figure out the type in a great deal of cases.
 
 Boolean and numeric types are fairly easy to understand providing the code is as explicit as it needs to be.
 
@@ -14,14 +15,18 @@ auto y = 42;   // int
 auto z = 100.; // double
 ```
 
-Where C++ gets messy is for arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++ so auto requires they be explicitly defined or the type will be wrong.
+Where C++ gets messy is for references, arrays and strings. Recall that strings are not primitive types in the strong sense within C or C++ so auto requires they be explicitly defined or the type will be wrong.
 
 ```c++
+// C++11
 auto s = std::string("Now is the window of our discontent"); // char string
+// C++17 
+auto s = "Now is the window of our discontent"s; // Notation to use a std::string
+// Unicode 32-bit
 auto s = U"Battle of Waterloo"; // char32_t pointer to UTF-32 string literal
 ```
 
-Strings are covered elsewhere, but essentially there are many kinds of strings and C++/C has grown a whole bunch of string prefixes to deal with them all.
+Strings are covered elsewhere, but essentially there are many kinds of strings and C++/C has grown a whole bunch of string prefixes and suffixes to deal with them all.
 
 Arrays are a more interesting problem. The `auto` keyword has no easy way to infer array type so is one hack workaround to assign a templatized array to an `auto` and coerce it.
 
@@ -30,9 +35,23 @@ template <typename T, int N> using raw_array = T[N];
 auto a = raw_array<int, 5>{};
 ```
 
+References are also a hidden danger. If you intend to assign a reference to an auto, you must ensure the auto is a reference too, otherwise you may inadvertantly make a copy of the thing
+you are assigning.
+
+```c++
+std::vector<int> & dataPoints();
+
+//...
+auto points = dataPoints(); // Makes a copy
+auto &points = dataPoints(); // References the original
+```
+
 ## Rust
 
-Rust, variables are declared with a `let` command. The `let` may specify the variable's type, or it may also use type inference to infer it from the value it is assigned with.
+Rust, variables are bound with a `let` command. Binding is basically assignment, but with the added proviso that a variable can be unbound if its
+value is moved somewhere else. Using an unbound variable results in a compiler error.
+
+The `let` may specify the variable's type, or it may also use type inference to infer it from the value it is assigned with.
 
 ```rust
 let x = true; // x: bool
@@ -55,6 +74,14 @@ Note that all array elements must be the same type, inference would generate a c
 ```rust
 // Compile error
 let a3 = ["Mary", 32, true];
+```
+
+References in Rust are more obvious than in C++ - if you assign a reference to another variable, then the type is inferred to be a reference too.
+
+```
+let x = 10;   // i32
+let rx = &x;  // &i32
+let rx2 = rx; // &i32
 ```
 
 ## Scope rules

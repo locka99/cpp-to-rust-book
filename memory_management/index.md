@@ -1,6 +1,6 @@
 # Memory Management
 
-The memory model of Rust is quite close to C++. Structures that you declare in Rust reside on the stack or they reside in the heap.
+The memory model of Rust is quite close to C and C++. Structures that you declare in Rust reside on the stack or they reside in the heap.
 
 ## Stack
 
@@ -72,7 +72,7 @@ Allocation simply means a portion of the heap is marked as in-use and the code i
 
 A heap can grow and code might create multiple heaps and might even be compelled to in order control problems such as heap fragmentation.
 
-## Rust
+### Rust
 
 To allocate memory on the heap in Rust you declare data inside of a a box. For example to create a 1k block of bytes:
 
@@ -81,6 +81,10 @@ let x: Box<[u8]> = Box::new([0; 1024]);
 ```
 
 Many structs in std:: and elsewhere will have a stack based portion and also use use heap internally to hold their buffers.
+
+## Stack unwinding
+
+
 
 ## Heap fragmentation
 

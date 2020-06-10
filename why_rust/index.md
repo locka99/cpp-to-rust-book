@@ -2,7 +2,7 @@
 
 So Rust began life as a research project by Graydon Hoare in 2009 for the Mozilla foundation to solve issues related to developing in C++. It progressed until the release of version 1.0 in 2015 and has since iterated through releases every six weeks since.
 
-## Why a
+## Motivation
 
 The motivating force for a new language isn't hard to see if you consider the Mozilla Firefox web browser. Like most web browsers it is:
 
@@ -26,9 +26,18 @@ For example the compiler rigorously enforces lifetime tracking on objects and ge
 
 Most of these checks and guards are done at compile time so there is a zero-cost at runtime.
 
+## Timeline
+
+Rust has evolved a number of features in a backwards compatible fashion
+
+* 2015 - Release 1.0 of Rust
+* 2015-18 - Refinements such as procedural macros, rustup, rls, C ABI libraries, global allocators
+* 2018 - Rust 2018 edition (1.30). The 2018 edition contains various syntactic improvements designed to remove nuisances in the language (e.g. `extern crate` declarations) and improve the borrow checker. The compiler is backwards compatible so 2015 syntax is still accepted.
+* 2019 - `async` / `await` keywords for handling futures.
+
 ## Active Development
 
-The Rust team releases a new version of Rust approximately every 6 weeks. This means Rust receives code and speed improvements over time.
+The Rust team releases a new version of Rust approximately every 6 weeks. This means Rust receives code and speed improvements over time. 
 
 Most releases focus on marking APIs as stable, improving code optimization and compile times.
 
