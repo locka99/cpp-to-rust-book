@@ -240,7 +240,7 @@ If you want a struct to be visible outside your module you mark it `pub`. If you
 pub struct Person { /* ... */ }
 ```
 
-If you want publicaccess a member of a struct (including modifying it if its mutable), then mark it `pub`.
+If you want public access a member of a struct (including modifying it if its mutable), then mark it `pub`.
 
 ```rust
 pub struct Person {
@@ -328,7 +328,7 @@ A type can implement the trait by declaring and `impl` of it.
 
 ```rust
 impl HasCircumference for Size {
-  fn circumference(&self) -> i32 {
+  fn circumference(&self) -> f64 {
     2.0 * std::f64::consts::PI * self.radius
   }
 }
