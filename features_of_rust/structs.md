@@ -137,7 +137,7 @@ Instead you implement a static method in the impl of the Struct which returns an
 
 ```rust
 impl Person {
-  pub fn new(name: String, age: String) -> Person {
+  pub fn new(name: String, age: i32) -> Person {
     Person { name: name.clone(), age: age, credentials: None }
   }
 }
