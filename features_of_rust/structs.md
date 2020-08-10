@@ -72,8 +72,8 @@ Rust only has structs. A `struct` consists of a definition which specifies the f
 
 ```rust
 struct Size {
-  pub width: i32;
-  pub height: i32;
+  pub width: i32,
+  pub height: i32,
 }
 ```
 
@@ -137,7 +137,7 @@ Instead you implement a static method in the impl of the Struct which returns an
 
 ```rust
 impl Person {
-  pub fn new(name: String, age: String) -> Person {
+  pub fn new(name: String, age: i32) -> Person {
     Person { name: name.clone(), age: age, credentials: None }
   }
 }
@@ -240,7 +240,7 @@ If you want a struct to be visible outside your module you mark it `pub`. If you
 pub struct Person { /* ... */ }
 ```
 
-If you want publicaccess a member of a struct (including modifying it if its mutable), then mark it `pub`.
+If you want public access a member of a struct (including modifying it if its mutable), then mark it `pub`.
 
 ```rust
 pub struct Person {
@@ -328,7 +328,7 @@ A type can implement the trait by declaring and `impl` of it.
 
 ```rust
 impl HasCircumference for Size {
-  fn circumference(&self) -> i32 {
+  fn circumference(&self) -> f64 {
     2.0 * std::f64::consts::PI * self.radius
   }
 }
