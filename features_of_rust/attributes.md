@@ -3,9 +3,9 @@
 C++ has various ways to give compiler *directives* during compilation:
 
 * Compile flags that control numerous behaviours
-* `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` have been wildly abused in some compilers to insert "comments" into object files that control the import / export of symbols, static linking and other functionality.
+* `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` have been abused in compilers such as Microsoft C++ to insert "comments" that control the import / export of symbols, static linking and other functionality.
 * `#define` with ubquitous `#ifdef` / `#else` / `#endif` blocks
-* Keywords `inline`, `const`, `volatile` etc.. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
+* Keywords `inline`, `const`, `volatile` etc. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
 
 Rust uses a notation called *attributes* that serves a similar role to all of these things but in a more consistent form.
 
@@ -14,7 +14,7 @@ An attribute `#[foo]` applies to the next item it is declared before. A common a
 ```rust
 #[test]
 fn this_is_a_test() {
-  //...
+  //... this function is marked as a test so "cargo test" will run it
 }
 ```
 
@@ -23,7 +23,7 @@ Attributes can also be expressed as `#![foo]` which affects the thing they're co
 ```rust
 fn this_is_a_test() {
   #![test]
-  //...
+  //... this function is marked as a test so "cargo test" will run it
 }
 ```
 
@@ -65,6 +65,29 @@ fn get_app_data_dir() -> String { /* ... */ }
 ```
 
 Many more possibilities are listed in the [documentation](https://doc.rust-lang.org/reference/attributes.html#crate-only-attributes).
+
+## Data structure formats
+
+By default, a structure is packed however the compiler chooses to do it. The compiler might even choose to reorder fields to make the data smaller. 
+
+But if you are exchanging data with C you might use an attribute to ensure the struct is the correct order, padding and alignment:
+
+TODO
+
+```
+#[repr(C)]
+struct Data {
+  //... 
+}
+```
+
+Or more complex:
+
+```
+#[repr(C, align(8))] {
+
+}
+```
 
 ## Linking to native libraries
 
