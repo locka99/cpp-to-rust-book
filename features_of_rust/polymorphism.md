@@ -24,25 +24,55 @@ public:
 };
 ```
 
-One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also implicitly convert types. On top of that C++ also has default parameter values _and_ default constructors. So you might call a function using one signature and be calling something entirely different after the compiler resolves it.
+### Beware implicit conversion
+
+One of the biggest issues that you might begin to see from the above example is that is too easy to inadvertantly call the wrong function because C++ will also implicitly convert types. 
+
+For example we have a class `Foo` which has a constructor.
 
 ```c++
+class Foo {
+public:
+  Foo(int i) { /*...*/ }
+};
 
-// Sample code
-Variant v;
+// A function that does something with Foo
+void do_foo(Foo f) {
+  //.. do something to foo
+}
+
+// A piece of code that calls do_foo().
+Foo i1(20);
+do_foo(1);
 //...
-v.set(NULL);
+
 ```
 
-This example will call the integer overload because `NULL` evaluates to 0. One of the changes to `C++11` was to introduce an explicit `nullptr` value and type to avoid this issues.
+What you may not notice at first glance is `do_foo()` was called with `1` not `i1` but it still compiled. Why? Because the compiler took it upon itself to convert that `1` into `Foo(1)` and feed it to the function. Because of this a subtle error has crept in. So C++ has an `explicit` keyword to stop this happening:
+
+```c++
+class Foo {
+public:
+  explicit Foo(int i) { /*...*/ }
+};
+
+// A piece of code that calls do_foo().
+Foo i1(20);
+do_foo(1); // Compiler error
+//...
+```
+
+But you can see it's all becoming very ornery and that's before even considering that C++ has default parameter values _and_ default constructors. So you might call a function using one signature and be calling something entirely different after the compiler resolves it.
 
 ## Rust
 
-Rust has limited support for polymorphism. 
+Rust has limited support for polymorphism. This can be very frustrating as we'll see and it may well be that some restrictions will relax in time.
+
+But for the moment the rules are as follows:
 
 1. Function name overloading - there is none. See section below for alternatives.
 2. Coercion. Rust allows limited, explict coercion between numeric types using the `as` keyword. Otherwise see below for use on `Into` and `From` traits.
-3. Parameteric - similar to C++ via generics
+3. Parameteric - similar to C++ via generics.
 4. Inclusion - there is no inheritance in Rust. The nearest thing to a virtual method in rust is a trait with an implemented function that an implementation overrides with its own. However this override is at compile time.
 
 ### Alternatives to function name overloading
@@ -53,6 +83,8 @@ If you have a few functions you can just disambiguate them, e.g.
 fn new(name: &str) -> Foo { /* ... */ }
 fn new_age(name: &str, age: u16) -> Foo { /* ... */ }
 ```
+
+This can look very messy after a while, so there is another alternative - conversion traits.
 
 #### Use traits
 
