@@ -89,8 +89,8 @@ These are the major revisions of C and C++
 | --- | --- | --- |
 | 1972 | C | C for PDP-11, other Unix systems |
 | 1978 | K&R C | C as defined in "The C Programming Language" book by Kernighan & Ritchie |
-| 1989 | C89 \(ANSI X3.159-1989\) | C is standardized as ANSI C, or C89. C90 \(ISO/IEC 9899:1990\) is the ISO ratified version of this same standard. |
 | 1979 | C with classes -&gt; C++ | Bjarne Stroustrops |
+| 1989 | C89 \(ANSI X3.159-1989\) | C is standardized as ANSI C, or C89. C90 \(ISO/IEC 9899:1990\) is the ISO ratified version of this same standard. |
 | 1995 | C95 \(ISO/IEC 9899/AMD1:1995\) | Wide character support, digraphs, new macros, and some other minor changes. |
 | 1998 | C++98 \(ISO/IEC 14882:1998\) | C++ is standardized for the first time. |
 | 1999 | C99 \(ISO/IEC 9899:1999\) | Single line \(//\) comments, mixing declarations with code, new intrinsic types, inlining, new headers, variable length arrays |
