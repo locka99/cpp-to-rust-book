@@ -236,9 +236,9 @@ free(s);
 
 The nearest thing to `void` in Rust is the Unit type. It's called a Unit type because it's type is `()` and it has one value of `()`.
 
-Technically `void` is absolutely nothing and `()` is a single value of type `()` so they're not analogous but they serve a similar purpose.
+In C/C++ when a function has nothing interesting to return, it returns `void`. In Rust every function that returns has to return something, so it returns `()`.
 
-When a block evaluates to nothing it returns `()`. We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
+We can also use it in places where we don't care about one parameter. e.g. say we have a function `do_action()` that succeeds or fails for various reasons. We don't need any payload with the Ok response so specify `()` as the payload of success:
 
 ```rust
 fn do_action() -> Result<(), String> {
@@ -254,13 +254,55 @@ if result.is_ok() {
 
 ### Empty enums
 
-Rust *does* have something closer (but not the same as) `void` - empty enumerations.
+In C/C++ there's no value whose type is `void`. Types without a value also exist in Rust, they are empty enumerations.
 
 ```rust
 enum Void {}
 ```
 
-Essentially this enum has no values at all so anything that assigns or matches this nothing-ness is unreachable and the compiler can issue warnings or errors. If the code had used `()` the compiler might not be able to determine this.
+It's impossible to construct such type, so if the return type of a function is `Void`, it means the function never returns.
+
+```rust
+fn foo() -> Void {
+  // The only way for `foo` to type check is to never terminate.
+  loop { }
+}
+```
+
+Essentially this enum has no values at all so anything that assigns or matches this nothing-ness is unreachable and the compiler can issue warnings or errors.
+
+In generic programming it may be used to indicate it's impossible to return some type of value. For example it's used to indicate some operations may never return error in the standard library: https://doc.rust-lang.org/std/convert/enum.Infallible.html
+
+```rust
+trait FromStr {
+  type Error; // Some type may fail when converting from str.
+  fn from_str(s: &str) -> Result<Self, Self::Error>;
+}
+
+enum Infallible {}
+
+impl FromStr for String {
+  type Error = Infallable; // But you may always convert a str to `String`.
+  fn from_str(s: &str) -> Result<String, Self::Error> {
+    Ok(String::from(s))
+  }
+}
+```
+
+It may be also be used to indicate a function only returns when something goes wrong.
+
+```rust
+fn run_server() -> Result<Empty, Error> {
+  loop {
+    // ... processing
+    ....
+    // ... an error is encountered!
+    return Err(some_error)
+  }
+}
+````
+
+
 
 ## Tuples
 
