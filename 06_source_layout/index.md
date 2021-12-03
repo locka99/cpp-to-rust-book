@@ -97,43 +97,4 @@ use math;
 //...
 let v = math::sqrt(4);
 }
-
-## Unicode support
-
-Using Unicode in C++ has always been a pain. 
-
-Here are just some of the problems
-
-1. Source code is normally only safe to use characters 0-127 although some compilers may have parameters that allow makefiles to specify other character encodings. 
-2. Other characters outside of 0-127 are normally escaped
-3. C++98 has `char` and `wchar_t` types for 8-bit and 32-bit characters and corresponding `std::string` and `std::wstring` template types. Providing we assume UTF-8 and UTF-32 are the encodings our problem is solved?
-4. No because `wchar_t` was immediately subverted be compilers such as MSVC where it is treated as only 16-bits wide.
-5. 16-bits is only sufficient to hold Unicode's basic multilingual plane. Characters outside of that plane must use control points.
-6. So  "wide" `wchar_t` can be UTF-32 on some compilers and must assumed to be UTF-16 on others such as Windows.
-7. This messed up definition makes operations such as slicing strings dangerous due to the risk of cutting through a control point.
-8. C++11 tried to rectify this with new and explicit `char16_t` and `char32_t` types and corresponding `std::u16string` and `std::u32string` template types.
-9. So now we have four(!) character types and their corresponding string types to hold different character widths.
-10. But that doesn't even cover anything to do with UTF. The `u` in `u16string` suggests Unicode but nothing in the string types can convert between UTF-8, UTF-16, UTF-32 or even to walk the string by displayable characters.
-11. Linux tends to favour UTF-8 encoding of strings while Windows favours UTF-16 encoding. This means portable code has to be able to losslessly convert between types.
-12. 3rd party conversion libraries like ICU4C are commonly used. Libraries like boost, Qt use libicu for converting between encodings
-
-So it's messy.
-
-Rust simplifies things a lot by benefit of hindsight.
-
-* Source code is UTF-8 encoded.
-* Comments, characters and string literals can contain Unicode characters without escaping.
-* The native `char `type is 4 bytes wide – as wide as a Unicode characters.
-* The native `str &` and `String` types internally use UTF-8 to save space but may be iterated by `char` or by `u8` byte according to what the function is doing.
-
-Since source code is UTF-8 encoded you may embed strings straight into the source.
-
-```rust
-let hello = "你好";
-for c in hello.chars() { /* iterate chars */
-  //...
-}
 ```
-
-
-

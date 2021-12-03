@@ -105,17 +105,17 @@ This allows string operations to be more efficient, however it requires the unde
 
 ### Unicode support
 
-C/C++ added Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring` which is `std::basic_string<wchar_t>`.
+Unicode is a way of accurately representing any text written in any language as a series of bytes in a computer. How these bytes are stored is called an _encoding_ and there are standardized 1, 2 and 4 byte encodings called UTF-8, UTF-16 and UTF-32 respectively for this purpose. Each encoding can be losslessly transformed to the others with helper code such as the popular `libicu` library.
 
-We're sorted now right?
+Generally speaking UTF-8 is considered the most efficient way to store characters. A string like "Hello World!" transforms to the same byte sequence as it would if encoded with ASCII. Characters outside of the 0-127 value range require escaping. But since most languages still often contain alphanumeric characters and punctuation UTF-8 can still be very efficient. But some operating systems like Windows use UTF-16 in their APIs. 
 
-Oops no, because `wchar_t` type can be either 2 or 4 bytes wide and is a compiler / platform specific decision.
+C/C++ has no inherent knowledge of any of this. What you put in your strings is your own business and it doesn't care if the bytes are valid Unicode encodings or not. 
 
-In Microsoft Visual C++ the wide char is an `unsigned short` \(corresponding to Win32's Unicode API\), in gcc it can be 32-bits or 16-bits according to the compile flags.
+It added nascent Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring` which is `std::basic_string<wchar_t>`. But `wchar_t` type can be either 2 or 4 bytes wide and is a compiler / platform specific decision. In Microsoft Visual C++ the wide char is 2 bytes and in gcc it can be 2 or 4 bytes according to the compiler flags.
 
-A 16-bit value will hold symbols from the Basic Multilingual Plane but not the full 32-bit range. This means that 16-bit wide strings should be assumed to be UTF-16 encoded because they cannot support Unicode properly otherwise.
+Oops...
 
-C++11 rectifies this by introducing explicit `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`.
+So C++11 rectifies this by introducing unambiguous `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`. It also has string prefixes for declaring encodings of strings:
 
 ```c++
 // Wide string with L prefix
@@ -126,76 +126,46 @@ auto hello_16 =  u"\u4f60\u597d"; // UTF-16
 auto hello_32 =  U"\u4f60\u597d"; // UTF-32
 ```
 
+Even with this you can see above that encoding Unicode in your source code isn't very nice. The Unicode characters are escaped. Some C++ compilers may allow the character set of the source file to be encoded (e.g. with UTF-8) to overcome this but it is not a certainty.
+
 ### Character types
 
-So now C++ has 4 character types. Great huh?
+So C++ has 4 character types. Great huh?
 
 | Character type | Encoding |
 | --- | --- |
 | `char` | C, ASCII, EBDIC, UTF-8, ad hoc, ??? |
-| `wchar_t` | UTF-16 or UTF-32 |
+| `wchar_t` | UTF-16 or maybe UTF-32 |
 | `char16_t` | UTF-16 |
 | `char32_t` | UTF-32 |
 
+You basically cannot assume what a char string is encoded with. To preserve your sanity you best off to make your code UTF-8 friendly and sanitize your inputs to prevent external values from violating that principle. If you are calling external libraries you will need to see what rules they follow for string handling. If necessary you may need to use `libicu` to properly handle strings including iterating through them.
+
 ## Rust
 
-Rust has been rather fortunate. Unicode preceded it so it makes a very simple design choice. The important thing to know about strings in Rust is that Unicode support is baked in. You can just declare any valid Unicode sequence in your strings, or even in the comments of your code.
+Rust has implicit string in the language itself.
 
-```rust
-let s = "你好";
-```
-
-Here we create a variable `s` which is a string slice onto the string "你好" which is "Hello" in Chinese. It consists of 2 Unicode characters. Internally the string was UTF-8 encoded but as far as the code is concerned it is expressed as characters. We can enumerate the characters like so.
-
-```rust
-fn main() {
-    let s = "你好";
-    s.chars().for_each(|c| {
-      println!("Char = {}", c);
-    })
-}
-```
-
-And the output would be:
-
-```
-Char = 你
-Char = 好
-```
-
-So a `char` in Rust is actually a Unicode character, 32-bits. This may seem weird at first but remember that Rust has explicit `i8` and `u8` types if you want to deal in bytes. Strings in Rust are not bytes, they're characters.
-
-In addition, to manipulate strings, then there is a type for that purpose, `String`:
-
-```rust
-fn main() {
-    let mut s = String::from("你好");
-    s.push_str("世界");
-    println!("{}", s);
-}
-```
-
-So:
-
-* A `char` type is a 32-bit Unicode character, always enough to hold a single character. 
+* A `char` type is a 32-bit Unicode character.
 * A `str` type is a UTF-8 encoded string held in memory. Code will never directly use this type. Instead it will use `&str` which is a string slice, basically a pointer and length to the str, or a portion of it. 
-* A `std::String` is a heap allocated string type use for creating & modifying strings, building them, reading them from file, cloning them etc. Code may also obtain a `&str` to a `String` but the compiler will enforce that the string is read-only while the slice exists upon it.
+* A `std::String` is a heap allocated `str` that you can manipulate. Code may also obtain a `&str` to a `String` but the compiler will enforce that the string is read-only while the slice exists upon it.
 
-Finally there is a platform specific type `OSString` and `OSStr` akin to `String` and `str` that handles any differences in how the operating system sees strings compared to Rust, e.g. changing the character width or encoding and putting a null terminator on the end. Normally you would only use this type to interact with operating system APIs.
+Finally there are foreign function interface (FFI) types `OSString` and `OSStr` akin to `String` and `str` that handles any differences in how the outside world sees strings compared to Rust, e.g. changing the character width or encoding and putting a null terminator on the end. Normally you would only use these types to call an external API.
 
 ## Types Comparison
 
 | C/C++ | Rust |
 | --- | --- |
 | `char *` or `wchar_t *` | `str`, `&str` |
+| | `OSStr`, `&OSStr` (FFI) |
 | C11 | |
 | `char16_t *`, `char32_t *` | `str`, `&str` |
 | C++11 | |
 | `std::string`, `std::wstring`, `std::u16string`, `std::u32string` | `std::String` |
+| | `OSString` (FFI) |
 
 ### Slices 
 
-A _slice_ is a reference to part or all of a `str`. It is written `&str` and also contains a pointer and a length value. 
+A _slice_ is a reference to part or all of a `str`. It is written `&str` and also contains a pointer and a byte length value. 
 
 We saw that C++17 introduces a `std::string_view` and it's like that, but it is an intrinsic part of the language and the compiler makes sure you cannot use the slice unsafely.
 
@@ -241,6 +211,72 @@ println!("Part 2 = {}", part2);
 Part 1 = Hel
 Part 2 = lo
 ```
+
+### Raw strings
+
+A raw string is a Unicode string starting with `r"` and ending in `"` for when you don't want to escape characters like quotation marks, backslashes and so on. If your string contains a double quotation mark you can also put a hash between the `r` and the `"` so it doesn't result in a compiler errore.g. `r#"A quote is this symbol ""#;`. You could even put more hashes if your string contained `#"`, e.g. `r##"`, `"##`.
+
+```rust
+let quote = r#"And the man said "the best is yet to come""#;
+let multiline = r"All good things
+to those who wait";
+```
+
+### Byte strings
+
+A byte string is just an unchecked byte array that is not assumed to be Unicode encoded:
+
+```
+let b = b"SUCCESS\x0f";
+```
+
+### Unicode Support
+
+Rust is fortunate in having Unicode knowledge baked into it. The important thing to know about strings in Rust is that they are Unicode and internally it uses UTF-8 to encode those strings. 
+
+As you've seen you can also just declare any valid Unicode sequence in your strings, or even in the comments of your code.
+
+```rust
+let s = "你好"; // "Hello" - "你好"
+```
+
+Here we create a variable `s` which is a string slice onto the string "你好" which is "Hello" in Chinese. It consists of 2 Unicode characters. Internally the string was UTF-8 encoded but as far as the code is concerned it is expressed as characters. We can enumerate the characters like so.
+
+```rust
+fn main() {
+    let s = "你好";
+    println!("Length of string = {}", s.len());
+    s.chars().for_each(|c| {
+      println!("Char = {}", c);
+    })
+}
+```
+
+And the output would be:
+
+```
+Length of string = 6
+Char = 你
+Char = 好
+```
+
+Notice that the _length_ of the string is 6 bytes, but there are only two characters. It takes 6 bytes to UTF-8 encode the string and that is what is referring to. Functions that manipulate strings will be indexed by byte too and will error if you are incorrect. Therefore, you are better to use `chars()` for character wise operation.
+
+So a `char` in Rust is a Unicode character, 32-bits. This may seem weird at first but remember that Rust has explicit `i8` and `u8` types if you really want to deal in bytes. But strings in Rust are not bytes, they're characters.
+
+It gets more complex than "character" though because some languages have clusters of characters that are known as graphene clusters, which are akin to letters. So a character may be an adornment for another character, not necessarily printable. Therefore even with Unicode baked in you may find your code has to have special knowledge of what it is doing to make sense for what the user sess.
+
+In addition, to manipulate strings, then there is a type for that purpose, `String`:
+
+```rust
+fn main() {
+    let mut s = String::from("你好");
+    s.push_str("世界");
+    println!("{}", s);
+}
+```
+
+
 
 ## std::basic\_string \(C++\) vs std::String \(Rust\)
 
