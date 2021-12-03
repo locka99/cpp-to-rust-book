@@ -44,7 +44,7 @@ China has mandated all software must support all 32-bits. We'll see how this has
 
 ### There is no string primitive
 
-C and C++ does not have a string primitive type, instead it has `char` type, that is one byte. A "string" is a pointer to an array of chars that are terminated with a zero byte, `'\0'`.
+C and C++ does not have a string primitive type, instead it has a `char` type, that is one byte. A "string" is a pointer to an array of chars that are terminated with a zero byte, `'\0'`.
 
 ```c++
 // The array that my_string points at ends with a hidden \0
@@ -60,9 +60,9 @@ But what if `dst` was not a big enough array to hold the input? Well now we have
 
 C11 introduces "safe" versions of functions like `strcpy` that say how large the destination is, i.e. `strcpy_s(dst, dstlen, src)`. It will not overstep the output buffer's size and if the output is not big enough to hold the input or is truncated, the function will return an error. Even so, we are required to set this size correctly, include space for the terminator byte and test for errors.
 
-#### std::string template
+#### std::basic_string template
 
-C++ provides `std::string` which can manage the lifetime of a string and provide methods for modifying the string in a safe manner. It is a vast improvement over C.
+C++ provides `std::basic_string<char_type>`. Normally `char_type` would be a `char` and there is a typedef to `std::string` which is precisely that. The `std::string` manages the lifetime of a string and provide methods for modifying the string in a safe manner. It is a vast improvement over C.
 
 ```c++
 #include <string>
@@ -71,16 +71,37 @@ std::string my_string = "Mary had a little lamb";
 std::cout << "String is " << my_string.size() << " chars long." << std::endl;
 ```
 
-However this is not a primitive type. Instead `std::string` is a fairly opaque template defined in `<string>` that is included, compiled and linked to the executable just like every other class. 
+Note that this is not a primitive type. Instead `std::string` is a fairly opaque template defined in `<string>` that is included, compiled and linked to the executable just like every other template class. 
 
-Now note that `std::string` is actually a specialisation of a more general template `std::basic_string<char_type>` that works with various width of character. We'll look at that in a moment.
+In addition, a `std::string` will normally uses the heap to store the string's data which can have repercussions for memory usage and fragmentation. There is also a hidden cost to assigning one string to another strings are duplicated in the process. Operations like `substr()` create copies of the section of the string.
 
-In addition, a `std::string` will normally uses the heap to store the string's data which can have repercussions for memory usage and fragmentation. There is also a hidden cost to assigning one string to another strings are duplicated in the process. So even if you had 5 strings holding the same value, you would be looking at 5 copies.
+```c++
+#include <string>
+//...
+std::string str = "The Evolution of Man";
+std::string str2 = str.substr(4, 9);
+// Str2 contains a copy of "Evolution"
+```
 
+In this example we use `substr()` to get a portion of the containing string, but to do so, a new string must be created. In a trivial example it doesn't matter but we might have large loops where a lot of string manipulation is occuring and it becomes inefficient. For example, if the code was consuming records delimited with a `|` where there might be 100 fields in a record, then we have a lot of allocation going on.
 
-#### std::string_view template
+Recognizing this C++17 did this...
 
-C++17 supports a `string_view` which is equivalent to a read-only slice of a string. This allows string operations to be more efficient, however it offers no guarantees that the view points to anything by the time it is accessed.
+#### std::basic_string_view template
+
+C++17 supports a `std::basic_string_view<char_type>` template defined in `<string_view>`. Normally `char_type` would be a `char` and there is a typedef `std::string_view`. A string view is a read-only slice of a string.
+
+```c++
+#include <string_view>
+//...
+std::string str = "The Evolution of Man";
+std::string_view sv { str }
+std::string_view sv2 { sv.substr(4, 9) };
+```
+
+In this example, the `sv` points to `str` but it does not copy it. Basically it is just a pointer and a length onto the string. And `sv2` is a pointer and a length onto the substring portion. There is no heap or string copy happening here so it is much more efficient.
+
+This allows string operations to be more efficient, however it requires the underlying string to be read only and for the view to be lifetime dependent on the string. i.e. it offers no guarantees that the view points to anything by the time it is accessed and it is the developers job to make sure it doesn't. For example, if I changed `str` in the previous example, then `sv` and `sv2` could be pointing at junk.
 
 ### Unicode support
 
@@ -96,6 +117,15 @@ A 16-bit value will hold symbols from the Basic Multilingual Plane but not the f
 
 C++11 rectifies this by introducing explicit `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`.
 
+```c++
+// Wide string with L prefix
+wchar_t hello_chinese = L"\u4f60\u597d";
+// C11 and C++11 add UTF string literal prefixes
+auto hello_8  = u8"\u4f60\u597d"; // UTF-8 encoded
+auto hello_16 =  u"\u4f60\u597d"; // UTF-16
+auto hello_32 =  U"\u4f60\u597d"; // UTF-32
+```
+
 ### Character types
 
 So now C++ has 4 character types. Great huh?
@@ -109,52 +139,75 @@ So now C++ has 4 character types. Great huh?
 
 ## Rust
 
-Rust has been rather fortunate. Unicode preceded it so it makes a very simple design choice.
+Rust has been rather fortunate. Unicode preceded it so it makes a very simple design choice. The important thing to know about strings in Rust is that Unicode support is baked in. You can just declare any valid Unicode sequence in your strings, or even in the comments of your code.
+
+```rust
+let s = "你好";
+```
+
+Here we create a variable `s` which is a string slice onto the string "你好" which is "Hello" in Chinese. It consists of 2 Unicode characters. Internally the string was UTF-8 encoded but as far as the code is concerned it is expressed as characters. We can enumerate the characters like so.
+
+```rust
+fn main() {
+    let s = "你好";
+    s.chars().for_each(|c| {
+      println!("Char = {}", c);
+    })
+}
+```
+
+And the output would be:
+
+```
+Char = 你
+Char = 好
+```
+
+So a `char` in Rust is actually a Unicode character, 32-bits. This may seem weird at first but remember that Rust has explicit `i8` and `u8` types if you want to deal in bytes. Strings in Rust are not bytes, they're characters.
+
+In addition, to manipulate strings, then there is a type for that purpose, `String`:
+
+```rust
+fn main() {
+    let mut s = String::from("你好");
+    s.push_str("世界");
+    println!("{}", s);
+}
+```
+
+So:
 
 * A `char` type is a 32-bit Unicode character, always enough to hold a single character. 
-* A `str` type is a UTF-8 encoded string held in memory. Code tends to use &str which is a string slice, basically a reference to the str, or a portion of it. A str does not need to be terminated with a zero byte and can contain zero bytes if it wants.
-* A `std::String` is a heap allocated string type use for manipulating strings, building them, reading them from file, cloning them etc.
+* A `str` type is a UTF-8 encoded string held in memory. Code will never directly use this type. Instead it will use `&str` which is a string slice, basically a pointer and length to the str, or a portion of it. 
+* A `std::String` is a heap allocated string type use for creating & modifying strings, building them, reading them from file, cloning them etc. Code may also obtain a `&str` to a `String` but the compiler will enforce that the string is read-only while the slice exists upon it.
 
-Note that internally UTF-8 is used for encoding yet a char is 32-bits. The length of a strings is considered to be its byte length. There are special iterators for walking the string and decoding UTF-8 into 32-bit characters.
-
-Finally there is a platform specific type `OSString` that handles any differences in how the operating system sees strings compared to Rust.
+Finally there is a platform specific type `OSString` and `OSStr` akin to `String` and `str` that handles any differences in how the operating system sees strings compared to Rust, e.g. changing the character width or encoding and putting a null terminator on the end. Normally you would only use this type to interact with operating system APIs.
 
 ## Types Comparison
 
-| C++ | Rust |
+| C/C++ | Rust |
 | --- | --- |
-|  | `char *` or `wchar_t *` |
-| C++11 - `char16_t *`, `char32_t *` | `str`, `&str` |
-|  | `std::string`, `std::wstring` |
-| `std::u16string` `std::u32string` | `std::String` |
+| `char *` or `wchar_t *` | `str`, `&str` |
+| C11 | |
+| `char16_t *`, `char32_t *` | `str`, `&str` |
+| C++11 | |
+| `std::string`, `std::wstring`, `std::u16string`, `std::u32string` | `std::String` |
 
-## char \* vs str
+### Slices 
 
-C/C++ do not have a string primitive. A string is a pointer to some bytes in memory that are nul terminated. The same applies for wider chars, except of course they require 2 or 4 bytes.
+A _slice_ is a reference to part or all of a `str`. It is written `&str` and also contains a pointer and a length value. 
 
-```c++
-// The traditional way
-char *my_str = "Hello"; // Terminates with \0
-// or
-char my_str[] = "Hello"; // Terminates with \0
-// or wide string with L prefix
-wchar_t hello_chinese = L"\u4f60\u597d";
-// C11 and C++11 add UTF string literal prefixes
-auto hello_8  = u8"\u4f60\u597d"; // UTF-8 encoded
-auto hello_16 =  u"\u4f60\u597d"; // UTF-16
-auto hello_32 =  U"\u4f60\u597d"; // UTF-32
-```
-
-Rust would use a `str` for this purpose. A `str` is an _immutable_ array of bytes  somewhere in memory. The `str` could be on the heap when it points to a `String` object, or it could be in global memory if the string is static. A str _slice_ is `&str`, is reference to a str which also contains a length value.
+We saw that C++17 introduces a `std::string_view` and it's like that, but it is an intrinsic part of the language and the compiler makes sure you cannot use the slice unsafely.
 
 ```rust
-let my_str = "Hello";
+// These variables are &str pointing to UTF-8 encoded bytes
+let my_str = "Hello"; 
 let hello_chinese = "你好";
 ```
 
-Type inferences for these assignments will create a string slice pointing to the statically allocated string data. The data itself doesn't move and the `&str` is read-only.
+Type inferences for these assignments will create a `&str` slice pointing to the statically allocated string data. The data itself doesn't move and the `&str` is implicitly read-only.
 
-We can also observe that Rust removes the mess of character width and literal prefixes that C and C++ have to suffer under because Unicode characters are implicitly supported.
+We can also observe that Rust removes the mess of character width and literal prefixes that C and C++ have to suffer under because Unicode characters are implicitly supported. The developer may type any Unicode they like into their source code or between string delimiters and the compiler will just take it. We'll see later that there will are times you need to get raw bytes, or convert to the native platform string format but in general, a `str` is Unicode and it 
 
 The `str` has functions for iterating over the string in bytes / characters, splitting, find a pattern etc.
 

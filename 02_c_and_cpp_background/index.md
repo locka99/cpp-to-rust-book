@@ -10,11 +10,11 @@ This section talks about C and C++. It describes its history, standards and prov
 
 The C [^1] programming language was developed as part of Unix [^2] by Dennis Ritchie and Ken Thompson.
 
-Unix started life on the PDP-7 microcomputer. This version was written in assembly language. The OS was then ported to the PDP-11 architecture, also in assembly. 
+Unix started life on the PDP-7 microcomputer and was originally written in assembly language. The OS was then ported to the PDP-11 architecture, also in assembly. 
 
-Ritchie developed C in 1972 as a higher level language and compiler for writing Unix software than pure assembly. The language provided constructs such as static types, loops, conditionals, expressions etc and the compiler produced machine code which was almost as efficient as hand written assembly. Over time much of Unix itself, including much of the kernel was rewritten in C which in turn aided portability.
+Ritchie developed C in 1972 as a higher level language and compiler for writing Unix software in a more abstract way than pure assembly. The language provided constructs such as static types, loops, conditionals, expressions etc and the compiler produced machine code which was almost as efficient as hand written assembly. Over time much of Unix itself, including much of the kernel was rewritten in C which in turn aided portability.
 
-The compiler was also a bundled component of Unix, so Unix users could develop their own software using the language. 
+The compiler was also a bundled component of Unix, so Unix users could develop their own software using the language. Thus C became a popular way of developing Unix software.
 
 [^1] C was called C because it was influenced by a language called B developed by Thompson as a simplified version of BCPL.
 
@@ -46,18 +46,18 @@ C++ has also become formalised standards with C++98, C++03, C++11 and so on.
 
 [^3] Simula is a language that allowed concepts such as objects, classes and inheritance to be expressed in code and as its name suggests was created for running simulations. However it was considered too slow for systems programming and so something that combined speed of C with object oriented concepts was highly desirable.
 
-#### Modern C++
+### Modern C++
 
 C++11 onwards is a distinctly different beast from earlier iterations and strives to add functionality that if used correctly can eliminate a lot of issues that will be discussed later on:
 
-* Scoped and shared pointers
-* auto keyword
+* Unique and shared pointers
+* `auto` keyword
 * move semantics \(i.e. moving data ownership of data from one variable to another\)
 * rvalue references
 * perfect forwarding
-* nullptr explicit type
+* `nullptr_t` and `nullptr` explicit type
 
-However it is worth noting that since many of these things are late additions to C++. Things like move semantics must be explicitly used and have implications that are not an issue for Rust where they have been part of the language since early on.
+However it is worth noting that since many of these things are late additions to C++. Things like move semantics must be explicitly used and have complexity as we shall see.
 
 ### The relationship between C and C++
 
@@ -91,15 +91,15 @@ These are the major revisions of C and C++
 | 1978 | K&R C | C as defined in "The C Programming Language" book by Kernighan & Ritchie |
 | 1979 | C with classes -&gt; C++ | Bjarne Stroustrops |
 | 1989 | C89 \(ANSI X3.159-1989\) | C is standardized as ANSI C, or C89. C90 \(ISO/IEC 9899:1990\) is the ISO ratified version of this same standard. |
+| 1987 | GNU C Compiler \(GCC\) | An open source C compiler that was quickly adopted by developers and became the defacto compiler for most Unix / Linux systems. Acronym `GCC` was rebranded as GNU Compiler Chain since the project encapsulated many other languages including C++, Objective-C, Ada, Fortran etc. that had individual compiler front-ends but shared the code generating backend. |
 | 1995 | C95 \(ISO/IEC 9899/AMD1:1995\) | Wide character support, digraphs, new macros, and some other minor changes. |
 | 1998 | C++98 \(ISO/IEC 14882:1998\) | C++ is standardized for the first time. |
 | 1999 | C99 \(ISO/IEC 9899:1999\) | Single line \(//\) comments, mixing declarations with code, new intrinsic types, inlining, new headers, variable length arrays |
 | 2003 | C++03 \(ISO/IEC 14882:2003\) | Primarily a defect revision, addressing various defects in the specification. |
-| 2011 | C++11 \(ISO/IEC 14882:2011\) | A major revision that introduces type inference \(auto\), range based loops, lambdas, strongly typed enums, a nullptr constant, struct initialization. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. |
+| 2003 | LLVM | Similar to GCC, a compiler and toolchain that started predominantly to support compiling C and C++ via the Clang compiler with many backends for generating machine code across across many platforms. The toolchain is also used by the Rust compiler. |
+| 2011 | C++11 \(ISO/IEC 14882:2011\) | A major revision that introduces type inference \(auto\), range based loops, lambdas, strongly typed enums, a nullptr constant, struct initialization. Improved Unicode char16\_t, char32\_t, u, U and u8 string literals. |
 | 2011 | C11 \(ISO/IEC 9899:2011\) | Multi-threading support. Improved unicode char16\_t, char32\_t, u, U and u8 string literals. Other minor changes |
 | 2014 | C++14 \(ISO/IEC 14882:2014\) | A major revision that introduces auto return types, variable templates, digit separators \(1'000'000\), generic lambdas, lambda capture expressions, deprecated attribute. 
 | 2017 | C++17 \(ISO/IEC 14882:2017\) | A major revision that introduces a number of enhancements but notably a filesystem library, `string_view` and `option` types and `UTF-8` strings |
 
 In a sense C++ is converging with Rust since many of the enhancements which have gone into the language have the potential to make code safer and more efficient. 
-
-However C++ is still an unsafe by default language. For example C++17 introduces `string_view` but it does not care if the string exists or not when it is called and it is the programmer's responsibility to ensure it does. Whereas a `&str` slice in Rust is lifetime checked by the compiler.
