@@ -1,44 +1,60 @@
 # Strings
 
-The way that Rust handles strings is quite a bit different from C or C++.
-
 ## Summary
 
 In C/C++
 
-* A string is typically a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. Historically most strings are `char` but efforts have been made to support wide character strings as well as encodings such as UTF-8.
-* A string's length is calculated by looking for a special nul (`'\0'`) value that signifies the end of the string. So a 2000 character string requires iterating through the whole string, potentially 2000 times looking for a nul. The `std::basic_string<>` type will hold a length to negate the need to calculate the length.
-* In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely. Other 3rd party libraries also have their own string wrappers, e.g. `QString` in QT.
+* A string is typically a pointer to an array of `char`, `wchar_t`, `char16_t` or `char32_t` values. Historically most strings are `char` but efforts have been made to support wide character strings as well as Unicode encodings such as UTF-8.
+* A string's length is calculated by looking for a special nul (`'\0'`) value that signifies the end of the string. So a 2000 character string requires iterating through the whole string, potentially 2000 times looking for a nul. The `std::basic_string<>` type holds a length to negate the need to calculate the length and also to handle byte arrays that may contain nuls.
+* In C++ types derived from `std::basic_string<>` template are the recommended way to manage strings safely. But other 3rd party libraries also have their own string wrappers, e.g. `QString` in QT.
 * Only `char16_t` and `char32_t` types are considered to be Unicode (encoded as UTF-16, UTF-32 respectively). There is no encoding knowledge about the meaning of other kinds of string.
-* In C++17 you may create a `std::basic_string_view<>` which is a 
+* In C++17 you may create a `std::basic_string_view<>` which is a view onto a read-only string.
 
 In Rust
 
 * A `char` is a primitive in Rust that is 32-bits and can represent any Unicode character. So it equivalent to `char32_t` in C++.
-* A `str` is a primitive that represents a read-only string. Typically you will use a through a special borrow reference `&str`.
-* A `&str`, also called a slice, consists of a pointer to a string and a length. So obtaining the length of a string is a cheap operation. 
-* A `String` is a heap allocated growable string. i.e. it can be truncated, extended etc. It implements all the functions of `str` and can also be used as a `&str`.
-* All strings are internally coded with UTF-8 to reduce memory overhead but they can be iterated by `char`.
+* A `str` is a primitive that represents a read-only string. You don't declare these, rather any string in your code is implicitly a `str` and your variables bind to it via a string slice.
+* A `&str` is a string slice - a reference to a `str`, consisting of a pointer and a length. 
+* A `String` is a heap allocated writable buffer for strings. i.e. it can be truncated, extended etc. It implements all the functions of `str` and can also be used as a `&str`.
+* All strings are internally encoded as UTF-8 but there are functions to iterate by character.
 
 ## What is a character exactly?
 
-Historically in C and C++, a char type is 8-bits. Strictly speaking a char is signed type \(usually -128 to 127\), but the values essentially represent the values 0-255.
+Historically, a string has been a sequence of bytes, each representing a character. Each character is mapped to a byte (or multiple bytes) to be displayed on a screen. This is known as an encoding, i.e. the computer knows that a byte with value 65 corresponds as the letter 'A' and has a table lookup for every printable character.
 
-The US-ASCII standard uses the first 7-bits \(0-127\) to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters.
+The two predominent encodings early on were EBDIC and ASCII. Each of these assigned characters to byte values. We won't mention EBDIC since ASCII essentially won the encoding war but basically ASCII uses the first 7-bits \(0-127\) of the byte to assign values to upper and lower case letters in the English alphabet, numbers, punctuation marks and certain control characters. The eighth wasn't used because at the time it was used as a control bit for serial communications.
 
-It didn't help the rest of the world who use different character sets. And even ASCII was competing with another standard called EBDIC which was found on mainframe computers.
+![ASCII Table](USASCII_code_chart.png "ASCII Table (wikimedia)")
 
-What about the upper values from 128-255? Some operating systems came up with a concept called a "code page". According to what "code page" was in effect, the symbol that the user would see for a character in the 128-255 range would change.
+But what about the rest of the world? It is no use to someone writing in French if there are no letters with acute, grave or circumflex chars to use ASCII since there is no character for 'À'. It would be no use at all for Japanese unless the entire language were written phonetically. For that reason the values in the 128-255 range started to be co-opted to represent other characters. 
 
-But even this is not enough. Some languages like Chinese, Japanese, Korean, Thai, Arabic etc. have thousands of symbols that must be encoded with more than one byte. So the first byte might be a modifier that combines with further bytes to render as a symbol. For example Microsoft's code page 932 use an encoding called Shift JIS \(Japanese\) where some symbols are two bytes.
+Languages like Chinese, Japanese, Korean, Thai, Arabic etc. have thousands of symbols so there is no way to encode them in this range. So they had to use multi-byte encodings, one character being more than one byte in length.
+
+The problem here is that unless you know what language the string of bytes represents, you cannot render the character. The same sequence of bytes may mean different things depending on the encoding. So operating systems like DOS & Windows gave software a clue how to handle strings - the codepage. The codepage was an environmental setting that said that on this computer, the bytes should be interpreted as.. Rusian, Latin, Japanese etc. So for example Microsoft's code page 932 use an encoding called Shift JIS \(Japanese\) where some symbols are two bytes.
+
+The code page works for one computer, but not documents sent between multiple computers with differing code pages. The bytes in one computer mean one thing and another in the other computer. 
 
 Obviously this was rapidly becoming a mess. Each code page interpretted the same byte array differently according to some external setting. So you could not send a file written in Chinese to someone with a different code page and expect it to render properly.
 
-### Unicode to the rescue
+### Unicode
 
-The Unicode standard assigns every printable symbol in existence with a unique 32-bit value, called a code point. Most symbols fall in the first 16-bits called the Basic Multilingual Plane \(BMP\).
+The Unicode standard was created to solve this problem. It assigns every printable character or glyph in existence with a unique 32-bit value, called a code point. Code points are arranged into planes - blocks of 65536 code points.
 
-China has mandated all software must support all 32-bits. We'll see how this has become a major headache for C and C++
+Most characters fall in plane 0 called the Basic Multilingual Plane \(BMP\). These can be encoded with 2 bytes, but China has compelled software makers to support all code points since some Chinese symbols are not contained in the BMP.
+
+#### Unicode encoding
+
+So Unicode represents every character in 32-bits but it would be less than inefficient to store every character in the stream as 32-bits.
+
+Thus a number of encoding formats exist that attempt to losslessly represent 32-bit values in an efficient manner:
+
+* UTF-8 is backwards compatible with ASCII. ASCII characters require one byte to encode, other characters may require up to 4 bytes depending on their code point.
+* UTF-16 encodes the characters in Basic Multilingual Plane in two bytes but uses four bytes for code points outside this range. 
+* UTF-32 encodes every character in 4 bytes.
+
+Each encoding can be losslessly transformed to the others with helper code such as the popular `libicu` library.
+
+Generally speaking UTF-8 is the most popular encoding because it is also the most efficient way to store characters most of the time. Even web pages in Japanese contain a lot of ASCII characters for the markup. So the vast majority of content is stored and served up in UTF-8. UTF-16 is not a popular encoding however the Windows operating system and also Java use it for their string encodings due to decisions made to support the BMP before China mandated full code point support.
 
 ## C / C++
 
@@ -103,19 +119,21 @@ In this example, the `sv` points to `str` but it does not copy it. Basically it 
 
 This allows string operations to be more efficient, however it requires the underlying string to be read only and for the view to be lifetime dependent on the string. i.e. it offers no guarantees that the view points to anything by the time it is accessed and it is the developers job to make sure it doesn't. For example, if I changed `str` in the previous example, then `sv` and `sv2` could be pointing at junk.
 
-### Unicode support
+### String encoding is whatever you want it to be
 
-Unicode is a way of accurately representing any text written in any language as a series of bytes in a computer. How these bytes are stored is called an _encoding_ and there are standardized 1, 2 and 4 byte encodings called UTF-8, UTF-16 and UTF-32 respectively for this purpose. Each encoding can be losslessly transformed to the others with helper code such as the popular `libicu` library.
+C++ more or less expects you to know the encoding of your own strings. It has no inherent knowledge that an array of bytes is ASCII, EBDIC, UTF-8 or anything else. What you put in your strings is your own business and it doesn't care if the bytes are valid Unicode encodings or not. 
 
-Generally speaking UTF-8 is considered the most efficient way to store characters. A string like "Hello World!" transforms to the same byte sequence as it would if encoded with ASCII. Characters outside of the 0-127 value range require escaping. But since most languages still often contain alphanumeric characters and punctuation UTF-8 can still be very efficient. But some operating systems like Windows use UTF-16 in their APIs. 
+However it does support Unicode if that is your intent. It has a long string notation that indicates a wide character string:
 
-C/C++ has no inherent knowledge of any of this. What you put in your strings is your own business and it doesn't care if the bytes are valid Unicode encodings or not. 
+```c++
+wchar_t *msg = L"Hello World!";
+```
 
-It added nascent Unicode support by creating a wide character called `wchar_t`. And C++ has an equivalent `std::wstring` which is `std::basic_string<wchar_t>`. But `wchar_t` type can be either 2 or 4 bytes wide and is a compiler / platform specific decision. In Microsoft Visual C++ the wide char is 2 bytes and in gcc it can be 2 or 4 bytes according to the compiler flags.
+The `L` prefix indicates the string is in a wide format. Unfortunately `wchar_t` type can be either 2 or 4 bytes wide and is a compiler / platform specific decision. In Microsoft Visual C++ the wide char is 2 bytes and in gcc it can be 2 or 4 bytes according to the compiler flags.
 
 Oops...
 
-So C++11 rectifies this by introducing unambiguous `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`. It also has string prefixes for declaring encodings of strings:
+So C++11 rectifies this by introducing unambiguous `char16_t` and `char32_t` types and corresponding versions of string called `std::u16string` and `std::u32string`. It also has string prefixes for declaring encodings of strings when you combine them with `auto`:
 
 ```c++
 // Wide string with L prefix
@@ -139,17 +157,17 @@ So C++ has 4 character types. Great huh?
 | `char16_t` | UTF-16 |
 | `char32_t` | UTF-32 |
 
-You basically cannot assume what a char string is encoded with. To preserve your sanity you best off to make your code UTF-8 friendly and sanitize your inputs to prevent external values from violating that principle. If you are calling external libraries you will need to see what rules they follow for string handling. If necessary you may need to use `libicu` to properly handle strings including iterating through them.
+You basically cannot assume what a char string is encoded with. To preserve your sanity you are best to choose an encoding, e.g. UTF-8 and enforce it, sanitizing your inputs where you need to. If you are calling external libraries you also need to see what rules they follow for string handling. If necessary you may need to use `libicu` to properly handle strings including iterating through them since you cannot slice strings without knowing where characters lie in the buffer.
 
 ## Rust
 
 Rust has implicit string in the language itself.
 
 * A `char` type is a 32-bit Unicode character.
-* A `str` type is a UTF-8 encoded string held in memory. Code will never directly use this type. Instead it will use `&str` which is a string slice, basically a pointer and length to the str, or a portion of it. 
+* A `str` type is a UTF-8 encoded string held in memory. Code will never directly use this type. Instead it will use `&str` which is a string slice, a pointer and length to the str or a portion of it. 
 * A `std::String` is a heap allocated `str` that you can manipulate. Code may also obtain a `&str` to a `String` but the compiler will enforce that the string is read-only while the slice exists upon it.
 
-Finally there are foreign function interface (FFI) types `OSString` and `OSStr` akin to `String` and `str` that handles any differences in how the outside world sees strings compared to Rust, e.g. changing the character width or encoding and putting a null terminator on the end. Normally you would only use these types to call an external API.
+Finally there are foreign function interface (FFI) types `OSString` and `OSStr` akin to `String` and `str` that handles any differences in how the outside world sees strings compared to Rust, e.g. changing the character width or encoding and putting a null terminator on the end. Normally you would only use these types when you need to call an external API.
 
 ## Types Comparison
 
@@ -165,28 +183,28 @@ Finally there are foreign function interface (FFI) types `OSString` and `OSStr` 
 
 ### Slices 
 
-A _slice_ is a reference to part or all of a `str`. It is written `&str` and also contains a pointer and a byte length value. 
+A _slice_ is a reference to some or all of a `str`. It is written `&str` and also contains a pointer and a byte length value. 
 
 We saw that C++17 introduces a `std::string_view` and it's like that, but it is an intrinsic part of the language and the compiler makes sure you cannot use the slice unsafely.
 
 ```rust
-// These variables are &str pointing to UTF-8 encoded bytes
+// These variables are &str pointing to a str consisting of UTF-8 encoded bytes
 let my_str = "Hello"; 
 let hello_chinese = "你好";
 ```
 
-Type inferences for these assignments will create a `&str` slice pointing to the statically allocated string data. The data itself doesn't move and the `&str` is implicitly read-only.
+Type inferences for these assignments will create a `&str` slice pointing to the statically allocated `str` and its bytes. The data itself doesn't move and the `&str` is implicitly read-only.
 
-We can also observe that Rust removes the mess of character width and literal prefixes that C and C++ have to suffer under because Unicode characters are implicitly supported. The developer may type any Unicode they like into their source code or between string delimiters and the compiler will just take it. We'll see later that there will are times you need to get raw bytes, or convert to the native platform string format but in general, a `str` is Unicode and it 
+There is no need for the different prefixes in C++ for different character widths as it is implicitly Unicode. The developer may type any Unicode they like into their UTF-8 encoded source code or between string delimiters and the compiler will just take it. 
 
-The `str` has functions for iterating over the string in bytes / characters, splitting, find a pattern etc.
+The `str` has functions for iterating over the string in bytes / characters, for creating slices, to find a pattern etc.
 
 ```rust
 let my_str = "Hello"; // v is a &’static str
 println!("My string is {} and it is {} bytes long", v, v.len());
 ```
 
-Note `len()` is the length in bytes because strings are UTF-8 encoded. A single character may be encoded as 1, 2, 3, or 4 bytes. It may not be the number of characters a human would actually see.
+Note `len()` is the length in bytes because strings are UTF-8 encoded. A single character may be encoded as 1, 2, 3, or 4 bytes. It may not be the number of characters a human would actually see. Characters may even be clustered together to form a graphene.
 
 ```rust
 let my_str = "你好";
@@ -214,7 +232,9 @@ Part 2 = lo
 
 ### Raw strings
 
-A raw string is a Unicode string starting with `r"` and ending in `"` for when you don't want to escape characters like quotation marks, backslashes and so on. If your string contains a double quotation mark you can also put a hash between the `r` and the `"` so it doesn't result in a compiler errore.g. `r#"A quote is this symbol ""#;`. You could even put more hashes if your string contained `#"`, e.g. `r##"`, `"##`.
+A raw string is a convenience for strings that contain backslashes, quotes etc. that you don't want to have to escape out.
+
+It is a Unicode string starting with `r"` prefix. If your string contains a double quotation mark you can also put one or more hashes around the outer quotes, `r#"A quote is this symbol ""#;`. You could even put more hashes if your string contained `#"`, e.g. `r##"`, `"##`.
 
 ```rust
 let quote = r#"And the man said "the best is yet to come""#;
@@ -224,23 +244,19 @@ to those who wait";
 
 ### Byte strings
 
-A byte string is just an unchecked byte array that is not assumed to be Unicode encoded:
-
-```
-let b = b"SUCCESS\x0f";
-```
-
-### Unicode Support
-
-Rust is fortunate in having Unicode knowledge baked into it. The important thing to know about strings in Rust is that they are Unicode and internally it uses UTF-8 to encode those strings. 
-
-As you've seen you can also just declare any valid Unicode sequence in your strings, or even in the comments of your code.
+A byte string is just an unchecked byte array that is not assumed to be any kind of encoding:
 
 ```rust
-let s = "你好"; // "Hello" - "你好"
+fn main() {
+let b = b"SUCCESS\x0f";
+}
 ```
 
-Here we create a variable `s` which is a string slice onto the string "你好" which is "Hello" in Chinese. It consists of 2 Unicode characters. Internally the string was UTF-8 encoded but as far as the code is concerned it is expressed as characters. We can enumerate the characters like so.
+In this case, `b` is a reference to a static byte array `&'static [u8]`. There is no `str`. This may be useful for reading data from a stream where there is no assumption about its encoding.
+
+# Unicode
+
+As state already strings are Unicode. It is worth remember that internally the string is UTF-8 encoded. What that means is you have to be a little careful conflating length with number of characters. 
 
 ```rust
 fn main() {
