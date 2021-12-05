@@ -1,8 +1,6 @@
 # Porting Code
 
-Before starting, the assumption at this point is you *need* to port code. If you're not sure you do to port code, then maybe you don't. After all, if your C/C++ code works fine, then why change it?
-
-TODO This section will provide a more real world C/C++ example and port it to the equivalent Rust
+Before starting, the assumption at this point is you *need* to port code. But before doing that remember that if it ain't broke then don't fix it. Code that works is probably not worth changing unless it is small enough that you can reliably do it.
 
 ## Automation tools
 
@@ -34,18 +32,48 @@ The readme documentation on the site link provides more information on installin
 
 ### CBindgen
 
-[CBindgen](https://github.com/eqrion/cbindgen) works in the opposite direction of bindgen - it produces C header files from Rust structures and functions.
+[CBindgen](https://github.com/eqrion/cbindgen) works in the opposite direction of bindgen - it produces C header files from Rust constants, structures and functions.
 
-So if you have Rust code that you wish to call from C, then you can generate the appropriate header files that enable you to do this.
+So if you have Rust code that you wish to call from C, then you can generate the appropriate header files that enable you to do this. Functions that you expose to C are implicitly unsafe on the outside.
 
-The headers can be produced from the command line like so:
+So here is a sample lib.rs (using the libc crate) that prints a simple message.
+
+```rust
+use libc::c_char;
+use std::ffi::CStr;
+
+#[no_mangle]
+pub unsafe extern fn print_hello(name: *const c_char) {
+    let name = CStr::from_ptr(name);
+    let name = name.to_str().unwrap();
+    println!("Hello {}!", name);
+}
+```
+
+C headers can be produced from the command line like so:
 
 ```
 cargo install cbindgen
-cbindgen -o bindings.h
+cbindgen -o hello.h
 ```
 
-Alternatively you can create a `build.rs` that automatically does this when you build your crate:
+Producing this `hello.h` header file:
+
+```c
+#include <cstdarg>
+#include <cstdint>
+#include <cstdlib>
+#include <ostream>
+#include <new>
+
+extern "C" {
+
+void print_hello(const char *name);
+
+} // extern "C"
+```
+
+Alternatively you can create a `build.rs` that automatically creates the bindings when you build your crate:
 
 ```rust
 extern crate cbindgen;
@@ -54,17 +82,15 @@ use std::env;
 
 fn main() {
     let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-
     cbindgen::Builder::new()
       .with_crate(crate_dir)
       .generate()
       .expect("Unable to generate bindings")
-      .write_to_file("bindings.h");
+      .write_to_file("hello.h");
 }
 ```
 
 A `cbindgen.toml` allows you to configure things that go into the header file. See the site link for more information.
-
 
 ## Experiences
 

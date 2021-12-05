@@ -3,9 +3,10 @@
 C++ has various ways to give compiler *directives* during compilation:
 
 * Compile flags that control numerous behaviours
-* `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` have been abused in compilers such as Microsoft C++ to insert "comments" that control the import / export of symbols, static linking and other functionality.
+* `#pragma` statements - `once`, `optimize`, `comment`, `pack` etc. Some pragmas such as `comment` leave a "comment" in the output file that compilers such as Microsoft C++ use to control the import / export of symbols, static linking and other functionality.
 * `#define` with ubquitous `#ifdef` / `#else` / `#endif` blocks
-* Keywords `inline`, `const`, `volatile` etc. These hint the code and allow the compiler to make decisions that might change its output or optimization. Compilers often have their own proprietary extensions.
+* Keywords `inline`, `const`, `volatile` etc. These keyword hint the code and allow the compiler to make decisions that might change its output or optimization. 
+* Compilers may have their own proprietary extensions, e.g. `__declspec` is keyword in Microsoft's compiler that allows the behaviour of structs / classes to be modified.
 
 Rust uses a notation called *attributes* that serves a similar role to all of these things but in a more consistent form.
 
@@ -18,7 +19,7 @@ fn this_is_a_test() {
 }
 ```
 
-Attributes can also be expressed as `#![foo]` which affects the thing they're contained *by* rather the thing that follows them. 
+Attributes can also be expressed as `#![foo]` which affects the thing they're contained *by* rather the thing that follows them. So this is equivalent to the last example.
 
 ```rust
 fn this_is_a_test() {
@@ -29,7 +30,7 @@ fn this_is_a_test() {
 
 Attributes are enclosed in a `#[ ]` block and provide compiler directives that allow:
 
-* Functions to be marked as unit or benchmark tests
+* Functions to be marked as unit or benchmark tests `#[test]`
 * Functions to be marked for conditional compilation for a target OS. A function can be defined that only compiles for one target. e.g. perhaps the code that communicates with another process on Windows and Linux is encapsulated in the same function but implemented differently.
 * Enable / disable lint rules
 * Enable / disable compiler features. Certain features of rust may be experimental or deprecated and may have to be enabled to be accessed.
@@ -68,11 +69,9 @@ Many more possibilities are listed in the [documentation](https://doc.rust-lang.
 
 ## Data structure formats
 
-By default, a structure is packed however the compiler chooses to do it. The compiler might even choose to reorder fields to make the data smaller. 
+By default, a structure is packed however the compiler chooses. The compiler might even choose to reorder fields to make the data smaller, e.g. if the struct has a lot of booleans interspersed with other types it might pack the booleans together. 
 
 But if you are exchanging data with C you might use an attribute to ensure the struct is the correct order, padding and alignment:
-
-TODO
 
 ```
 #[repr(C)]
@@ -89,6 +88,8 @@ Or more complex:
 }
 ```
 
+This fulfills a similar role to `__declspec` in C++ compilers.
+
 ## Linking to native libraries
 
 In C/C++ code is first compiled and then it is linked, either by additional arguments to the compiler, or by invoking a linker.
@@ -99,24 +100,24 @@ In Rust most of your linking is taken care for you providing you use `cargo`.
 2. External crates are automatically built as static libs and linked in. 
 3. But if you have to link against something external through FFI you have to write a `#link` directive in your `lib.rs` or `main.rs`. This is somewhat analogous to the `#pragma(comment, "somelib")` in C++.
 
-C++ | Rust
---- | ----
-`#pragma (comment, "somelib")` | `#[link(name = "somelib")]`
-- | `#[link(name = "somelib", kind = "static")]`
+| C++ | Rust |
+--- | ---- |
+| `#pragma (comment, "somelib")` | `#[link(name = "somelib")]` |
+|- | `#[link(name = "somelib", kind = "static")]` |
 
 The default kind for `#link` is `dynamic` library but `static` can be explicitly stated specified.
 
 ## Inlining code
 
-Inlining happens where your function logic is inserted in-place to the code that invokes it. It tends to happen when the function does something trivial such as return a value or execute a simple conditional. The overhead of duplicating the code is outweighed by the performance benefit.
+Inlining happens where your function logic is inserted in-place to the code that invokes it. Usually you want inlining when the function does something trivial such as return a value or execute a simple conditional. The overhead of duplicating the code is outweighed by the performance benefit.
 
 Inlining is achieved in C++ by declaring and implementing a function, class method or template method in a header or marking it with the inline keyword.
 
 In Rust, inlining is only a hint. Rust recommends not forcing inlning, rather leaving it as a hint for the LLVM compiler to do with as it sees fit.
 
-C++ | Rust
---- | ----
-Explicitly with `inline` or implicitly through methods implemented in class / struct | `#[inline]`, `#[inline(always)]`, `#[inline(never)]`
+| C++ | Rust |
+| --- | ---- |
+| Explicitly with `inline` or implicitly through methods implemented in class or  struct | `#[inline]`, `#[inline(always)]`, `#[inline(never)]` |
 
 Another alternative to explicitly inlining code is to use the link-time optimisation in LLVM.
 

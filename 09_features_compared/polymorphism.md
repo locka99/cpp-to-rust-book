@@ -42,13 +42,12 @@ void do_foo(Foo f) {
 }
 
 // A piece of code that calls do_foo().
-Foo i1(20);
 do_foo(1);
 //...
 
 ```
 
-What you may not notice at first glance is `do_foo()` was called with `1` not `i1` but it still compiled. Why? Because the compiler took it upon itself to convert that `1` into `Foo(1)` and feed it to the function. Because of this a subtle error has crept in. So C++ has an `explicit` keyword to stop this happening:
+What you may not notice at first glance is `do_foo()` was called with `1` but it still compiled. Why? Because the compiler took it upon itself to convert that `1` into `Foo(1)` and feed it to the function. Because of this a subtle error has crept in. So C++ has an `explicit` keyword to stop this happening:
 
 ```c++
 class Foo {
@@ -66,14 +65,16 @@ But you can see it's all becoming very ornery and that's before even considering
 
 ## Rust
 
-Rust has limited support for polymorphism. This can be very frustrating as we'll see and it may well be that some restrictions will relax in time.
+Rust has limited support for polymorphism. This can be very frustrating as we'll see and it is a pain point that many new programmers will run into. Why can C++ do polymorphism and Rust can't? 
+
+The two plausible answers are a) not to repeat the mistakes of C++, b) the language hasn't gotten to addressing the issue properly.
 
 But for the moment the rules are as follows:
 
 1. Function name overloading - there is none. See section below for alternatives.
 2. Coercion. Rust allows limited, explict coercion between numeric types using the `as` keyword. Otherwise see below for use on `Into` and `From` traits.
 3. Parameteric - similar to C++ via generics.
-4. Inclusion - there is no inheritance in Rust. The nearest thing to a virtual method in rust is a trait with an implemented function that an implementation overrides with its own. However this override is at compile time.
+4. Inclusion - there is no inheritance in Rust. The nearest thing to a virtual method is a trait with an implemented function that an implementation overrides with its own. However this override is at compile time.
 
 ### Alternatives to function name overloading
 
@@ -85,6 +86,14 @@ fn new_age(name: &str, age: u16) -> Foo { /* ... */ }
 ```
 
 This can look very messy after a while, so there is another alternative - conversion traits.
+
+You might also do this by saying you can supply any value, struct or tuple that implements a, e.g. New
+
+```rust
+fn new<T>(value: T) where T: Into<NewArgs> {
+  //....
+}
+```
 
 #### Use traits
 
