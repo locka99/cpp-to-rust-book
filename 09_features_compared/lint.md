@@ -41,4 +41,4 @@ missing-debug-implementations  allow    detects missing implementations of fmt::
 ...
 ```
 
-There are a lot checks than are listed here.
+There are a lot more checks than listed above.
