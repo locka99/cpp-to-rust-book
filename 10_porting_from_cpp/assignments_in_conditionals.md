@@ -4,7 +4,7 @@ C and C++ allow you do do things like this:
 
 ```c++
 int result;
-while (result = getResponseCode()) {
+while (result = getNextResponseCode()) {
   // In C++ result is non-zero which is evaluated as boolean true
   // In C result is non-zero which is treated as statement success
   if (result == 200) {
@@ -42,7 +42,7 @@ Let's look how we might do the equivalent (but not optimal way) in Rust using a 
 
 ```rust
 let mut result;
-while { result = getResponseCode(); result > 0 } {
+while { result = getNextResponseCode(); result > 0 } {
   if result == 200 {
     //...
   }
@@ -56,12 +56,12 @@ Here we declare a mutable `result` var and run a loop against a block expression
 
 So this is functionally the same thing as C++ but it's a little bit noisy.
 
-Can we do better? Yes if change the function signature of `getResponseCode()` to return an enum such as `Option<>` or `Result<>`. Rust has a `while let` construct that allows us to test if a enum value matches a pattern and to automatically assign the payload to another value:
+Can we do better? Yes if change the function signature of `getNextResponseCode()` to return an enum such as `Option<>` or `Result<>`. Rust has a `while let` construct that allows us to test if a enum value matches a pattern and to automatically assign the payload to another value:
 
 ```rust
-fn getResponseCode() -> Option<u32> { /*... */}
+fn getNextResponseCode() -> Option<u32> { /*... */}
 //...
-while let Some(result) = getResponseCode() {
+while let Some(result) = getNextResponseCode() {
   if result == 200 {
     //...
   }
@@ -71,6 +71,6 @@ while let Some(result) = getResponseCode() {
 }
 ```
 
-This code will run the loop, calling `getResponseCode()` and if it evaluates to `Some(value)` then `value` is copied to variable `result`. If it does not match the pattern then the loop breaks.
+This code will run the loop, calling `getNextResponseCode()` and if it evaluates to `Some(value)` then `value` is copied to variable `result`. If it does not match the pattern then the loop breaks.
 
 This is good design in Rust. It is always to convey information in a function's signature. Not only do we make the distinction between a bad result and a good one, but we can use `while let`.
