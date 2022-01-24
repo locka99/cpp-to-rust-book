@@ -364,8 +364,8 @@ Rust has a less powerful syntax than is possible with initialized arrays in C++ 
 // Stack
 let values = [0f64; 100]; // 100 elements initialised to 0
 let values = [1f64, 2f64, 3f64]; // 3 elements 1,2,3
-// Heap
-let values = Box::new([0f64; 100]);
+// For heap allocated arrays you should use vectors
+let values = Box::new([0f64; 100]); // Allocates on heap with allocating on stack first. Try increasing number of elements to see stack overflow.
 ```
 
 Note how Rust provides a shorthand to initialise the array with the same value or assigns the array with every value. Initialisation in C and C++ is optional but it is more expressive in that portions of the array can be set or not set using enclosed list syntax.
