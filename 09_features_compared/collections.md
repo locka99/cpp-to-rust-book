@@ -104,6 +104,6 @@ let result = values.
     collect::<Vec<(usize, f64)>>();
 ```
 
-Breaking this down, we iterate, `enumerate()` produces a tuple `(usize, i32)` from the index and value, `map()` creates a new tuple `(usize, f64)` and then finally the result is gathered into a new collection. 
+Breaking this down, we iterate, `enumerate()` produces a tuple `(usize, &i32)` from the index and value, `map()` creates a new tuple `(usize, f64)` and then finally the result is gathered into a new collection. 
 
 As you can see iterators expose very powerful functions that are an efficient, terse and provide less chance for error than writing a loop.
