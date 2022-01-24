@@ -77,7 +77,7 @@ struct Size {
 }
 ```
 
-An `impl` section follows containing the associated functions:
+An `impl` section follows containing the associated functions (`new`) and methods (`area`):
 
 ```rust
 impl Size {
@@ -91,7 +91,7 @@ impl Size {
 }
 ```
 
-The `new()` function here is a convenience method that returns a struct preinitialised with the arguments supplied. The `area()` function specifies a `&self` argument and returns an area calculation. Any function that supplies a `&self`, or `&mut self` can be called from the variable bound to the struct.
+The `new()` function here is an associated function that returns a struct preinitialised with the arguments supplied. The `area()` method specifies a `&self` argument and returns an area calculation. Any method (with `&self`, or `&mut self` as the first argument)  can be called from the variable bound to the struct.
 
 ```rust
 let size = Size::new(10, 20);
@@ -101,6 +101,28 @@ println!("Size = {}", size.area());
 The `self` keyword works in much the same way as C++ uses `this`, as a reference to the struct from which the function was invoked. If a function modifies the struct it must say `&mut self`, which indicates the function modifies the struct.
 
 There is no inheritance in Rust. Instead, a `struct` may implement zero or more traits. A trait describes some kind of behavior that can be associated with the struct and described further later on in this chapter.
+
+The above impelementation can also be written with the following syntactic sugar:
+
+```rust
+struct Size {
+  pub width: i32,
+  pub height: i32,
+}
+
+
+impl Size {
+  pub fn new(width: i32, height: i32) -> Self {
+      Self {width, height}
+  }
+
+  pub fn area(&self) -> i32 {
+      self.width * self.height
+  }
+}
+```
+
+Note using `Self` as a type replacer and struct fields inference.
 
 ## Constructors
 
@@ -294,7 +316,7 @@ Unlike C++, all access to the struct has to be qualified. In C++ you don't publi
 
 ## Static functions
 
-Static functions are merely functions in the `impl` block that do not have `&self` or `&mut self` as their first parameter, e.g.
+Static functions ("associated functions") are merely functions in the `impl` block that do not have `&self` or `&mut self` as their first parameter, e.g.
 
 ```rust
 impl Circle {
