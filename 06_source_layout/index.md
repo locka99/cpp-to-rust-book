@@ -15,7 +15,7 @@ Splitting source into definitions and implementation can increase code maintenan
 
 ### Rust
 
-Rust does use header files. Instead every struct, implementation, function, const, and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
+Rust does not use header files. Instead every struct, implementation, function, const, and macro resides in a file ending in .rs. Code is made public or not by structuring .rs files into modules and exposing functions via the `pub` keyword.
 
 For functions, the definition and the implementation are the same thing - the function implementation's signature is its definition.
 
