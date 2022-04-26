@@ -403,15 +403,41 @@ This slice represents the portion of array starting from index 2.
 
 ### Size of the array 
 
-C and C++ basically give no easy way to know the length of the array unless you encapsulate the array with a `std::array` or happen to remember it from the code that declares it.
+C gives no easy way to know the length of the array unless happen to remember it from the code that declares it.
+C++ allows to encapsulate the array with a `std::array` or request the size with the generic function `std::size`.
 
 ```c++
 // C++11
 std::array<Element, 100> elements;
-std::cout << "Size of array = " << elements.size() << std::endl;
+std::cout << "Size of std::array = " << elements.size() << std::endl;
+
+// C++17
+Element elements[100];
+std::cout << "Size of C array = " << std::size(elements) << std::endl;
 ```
 
-The `std::array` wrapper is of limited use because you cannot pass arrays of an unknown size to a function. Therefore even with this template you may pass the array into a function as one argument and its size as another.
+They require making functions templates instead of simple functions if one wants to pass array of unknown size: 
+
+```c++
+template<std::size_t N>
+void fill_buffer(std::array<Element, N>& arr) { ... }
+
+template<std::size_t N>
+void fill_buffer(Element (&arr)[N]) { ... }
+```
+
+Or more recently using `std::span` if knowing the size at run-time instead of compile-time is sufficient:
+
+```c++
+// C++20
+void fill_buffer(std::span<Element> arr) { ... }
+
+std::array<Element, 100> elements_std;
+Element elements_c[100];
+
+fill_buffer(elements_std);
+fill_buffer(elements_c);
+```
 
 Alternatively you might see code like this:
 
