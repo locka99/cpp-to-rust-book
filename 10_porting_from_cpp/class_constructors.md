@@ -147,7 +147,7 @@ But `Default` is implemented on all the primitives including `f64`. So we could 
 And since all the members of the struct implement `Default`, Rust also lets us just derive it for the entire struct:
 
 ```rust
-#[derive(Derive)]
+#[derive(Default)]
 struct Point {
   x: f64,
   y: f64
