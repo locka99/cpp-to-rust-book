@@ -12,7 +12,7 @@
 * [Compiling and Linking in More Detail](05_compiling_and_linking/index.md)
 * [Source Layout and Other General Points](06_source_layout/index.md)
 * [Namespacing With Modules](07_namespacing_with_modules/index.md)
-* [Porting Code](08_porting-code/index.md)
+* [Porting Code](08_porting_code/index.md)
 * [Features of Rust compared with C++](09_features_compared/index.md)
   * [Types](09_features_compared/types.md)
   * [Strings](09_features_compared/strings.md)

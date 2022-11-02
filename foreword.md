@@ -1,6 +1,6 @@
 # Foreword
 
-**BEGIN DRAFT BOOK DISCLAIMER **
+**BEGIN DRAFT BOOK DISCLAIMER**
 
 * Some of the samples will not compile or may not have been syntax checked
 * C and Rust code snippets are not distinguished very well yet (styling)
