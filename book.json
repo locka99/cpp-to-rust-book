@@ -1,6 +1,0 @@
-{
-    "title": "A Guide to Porting C/C++ to Rust",
-    "author": "Adam Lock",
-    "description": "A book that explains how to port code from C++ to Rust.",
-    "dest": "output/cpp-to-rust"
-}

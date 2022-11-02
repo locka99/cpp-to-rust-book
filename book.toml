@@ -1,0 +1,7 @@
+[book]
+authors = ["Adam Lock"]
+language = "en"
+multilingual = false
+src = "."
+title = "A Guide to Porting C/C++ to Rust"
+description = "A book that explains how to port code from C++ to Rust."
